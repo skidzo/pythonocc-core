@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -19,11 +19,17 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #define SELECTMGR_HXX
 
 
+#include<SelectMgr.hxx>
 #include<SelectMgr_AndFilter.hxx>
+#include<SelectMgr_AndOrFilter.hxx>
+#include<SelectMgr_AxisIntersector.hxx>
+#include<SelectMgr_BVHThreadPool.hxx>
 #include<SelectMgr_BaseFrustum.hxx>
+#include<SelectMgr_BaseIntersector.hxx>
 #include<SelectMgr_CompositionFilter.hxx>
 #include<SelectMgr_EntityOwner.hxx>
 #include<SelectMgr_Filter.hxx>
+#include<SelectMgr_FilterType.hxx>
 #include<SelectMgr_Frustum.hxx>
 #include<SelectMgr_FrustumBuilder.hxx>
 #include<SelectMgr_IndexedDataMapOfOwnerCriterion.hxx>
@@ -33,15 +39,15 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SelectMgr_OrFilter.hxx>
 #include<SelectMgr_PickingStrategy.hxx>
 #include<SelectMgr_RectangularFrustum.hxx>
-#include<SelectMgr_SOPtr.hxx>
 #include<SelectMgr_SelectableObject.hxx>
 #include<SelectMgr_SelectableObjectSet.hxx>
 #include<SelectMgr_SelectingVolumeManager.hxx>
 #include<SelectMgr_Selection.hxx>
+#include<SelectMgr_SelectionImageFiller.hxx>
 #include<SelectMgr_SelectionManager.hxx>
+#include<SelectMgr_SelectionType.hxx>
 #include<SelectMgr_SensitiveEntity.hxx>
 #include<SelectMgr_SensitiveEntitySet.hxx>
-#include<SelectMgr_SequenceOfFilter.hxx>
 #include<SelectMgr_SequenceOfOwner.hxx>
 #include<SelectMgr_SequenceOfSelection.hxx>
 #include<SelectMgr_SortCriterion.hxx>
@@ -50,9 +56,11 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<SelectMgr_TriangularFrustum.hxx>
 #include<SelectMgr_TriangularFrustumSet.hxx>
 #include<SelectMgr_TypeOfBVHUpdate.hxx>
+#include<SelectMgr_TypeOfDepthTolerance.hxx>
 #include<SelectMgr_TypeOfUpdate.hxx>
 #include<SelectMgr_VectorTypes.hxx>
 #include<SelectMgr_ViewClipRange.hxx>
 #include<SelectMgr_ViewerSelector.hxx>
+#include<SelectMgr_ViewerSelector3d.hxx>
 
 #endif // SELECTMGR_HXX

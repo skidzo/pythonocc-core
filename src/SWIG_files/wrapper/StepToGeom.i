@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define STEPTOGEOMDOCSTRING
 "StepToGeom module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_steptogeom.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_steptogeom.html"
 %enddef
 %module (package="OCC.Core", docstring=STEPTOGEOMDOCSTRING) StepToGeom
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_steptogeom.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -42,9 +45,13 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_steptogeom.html"
 #include<Standard_module.hxx>
 #include<NCollection_module.hxx>
 #include<StepGeom_module.hxx>
+#include<StepData_module.hxx>
 #include<Geom_module.hxx>
 #include<Geom2d_module.hxx>
 #include<gp_module.hxx>
+#include<StepKinematics_module.hxx>
+#include<StepRepr_module.hxx>
+#include<TColStd_module.hxx>
 #include<Message_module.hxx>
 #include<StepShape_module.hxx>
 #include<StepBasic_module.hxx>
@@ -55,6 +62,7 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_steptogeom.html"
 #include<StepData_module.hxx>
 #include<MoniTool_module.hxx>
 #include<TopoDS_module.hxx>
+#include<Resource_module.hxx>
 #include<TColgp_module.hxx>
 #include<TColStd_module.hxx>
 #include<TCollection_module.hxx>
@@ -63,9 +71,13 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_steptogeom.html"
 %import Standard.i
 %import NCollection.i
 %import StepGeom.i
+%import StepData.i
 %import Geom.i
 %import Geom2d.i
 %import gp.i
+%import StepKinematics.i
+%import StepRepr.i
+%import TColStd.i
 
 %pythoncode {
 from enum import IntEnum
@@ -75,7 +87,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -95,697 +107,915 @@ from OCC.Core.Exception import *
 %rename(steptogeom) StepToGeom;
 class StepToGeom {
 	public:
-		/****************** MakeAxis1Placement ******************/
-		/**** md5 signature: a96aa4bc70227c9ea1cddd173f31935d ****/
+		/****** StepToGeom::MakeAxis1Placement ******/
+		/****** md5 signature: c646074198ca82d63270aff13f5fef4b ******/
 		%feature("compactdefaultargs") MakeAxis1Placement;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SA: StepGeom_Axis1Placement
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Axis1Placement>
+
+Description
+-----------
+No available documentation.
 ") MakeAxis1Placement;
-		static opencascade::handle<Geom_Axis1Placement> MakeAxis1Placement(const opencascade::handle<StepGeom_Axis1Placement> & SA);
+		static opencascade::handle<Geom_Axis1Placement> MakeAxis1Placement(const opencascade::handle<StepGeom_Axis1Placement> & SA, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeAxis2Placement ******************/
-		/**** md5 signature: 8f166a7e0f928b6f30487bcc8e33c612 ****/
+		/****** StepToGeom::MakeAxis2Placement ******/
+		/****** md5 signature: f4913a18215edd701d610c3508447992 ******/
 		%feature("compactdefaultargs") MakeAxis2Placement;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SA: StepGeom_Axis2Placement3d
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Axis2Placement>
+
+Description
+-----------
+No available documentation.
 ") MakeAxis2Placement;
-		static opencascade::handle<Geom_Axis2Placement> MakeAxis2Placement(const opencascade::handle<StepGeom_Axis2Placement3d> & SA);
+		static opencascade::handle<Geom_Axis2Placement> MakeAxis2Placement(const opencascade::handle<StepGeom_Axis2Placement3d> & SA, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeAxisPlacement ******************/
-		/**** md5 signature: afd550d9a29a4881d24f34abb414ecdb ****/
+		/****** StepToGeom::MakeAxis2Placement ******/
+		/****** md5 signature: 9c31e6d955fc394caecd4f46d406587b ******/
+		%feature("compactdefaultargs") MakeAxis2Placement;
+		%feature("autodoc", "
+Parameters
+----------
+SP: StepGeom_SuParameters
+
+Return
+-------
+opencascade::handle<Geom_Axis2Placement>
+
+Description
+-----------
+No available documentation.
+") MakeAxis2Placement;
+		static opencascade::handle<Geom_Axis2Placement> MakeAxis2Placement(const opencascade::handle<StepGeom_SuParameters> & SP);
+
+		/****** StepToGeom::MakeAxisPlacement ******/
+		/****** md5 signature: 3a3586312515439e33ad226382d1b7ca ******/
 		%feature("compactdefaultargs") MakeAxisPlacement;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SA: StepGeom_Axis2Placement2d
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_AxisPlacement>
+
+Description
+-----------
+No available documentation.
 ") MakeAxisPlacement;
-		static opencascade::handle<Geom2d_AxisPlacement> MakeAxisPlacement(const opencascade::handle<StepGeom_Axis2Placement2d> & SA);
+		static opencascade::handle<Geom2d_AxisPlacement> MakeAxisPlacement(const opencascade::handle<StepGeom_Axis2Placement2d> & SA, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBSplineCurve ******************/
-		/**** md5 signature: 9a9b11b7d99fbf6e3063833922cb7141 ****/
+		/****** StepToGeom::MakeBSplineCurve ******/
+		/****** md5 signature: 82e52c90eb3aa3b6fd0672c1bcc7404a ******/
 		%feature("compactdefaultargs") MakeBSplineCurve;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_BSplineCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeBSplineCurve;
-		static opencascade::handle<Geom_BSplineCurve> MakeBSplineCurve(const opencascade::handle<StepGeom_BSplineCurve> & SC);
+		static opencascade::handle<Geom_BSplineCurve> MakeBSplineCurve(const opencascade::handle<StepGeom_BSplineCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBSplineCurve2d ******************/
-		/**** md5 signature: 814eb299f6585206f867dc6d83717227 ****/
+		/****** StepToGeom::MakeBSplineCurve2d ******/
+		/****** md5 signature: a6f10340300cf7c6163538d950070ef8 ******/
 		%feature("compactdefaultargs") MakeBSplineCurve2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_BSplineCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeBSplineCurve2d;
-		static opencascade::handle<Geom2d_BSplineCurve> MakeBSplineCurve2d(const opencascade::handle<StepGeom_BSplineCurve> & SC);
+		static opencascade::handle<Geom2d_BSplineCurve> MakeBSplineCurve2d(const opencascade::handle<StepGeom_BSplineCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBSplineSurface ******************/
-		/**** md5 signature: dc86bf0966692b7b0ffc5b981ea6d4bd ****/
+		/****** StepToGeom::MakeBSplineSurface ******/
+		/****** md5 signature: a98dbd9f448d84ae1b38b03a63b97ca7 ******/
 		%feature("compactdefaultargs") MakeBSplineSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_BSplineSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_BSplineSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeBSplineSurface;
-		static opencascade::handle<Geom_BSplineSurface> MakeBSplineSurface(const opencascade::handle<StepGeom_BSplineSurface> & SS);
+		static opencascade::handle<Geom_BSplineSurface> MakeBSplineSurface(const opencascade::handle<StepGeom_BSplineSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBoundedCurve ******************/
-		/**** md5 signature: efae8f5f62b6510a0b4d09ee4f54a4e7 ****/
+		/****** StepToGeom::MakeBoundedCurve ******/
+		/****** md5 signature: 9a7ba442626fe0c885e4581e24d1e74c ******/
 		%feature("compactdefaultargs") MakeBoundedCurve;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_BoundedCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_BoundedCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeBoundedCurve;
-		static opencascade::handle<Geom_BoundedCurve> MakeBoundedCurve(const opencascade::handle<StepGeom_BoundedCurve> & SC);
+		static opencascade::handle<Geom_BoundedCurve> MakeBoundedCurve(const opencascade::handle<StepGeom_BoundedCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBoundedCurve2d ******************/
-		/**** md5 signature: 7032ff5091576eb1776981c40165d89a ****/
+		/****** StepToGeom::MakeBoundedCurve2d ******/
+		/****** md5 signature: b90b1daebaedccbe6ef42cf4b894856c ******/
 		%feature("compactdefaultargs") MakeBoundedCurve2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_BoundedCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_BoundedCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeBoundedCurve2d;
-		static opencascade::handle<Geom2d_BoundedCurve> MakeBoundedCurve2d(const opencascade::handle<StepGeom_BoundedCurve> & SC);
+		static opencascade::handle<Geom2d_BoundedCurve> MakeBoundedCurve2d(const opencascade::handle<StepGeom_BoundedCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeBoundedSurface ******************/
-		/**** md5 signature: cfe1ae188901288c5dce944765df2b68 ****/
+		/****** StepToGeom::MakeBoundedSurface ******/
+		/****** md5 signature: 3a19a1f722608eea3f3a8ce67a65220d ******/
 		%feature("compactdefaultargs") MakeBoundedSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_BoundedSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_BoundedSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeBoundedSurface;
-		static opencascade::handle<Geom_BoundedSurface> MakeBoundedSurface(const opencascade::handle<StepGeom_BoundedSurface> & SS);
+		static opencascade::handle<Geom_BoundedSurface> MakeBoundedSurface(const opencascade::handle<StepGeom_BoundedSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCartesianPoint ******************/
-		/**** md5 signature: f24884777489f54489007c7a935bdd5c ****/
+		/****** StepToGeom::MakeCartesianPoint ******/
+		/****** md5 signature: 75a86a56b31e31157e40dd47d9f33672 ******/
 		%feature("compactdefaultargs") MakeCartesianPoint;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SP: StepGeom_CartesianPoint
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_CartesianPoint>
+
+Description
+-----------
+No available documentation.
 ") MakeCartesianPoint;
-		static opencascade::handle<Geom_CartesianPoint> MakeCartesianPoint(const opencascade::handle<StepGeom_CartesianPoint> & SP);
+		static opencascade::handle<Geom_CartesianPoint> MakeCartesianPoint(const opencascade::handle<StepGeom_CartesianPoint> & SP, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCartesianPoint2d ******************/
-		/**** md5 signature: 7683fea1c2dccd2b7e8c49fee8bb9093 ****/
+		/****** StepToGeom::MakeCartesianPoint2d ******/
+		/****** md5 signature: 5a7517624dc5d50e12dadbc23c516d05 ******/
 		%feature("compactdefaultargs") MakeCartesianPoint2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SP: StepGeom_CartesianPoint
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_CartesianPoint>
+
+Description
+-----------
+No available documentation.
 ") MakeCartesianPoint2d;
-		static opencascade::handle<Geom2d_CartesianPoint> MakeCartesianPoint2d(const opencascade::handle<StepGeom_CartesianPoint> & SP);
+		static opencascade::handle<Geom2d_CartesianPoint> MakeCartesianPoint2d(const opencascade::handle<StepGeom_CartesianPoint> & SP, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCircle ******************/
-		/**** md5 signature: 9205da16eaf6a485e3c23b38f0ff9b4d ****/
+		/****** StepToGeom::MakeCircle ******/
+		/****** md5 signature: c7d49fea383db7f817accdf3f31b41dd ******/
 		%feature("compactdefaultargs") MakeCircle;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Circle
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Circle>
+
+Description
+-----------
+No available documentation.
 ") MakeCircle;
-		static opencascade::handle<Geom_Circle> MakeCircle(const opencascade::handle<StepGeom_Circle> & SC);
+		static opencascade::handle<Geom_Circle> MakeCircle(const opencascade::handle<StepGeom_Circle> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCircle2d ******************/
-		/**** md5 signature: 43f70cfec90d8dd9887caf547554d612 ****/
+		/****** StepToGeom::MakeCircle2d ******/
+		/****** md5 signature: 52244eecbc504ebe46e010188337e856 ******/
 		%feature("compactdefaultargs") MakeCircle2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Circle
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Circle>
+
+Description
+-----------
+No available documentation.
 ") MakeCircle2d;
-		static opencascade::handle<Geom2d_Circle> MakeCircle2d(const opencascade::handle<StepGeom_Circle> & SC);
+		static opencascade::handle<Geom2d_Circle> MakeCircle2d(const opencascade::handle<StepGeom_Circle> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeConic ******************/
-		/**** md5 signature: c1f678a4b00bd5525e8c2afd9eb7797e ****/
+		/****** StepToGeom::MakeConic ******/
+		/****** md5 signature: 516e3a87e65f8f1f35dbba65a3384224 ******/
 		%feature("compactdefaultargs") MakeConic;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Conic
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Conic>
+
+Description
+-----------
+No available documentation.
 ") MakeConic;
-		static opencascade::handle<Geom_Conic> MakeConic(const opencascade::handle<StepGeom_Conic> & SC);
+		static opencascade::handle<Geom_Conic> MakeConic(const opencascade::handle<StepGeom_Conic> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeConic2d ******************/
-		/**** md5 signature: f210fc4a4478acd037560da08a72f15a ****/
+		/****** StepToGeom::MakeConic2d ******/
+		/****** md5 signature: 3f1d83d826a29ac57003db14606599d0 ******/
 		%feature("compactdefaultargs") MakeConic2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Conic
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Conic>
+
+Description
+-----------
+No available documentation.
 ") MakeConic2d;
-		static opencascade::handle<Geom2d_Conic> MakeConic2d(const opencascade::handle<StepGeom_Conic> & SC);
+		static opencascade::handle<Geom2d_Conic> MakeConic2d(const opencascade::handle<StepGeom_Conic> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeConicalSurface ******************/
-		/**** md5 signature: 62c83d77db2ac7a7fa8bc5d9d97d28e9 ****/
+		/****** StepToGeom::MakeConicalSurface ******/
+		/****** md5 signature: 8e0ae321dd7345acfecca9fd39adacd2 ******/
 		%feature("compactdefaultargs") MakeConicalSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_ConicalSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_ConicalSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeConicalSurface;
-		static opencascade::handle<Geom_ConicalSurface> MakeConicalSurface(const opencascade::handle<StepGeom_ConicalSurface> & SS);
+		static opencascade::handle<Geom_ConicalSurface> MakeConicalSurface(const opencascade::handle<StepGeom_ConicalSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCurve ******************/
-		/**** md5 signature: 747968dd43ff41a2a01648875ee5816d ****/
+		/****** StepToGeom::MakeCurve ******/
+		/****** md5 signature: 0805c4da44dde4870a6b5b93d923d3aa ******/
 		%feature("compactdefaultargs") MakeCurve;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Curve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Curve>
+
+Description
+-----------
+No available documentation.
 ") MakeCurve;
-		static opencascade::handle<Geom_Curve> MakeCurve(const opencascade::handle<StepGeom_Curve> & SC);
+		static opencascade::handle<Geom_Curve> MakeCurve(const opencascade::handle<StepGeom_Curve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCurve2d ******************/
-		/**** md5 signature: def8765aa7d9e4b22e8f4e04ac8ede33 ****/
+		/****** StepToGeom::MakeCurve2d ******/
+		/****** md5 signature: 10044cca7dcce2ca3603d05694cdcd4d ******/
 		%feature("compactdefaultargs") MakeCurve2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Curve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Curve>
+
+Description
+-----------
+No available documentation.
 ") MakeCurve2d;
-		static opencascade::handle<Geom2d_Curve> MakeCurve2d(const opencascade::handle<StepGeom_Curve> & SC);
+		static opencascade::handle<Geom2d_Curve> MakeCurve2d(const opencascade::handle<StepGeom_Curve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeCylindricalSurface ******************/
-		/**** md5 signature: a5af7c7b4f2202a4e536bbdacace19e3 ****/
+		/****** StepToGeom::MakeCylindricalSurface ******/
+		/****** md5 signature: 2ab882f62021b4bf844acba4f808bbd2 ******/
 		%feature("compactdefaultargs") MakeCylindricalSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_CylindricalSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_CylindricalSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeCylindricalSurface;
-		static opencascade::handle<Geom_CylindricalSurface> MakeCylindricalSurface(const opencascade::handle<StepGeom_CylindricalSurface> & SS);
+		static opencascade::handle<Geom_CylindricalSurface> MakeCylindricalSurface(const opencascade::handle<StepGeom_CylindricalSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeDirection ******************/
-		/**** md5 signature: ab447b404195ec0d7870691bec92b043 ****/
+		/****** StepToGeom::MakeDirection ******/
+		/****** md5 signature: ab447b404195ec0d7870691bec92b043 ******/
 		%feature("compactdefaultargs") MakeDirection;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SD: StepGeom_Direction
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Direction>
+
+Description
+-----------
+No available documentation.
 ") MakeDirection;
 		static opencascade::handle<Geom_Direction> MakeDirection(const opencascade::handle<StepGeom_Direction> & SD);
 
-		/****************** MakeDirection2d ******************/
-		/**** md5 signature: 8bf8a7b40255be99f58f3af845adeaad ****/
+		/****** StepToGeom::MakeDirection2d ******/
+		/****** md5 signature: 8bf8a7b40255be99f58f3af845adeaad ******/
 		%feature("compactdefaultargs") MakeDirection2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SD: StepGeom_Direction
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Direction>
+
+Description
+-----------
+No available documentation.
 ") MakeDirection2d;
 		static opencascade::handle<Geom2d_Direction> MakeDirection2d(const opencascade::handle<StepGeom_Direction> & SD);
 
-		/****************** MakeElementarySurface ******************/
-		/**** md5 signature: 91b4251d02d9bef4498c1cfc36e20f4e ****/
+		/****** StepToGeom::MakeElementarySurface ******/
+		/****** md5 signature: 4546f10016d917e6cbf365c6a93a48f8 ******/
 		%feature("compactdefaultargs") MakeElementarySurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_ElementarySurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_ElementarySurface>
+
+Description
+-----------
+No available documentation.
 ") MakeElementarySurface;
-		static opencascade::handle<Geom_ElementarySurface> MakeElementarySurface(const opencascade::handle<StepGeom_ElementarySurface> & SS);
+		static opencascade::handle<Geom_ElementarySurface> MakeElementarySurface(const opencascade::handle<StepGeom_ElementarySurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeEllipse ******************/
-		/**** md5 signature: c81f700bd3ee7056c644408e44479697 ****/
+		/****** StepToGeom::MakeEllipse ******/
+		/****** md5 signature: 40bdb335d5fc782ddd64fd0f8794c482 ******/
 		%feature("compactdefaultargs") MakeEllipse;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Ellipse
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Ellipse>
+
+Description
+-----------
+No available documentation.
 ") MakeEllipse;
-		static opencascade::handle<Geom_Ellipse> MakeEllipse(const opencascade::handle<StepGeom_Ellipse> & SC);
+		static opencascade::handle<Geom_Ellipse> MakeEllipse(const opencascade::handle<StepGeom_Ellipse> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeEllipse2d ******************/
-		/**** md5 signature: 0257d76c958fe487f030fe591467aa77 ****/
+		/****** StepToGeom::MakeEllipse2d ******/
+		/****** md5 signature: 5db0c4eec721969eb65766bebb349990 ******/
 		%feature("compactdefaultargs") MakeEllipse2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Ellipse
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Ellipse>
+
+Description
+-----------
+No available documentation.
 ") MakeEllipse2d;
-		static opencascade::handle<Geom2d_Ellipse> MakeEllipse2d(const opencascade::handle<StepGeom_Ellipse> & SC);
+		static opencascade::handle<Geom2d_Ellipse> MakeEllipse2d(const opencascade::handle<StepGeom_Ellipse> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeHyperbola ******************/
-		/**** md5 signature: 3951f2230b12620c1de0113856c15ba1 ****/
+		/****** StepToGeom::MakeHyperbola ******/
+		/****** md5 signature: 13518304bb75ca75776b2dac7f1b1c45 ******/
 		%feature("compactdefaultargs") MakeHyperbola;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Hyperbola
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Hyperbola>
+
+Description
+-----------
+No available documentation.
 ") MakeHyperbola;
-		static opencascade::handle<Geom_Hyperbola> MakeHyperbola(const opencascade::handle<StepGeom_Hyperbola> & SC);
+		static opencascade::handle<Geom_Hyperbola> MakeHyperbola(const opencascade::handle<StepGeom_Hyperbola> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeHyperbola2d ******************/
-		/**** md5 signature: 776475b05a3f1eb5fdf5c45c9ea4cf56 ****/
+		/****** StepToGeom::MakeHyperbola2d ******/
+		/****** md5 signature: 7f60fb68780584737117c988104474b4 ******/
 		%feature("compactdefaultargs") MakeHyperbola2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Hyperbola
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Hyperbola>
+
+Description
+-----------
+No available documentation.
 ") MakeHyperbola2d;
-		static opencascade::handle<Geom2d_Hyperbola> MakeHyperbola2d(const opencascade::handle<StepGeom_Hyperbola> & SC);
+		static opencascade::handle<Geom2d_Hyperbola> MakeHyperbola2d(const opencascade::handle<StepGeom_Hyperbola> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeLine ******************/
-		/**** md5 signature: 18cc33b618e99a527d4df7f6499682eb ****/
+		/****** StepToGeom::MakeLine ******/
+		/****** md5 signature: 5756bc04b225dc8728323734ff949f04 ******/
 		%feature("compactdefaultargs") MakeLine;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Line
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Line>
+
+Description
+-----------
+No available documentation.
 ") MakeLine;
-		static opencascade::handle<Geom_Line> MakeLine(const opencascade::handle<StepGeom_Line> & SC);
+		static opencascade::handle<Geom_Line> MakeLine(const opencascade::handle<StepGeom_Line> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeLine2d ******************/
-		/**** md5 signature: ad06eed62d72ffb25402af8ae7f4fa34 ****/
+		/****** StepToGeom::MakeLine2d ******/
+		/****** md5 signature: cb48d38c5d5404e88ad0fd34c6e450e2 ******/
 		%feature("compactdefaultargs") MakeLine2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Line
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Line>
+
+Description
+-----------
+No available documentation.
 ") MakeLine2d;
-		static opencascade::handle<Geom2d_Line> MakeLine2d(const opencascade::handle<StepGeom_Line> & SC);
+		static opencascade::handle<Geom2d_Line> MakeLine2d(const opencascade::handle<StepGeom_Line> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeParabola ******************/
-		/**** md5 signature: 9210ecba4b33f1da203b53f75e44e25e ****/
+		/****** StepToGeom::MakeParabola ******/
+		/****** md5 signature: 2aa33fa4fbef9a984e91f0b2ab5b6368 ******/
 		%feature("compactdefaultargs") MakeParabola;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Parabola
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Parabola>
+
+Description
+-----------
+No available documentation.
 ") MakeParabola;
-		static opencascade::handle<Geom_Parabola> MakeParabola(const opencascade::handle<StepGeom_Parabola> & SC);
+		static opencascade::handle<Geom_Parabola> MakeParabola(const opencascade::handle<StepGeom_Parabola> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeParabola2d ******************/
-		/**** md5 signature: 8044641d5463e5dcccee0f00bcaec5ea ****/
+		/****** StepToGeom::MakeParabola2d ******/
+		/****** md5 signature: 4c76e7e823bd4219d4f45872622c0e65 ******/
 		%feature("compactdefaultargs") MakeParabola2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_Parabola
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Parabola>
+
+Description
+-----------
+No available documentation.
 ") MakeParabola2d;
-		static opencascade::handle<Geom2d_Parabola> MakeParabola2d(const opencascade::handle<StepGeom_Parabola> & SC);
+		static opencascade::handle<Geom2d_Parabola> MakeParabola2d(const opencascade::handle<StepGeom_Parabola> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakePlane ******************/
-		/**** md5 signature: 41a0d9bba65f3829789fd84df06a6ee3 ****/
+		/****** StepToGeom::MakePlane ******/
+		/****** md5 signature: 5dbc365c144795b2ecb30bc0e05e4c2a ******/
 		%feature("compactdefaultargs") MakePlane;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SP: StepGeom_Plane
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Plane>
+
+Description
+-----------
+No available documentation.
 ") MakePlane;
-		static opencascade::handle<Geom_Plane> MakePlane(const opencascade::handle<StepGeom_Plane> & SP);
+		static opencascade::handle<Geom_Plane> MakePlane(const opencascade::handle<StepGeom_Plane> & SP, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakePolyline ******************/
-		/**** md5 signature: 3d1a362d8925d329d062ccdd7849a602 ****/
+		/****** StepToGeom::MakePolyline ******/
+		/****** md5 signature: 5b452288ed1d500fc1e0a6fbe2c1ecf9 ******/
 		%feature("compactdefaultargs") MakePolyline;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SPL: StepGeom_Polyline
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") MakePolyline;
-		static opencascade::handle<Geom_BSplineCurve> MakePolyline(const opencascade::handle<StepGeom_Polyline> & SPL);
+		static opencascade::handle<Geom_BSplineCurve> MakePolyline(const opencascade::handle<StepGeom_Polyline> & SPL, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakePolyline2d ******************/
-		/**** md5 signature: 1e0f08bf16d118098589a9cdf7ee196c ****/
+		/****** StepToGeom::MakePolyline2d ******/
+		/****** md5 signature: 0f6c7bb945b4ff0ee7b5ea78eb29415c ******/
 		%feature("compactdefaultargs") MakePolyline2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SPL: StepGeom_Polyline
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") MakePolyline2d;
-		static opencascade::handle<Geom2d_BSplineCurve> MakePolyline2d(const opencascade::handle<StepGeom_Polyline> & SPL);
+		static opencascade::handle<Geom2d_BSplineCurve> MakePolyline2d(const opencascade::handle<StepGeom_Polyline> & SPL, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeRectangularTrimmedSurface ******************/
-		/**** md5 signature: 3c3269c495ac63566760781ca4f28cf9 ****/
+		/****** StepToGeom::MakeRectangularTrimmedSurface ******/
+		/****** md5 signature: bdecd2e867352f6458f6fd14f006eafb ******/
 		%feature("compactdefaultargs") MakeRectangularTrimmedSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_RectangularTrimmedSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_RectangularTrimmedSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeRectangularTrimmedSurface;
-		static opencascade::handle<Geom_RectangularTrimmedSurface> MakeRectangularTrimmedSurface(const opencascade::handle<StepGeom_RectangularTrimmedSurface> & SS);
+		static opencascade::handle<Geom_RectangularTrimmedSurface> MakeRectangularTrimmedSurface(const opencascade::handle<StepGeom_RectangularTrimmedSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeSphericalSurface ******************/
-		/**** md5 signature: 92dc1934765d6b32c4297d8f71cc6ba6 ****/
+		/****** StepToGeom::MakeSphericalSurface ******/
+		/****** md5 signature: 03ba65d5af3f346825ebf74a349755e1 ******/
 		%feature("compactdefaultargs") MakeSphericalSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_SphericalSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_SphericalSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeSphericalSurface;
-		static opencascade::handle<Geom_SphericalSurface> MakeSphericalSurface(const opencascade::handle<StepGeom_SphericalSurface> & SS);
+		static opencascade::handle<Geom_SphericalSurface> MakeSphericalSurface(const opencascade::handle<StepGeom_SphericalSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeSurface ******************/
-		/**** md5 signature: 6216ae7ae092e3ceed6a50efdac18158 ****/
+		/****** StepToGeom::MakeSurface ******/
+		/****** md5 signature: 27cbd1c43f893c5f10b4df0d1baf43c7 ******/
 		%feature("compactdefaultargs") MakeSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_Surface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Surface>
+
+Description
+-----------
+No available documentation.
 ") MakeSurface;
-		static opencascade::handle<Geom_Surface> MakeSurface(const opencascade::handle<StepGeom_Surface> & SS);
+		static opencascade::handle<Geom_Surface> MakeSurface(const opencascade::handle<StepGeom_Surface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeSurfaceOfLinearExtrusion ******************/
-		/**** md5 signature: 321b0239e71e9980e539e3379d5c7c50 ****/
+		/****** StepToGeom::MakeSurfaceOfLinearExtrusion ******/
+		/****** md5 signature: 0fcddeb3982594dd3f76690899600910 ******/
 		%feature("compactdefaultargs") MakeSurfaceOfLinearExtrusion;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_SurfaceOfLinearExtrusion
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_SurfaceOfLinearExtrusion>
+
+Description
+-----------
+No available documentation.
 ") MakeSurfaceOfLinearExtrusion;
-		static opencascade::handle<Geom_SurfaceOfLinearExtrusion> MakeSurfaceOfLinearExtrusion(const opencascade::handle<StepGeom_SurfaceOfLinearExtrusion> & SS);
+		static opencascade::handle<Geom_SurfaceOfLinearExtrusion> MakeSurfaceOfLinearExtrusion(const opencascade::handle<StepGeom_SurfaceOfLinearExtrusion> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeSurfaceOfRevolution ******************/
-		/**** md5 signature: b9bdba3a57e4c47e0638164fe512ef3c ****/
+		/****** StepToGeom::MakeSurfaceOfRevolution ******/
+		/****** md5 signature: 728de2195aac254eddb2fe0b32cea3ca ******/
 		%feature("compactdefaultargs") MakeSurfaceOfRevolution;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_SurfaceOfRevolution
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_SurfaceOfRevolution>
+
+Description
+-----------
+No available documentation.
 ") MakeSurfaceOfRevolution;
-		static opencascade::handle<Geom_SurfaceOfRevolution> MakeSurfaceOfRevolution(const opencascade::handle<StepGeom_SurfaceOfRevolution> & SS);
+		static opencascade::handle<Geom_SurfaceOfRevolution> MakeSurfaceOfRevolution(const opencascade::handle<StepGeom_SurfaceOfRevolution> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeSweptSurface ******************/
-		/**** md5 signature: 5936907695bbea4fd48bf171d57f6392 ****/
+		/****** StepToGeom::MakeSweptSurface ******/
+		/****** md5 signature: d8d3eccff7b4d2ef4a10232a3a796160 ******/
 		%feature("compactdefaultargs") MakeSweptSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_SweptSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_SweptSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeSweptSurface;
-		static opencascade::handle<Geom_SweptSurface> MakeSweptSurface(const opencascade::handle<StepGeom_SweptSurface> & SS);
+		static opencascade::handle<Geom_SweptSurface> MakeSweptSurface(const opencascade::handle<StepGeom_SweptSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeToroidalSurface ******************/
-		/**** md5 signature: 5e93604409fda5eb72845c4aa41e56ba ****/
+		/****** StepToGeom::MakeToroidalSurface ******/
+		/****** md5 signature: d6c0cdf8cea3e033f506f584cfbe2aae ******/
 		%feature("compactdefaultargs") MakeToroidalSurface;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SS: StepGeom_ToroidalSurface
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_ToroidalSurface>
+
+Description
+-----------
+No available documentation.
 ") MakeToroidalSurface;
-		static opencascade::handle<Geom_ToroidalSurface> MakeToroidalSurface(const opencascade::handle<StepGeom_ToroidalSurface> & SS);
+		static opencascade::handle<Geom_ToroidalSurface> MakeToroidalSurface(const opencascade::handle<StepGeom_ToroidalSurface> & SS, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeTransformation2d ******************/
-		/**** md5 signature: 0b1f5579fe9243d5840ebd173a76f743 ****/
+		/****** StepToGeom::MakeTransformation2d ******/
+		/****** md5 signature: f3bad887c1a8435b2c6db65a02f2dc7c ******/
 		%feature("compactdefaultargs") MakeTransformation2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SCTO: StepGeom_CartesianTransformationOperator2d
 CT: gp_Trsf2d
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") MakeTransformation2d;
-		static Standard_Boolean MakeTransformation2d(const opencascade::handle<StepGeom_CartesianTransformationOperator2d> & SCTO, gp_Trsf2d & CT);
+		static Standard_Boolean MakeTransformation2d(const opencascade::handle<StepGeom_CartesianTransformationOperator2d> & SCTO, gp_Trsf2d & CT, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeTransformation3d ******************/
-		/**** md5 signature: 433bf5b3609f5ec9056e2d2ff0f48650 ****/
+		/****** StepToGeom::MakeTransformation3d ******/
+		/****** md5 signature: 3a293a1c721b6708c63a689594098171 ******/
 		%feature("compactdefaultargs") MakeTransformation3d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SCTO: StepGeom_CartesianTransformationOperator3d
 CT: gp_Trsf
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") MakeTransformation3d;
-		static Standard_Boolean MakeTransformation3d(const opencascade::handle<StepGeom_CartesianTransformationOperator3d> & SCTO, gp_Trsf & CT);
+		static Standard_Boolean MakeTransformation3d(const opencascade::handle<StepGeom_CartesianTransformationOperator3d> & SCTO, gp_Trsf & CT, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeTrimmedCurve ******************/
-		/**** md5 signature: a32aeca8097519f688fde62e9d052c41 ****/
+		/****** StepToGeom::MakeTrimmedCurve ******/
+		/****** md5 signature: 19a2d95943c65f12986aef9b6066f798 ******/
 		%feature("compactdefaultargs") MakeTrimmedCurve;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_TrimmedCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_TrimmedCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeTrimmedCurve;
-		static opencascade::handle<Geom_TrimmedCurve> MakeTrimmedCurve(const opencascade::handle<StepGeom_TrimmedCurve> & SC);
+		static opencascade::handle<Geom_TrimmedCurve> MakeTrimmedCurve(const opencascade::handle<StepGeom_TrimmedCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeTrimmedCurve2d ******************/
-		/**** md5 signature: ea4eadae596ce1c588c22e4aa18e8e4a ****/
+		/****** StepToGeom::MakeTrimmedCurve2d ******/
+		/****** md5 signature: 91653f3178914a48ca3314eeef94c8a6 ******/
 		%feature("compactdefaultargs") MakeTrimmedCurve2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SC: StepGeom_TrimmedCurve
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") MakeTrimmedCurve2d;
-		static opencascade::handle<Geom2d_BSplineCurve> MakeTrimmedCurve2d(const opencascade::handle<StepGeom_TrimmedCurve> & SC);
+		static opencascade::handle<Geom2d_BSplineCurve> MakeTrimmedCurve2d(const opencascade::handle<StepGeom_TrimmedCurve> & SC, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeVectorWithMagnitude ******************/
-		/**** md5 signature: 8f238b3a9c8bf16f1a3e2e0ce9710f28 ****/
+		/****** StepToGeom::MakeVectorWithMagnitude ******/
+		/****** md5 signature: 0b9e46bd6517b8a76f683289807f9cb1 ******/
 		%feature("compactdefaultargs") MakeVectorWithMagnitude;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SV: StepGeom_Vector
+theLocalFactors: StepData_Factors (optional, default to StepData_Factors())
 
-Returns
+Return
 -------
 opencascade::handle<Geom_VectorWithMagnitude>
+
+Description
+-----------
+No available documentation.
 ") MakeVectorWithMagnitude;
-		static opencascade::handle<Geom_VectorWithMagnitude> MakeVectorWithMagnitude(const opencascade::handle<StepGeom_Vector> & SV);
+		static opencascade::handle<Geom_VectorWithMagnitude> MakeVectorWithMagnitude(const opencascade::handle<StepGeom_Vector> & SV, const StepData_Factors & theLocalFactors = StepData_Factors());
 
-		/****************** MakeVectorWithMagnitude2d ******************/
-		/**** md5 signature: 4fb91506f943c82636c09792ad2f9c30 ****/
+		/****** StepToGeom::MakeVectorWithMagnitude2d ******/
+		/****** md5 signature: 4fb91506f943c82636c09792ad2f9c30 ******/
 		%feature("compactdefaultargs") MakeVectorWithMagnitude2d;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SV: StepGeom_Vector
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_VectorWithMagnitude>
+
+Description
+-----------
+No available documentation.
 ") MakeVectorWithMagnitude2d;
 		static opencascade::handle<Geom2d_VectorWithMagnitude> MakeVectorWithMagnitude2d(const opencascade::handle<StepGeom_Vector> & SV);
+
+		/****** StepToGeom::MakeYprRotation ******/
+		/****** md5 signature: de9dc847a92c9949d29654e63b9eb686 ******/
+		%feature("compactdefaultargs") MakeYprRotation;
+		%feature("autodoc", "
+Parameters
+----------
+SR: StepKinematics_SpatialRotation
+theCntxt: StepRepr_GlobalUnitAssignedContext
+
+Return
+-------
+opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+No available documentation.
+") MakeYprRotation;
+		static opencascade::handle<TColStd_HArray1OfReal> MakeYprRotation(const StepKinematics_SpatialRotation & SR, const opencascade::handle<StepRepr_GlobalUnitAssignedContext> & theCntxt);
 
 };
 
@@ -799,3 +1029,201 @@ opencascade::handle<Geom2d_VectorWithMagnitude>
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def steptogeom_MakeAxis1Placement(*args):
+	return steptogeom.MakeAxis1Placement(*args)
+
+@deprecated
+def steptogeom_MakeAxis2Placement(*args):
+	return steptogeom.MakeAxis2Placement(*args)
+
+@deprecated
+def steptogeom_MakeAxis2Placement(*args):
+	return steptogeom.MakeAxis2Placement(*args)
+
+@deprecated
+def steptogeom_MakeAxisPlacement(*args):
+	return steptogeom.MakeAxisPlacement(*args)
+
+@deprecated
+def steptogeom_MakeBSplineCurve(*args):
+	return steptogeom.MakeBSplineCurve(*args)
+
+@deprecated
+def steptogeom_MakeBSplineCurve2d(*args):
+	return steptogeom.MakeBSplineCurve2d(*args)
+
+@deprecated
+def steptogeom_MakeBSplineSurface(*args):
+	return steptogeom.MakeBSplineSurface(*args)
+
+@deprecated
+def steptogeom_MakeBoundedCurve(*args):
+	return steptogeom.MakeBoundedCurve(*args)
+
+@deprecated
+def steptogeom_MakeBoundedCurve2d(*args):
+	return steptogeom.MakeBoundedCurve2d(*args)
+
+@deprecated
+def steptogeom_MakeBoundedSurface(*args):
+	return steptogeom.MakeBoundedSurface(*args)
+
+@deprecated
+def steptogeom_MakeCartesianPoint(*args):
+	return steptogeom.MakeCartesianPoint(*args)
+
+@deprecated
+def steptogeom_MakeCartesianPoint2d(*args):
+	return steptogeom.MakeCartesianPoint2d(*args)
+
+@deprecated
+def steptogeom_MakeCircle(*args):
+	return steptogeom.MakeCircle(*args)
+
+@deprecated
+def steptogeom_MakeCircle2d(*args):
+	return steptogeom.MakeCircle2d(*args)
+
+@deprecated
+def steptogeom_MakeConic(*args):
+	return steptogeom.MakeConic(*args)
+
+@deprecated
+def steptogeom_MakeConic2d(*args):
+	return steptogeom.MakeConic2d(*args)
+
+@deprecated
+def steptogeom_MakeConicalSurface(*args):
+	return steptogeom.MakeConicalSurface(*args)
+
+@deprecated
+def steptogeom_MakeCurve(*args):
+	return steptogeom.MakeCurve(*args)
+
+@deprecated
+def steptogeom_MakeCurve2d(*args):
+	return steptogeom.MakeCurve2d(*args)
+
+@deprecated
+def steptogeom_MakeCylindricalSurface(*args):
+	return steptogeom.MakeCylindricalSurface(*args)
+
+@deprecated
+def steptogeom_MakeDirection(*args):
+	return steptogeom.MakeDirection(*args)
+
+@deprecated
+def steptogeom_MakeDirection2d(*args):
+	return steptogeom.MakeDirection2d(*args)
+
+@deprecated
+def steptogeom_MakeElementarySurface(*args):
+	return steptogeom.MakeElementarySurface(*args)
+
+@deprecated
+def steptogeom_MakeEllipse(*args):
+	return steptogeom.MakeEllipse(*args)
+
+@deprecated
+def steptogeom_MakeEllipse2d(*args):
+	return steptogeom.MakeEllipse2d(*args)
+
+@deprecated
+def steptogeom_MakeHyperbola(*args):
+	return steptogeom.MakeHyperbola(*args)
+
+@deprecated
+def steptogeom_MakeHyperbola2d(*args):
+	return steptogeom.MakeHyperbola2d(*args)
+
+@deprecated
+def steptogeom_MakeLine(*args):
+	return steptogeom.MakeLine(*args)
+
+@deprecated
+def steptogeom_MakeLine2d(*args):
+	return steptogeom.MakeLine2d(*args)
+
+@deprecated
+def steptogeom_MakeParabola(*args):
+	return steptogeom.MakeParabola(*args)
+
+@deprecated
+def steptogeom_MakeParabola2d(*args):
+	return steptogeom.MakeParabola2d(*args)
+
+@deprecated
+def steptogeom_MakePlane(*args):
+	return steptogeom.MakePlane(*args)
+
+@deprecated
+def steptogeom_MakePolyline(*args):
+	return steptogeom.MakePolyline(*args)
+
+@deprecated
+def steptogeom_MakePolyline2d(*args):
+	return steptogeom.MakePolyline2d(*args)
+
+@deprecated
+def steptogeom_MakeRectangularTrimmedSurface(*args):
+	return steptogeom.MakeRectangularTrimmedSurface(*args)
+
+@deprecated
+def steptogeom_MakeSphericalSurface(*args):
+	return steptogeom.MakeSphericalSurface(*args)
+
+@deprecated
+def steptogeom_MakeSurface(*args):
+	return steptogeom.MakeSurface(*args)
+
+@deprecated
+def steptogeom_MakeSurfaceOfLinearExtrusion(*args):
+	return steptogeom.MakeSurfaceOfLinearExtrusion(*args)
+
+@deprecated
+def steptogeom_MakeSurfaceOfRevolution(*args):
+	return steptogeom.MakeSurfaceOfRevolution(*args)
+
+@deprecated
+def steptogeom_MakeSweptSurface(*args):
+	return steptogeom.MakeSweptSurface(*args)
+
+@deprecated
+def steptogeom_MakeToroidalSurface(*args):
+	return steptogeom.MakeToroidalSurface(*args)
+
+@deprecated
+def steptogeom_MakeTransformation2d(*args):
+	return steptogeom.MakeTransformation2d(*args)
+
+@deprecated
+def steptogeom_MakeTransformation3d(*args):
+	return steptogeom.MakeTransformation3d(*args)
+
+@deprecated
+def steptogeom_MakeTrimmedCurve(*args):
+	return steptogeom.MakeTrimmedCurve(*args)
+
+@deprecated
+def steptogeom_MakeTrimmedCurve2d(*args):
+	return steptogeom.MakeTrimmedCurve2d(*args)
+
+@deprecated
+def steptogeom_MakeVectorWithMagnitude(*args):
+	return steptogeom.MakeVectorWithMagnitude(*args)
+
+@deprecated
+def steptogeom_MakeVectorWithMagnitude2d(*args):
+	return steptogeom.MakeVectorWithMagnitude2d(*args)
+
+@deprecated
+def steptogeom_MakeYprRotation(*args):
+	return steptogeom.MakeYprRotation(*args)
+
+}

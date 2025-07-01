@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define SHAPEALGODOCSTRING
 "ShapeAlgo module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_shapealgo.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_shapealgo.html"
 %enddef
 %module (package="OCC.Core", docstring=SHAPEALGODOCSTRING) ShapeAlgo
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_shapealgo.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -80,7 +83,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -101,40 +104,47 @@ from OCC.Core.Exception import *
 %rename(shapealgo) ShapeAlgo;
 class ShapeAlgo {
 	public:
-		/****************** AlgoContainer ******************/
-		/**** md5 signature: c1f523c465ca6cba85665bd0de49f1d1 ****/
+		/****** ShapeAlgo::AlgoContainer ******/
+		/****** md5 signature: c1f523c465ca6cba85665bd0de49f1d1 ******/
 		%feature("compactdefaultargs") AlgoContainer;
-		%feature("autodoc", "Returns default algocontainer.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<ShapeAlgo_AlgoContainer>
+
+Description
+-----------
+Returns default AlgoContainer.
 ") AlgoContainer;
 		static opencascade::handle<ShapeAlgo_AlgoContainer> AlgoContainer();
 
-		/****************** Init ******************/
-		/**** md5 signature: 342fdccc4643f67c269591c4b6447108 ****/
+		/****** ShapeAlgo::Init ******/
+		/****** md5 signature: 342fdccc4643f67c269591c4b6447108 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Provides initerface to the algorithms from shape healing. creates and initializes default algocontainer.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Provides initerface to the algorithms from Shape Healing. Creates and initializes default AlgoContainer.
 ") Init;
 		static void Init();
 
-		/****************** SetAlgoContainer ******************/
-		/**** md5 signature: 0f08b7ef735a36117834ac8cb4c7072a ****/
+		/****** ShapeAlgo::SetAlgoContainer ******/
+		/****** md5 signature: 0f08b7ef735a36117834ac8cb4c7072a ******/
 		%feature("compactdefaultargs") SetAlgoContainer;
-		%feature("autodoc", "Sets default algocontainer.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aContainer: ShapeAlgo_AlgoContainer
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets default AlgoContainer.
 ") SetAlgoContainer;
 		static void SetAlgoContainer(const opencascade::handle<ShapeAlgo_AlgoContainer> & aContainer);
 
@@ -155,36 +165,42 @@ None
 ********************************/
 class ShapeAlgo_ToolContainer : public Standard_Transient {
 	public:
-		/****************** ShapeAlgo_ToolContainer ******************/
-		/**** md5 signature: 80836b1fd7be7ee0f942f7a26d297738 ****/
+		/****** ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer ******/
+		/****** md5 signature: 80836b1fd7be7ee0f942f7a26d297738 ******/
 		%feature("compactdefaultargs") ShapeAlgo_ToolContainer;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") ShapeAlgo_ToolContainer;
 		 ShapeAlgo_ToolContainer();
 
-		/****************** EdgeProjAux ******************/
-		/**** md5 signature: 526a36aa395ee919ad5f3bedac952d00 ****/
+		/****** ShapeAlgo_ToolContainer::EdgeProjAux ******/
+		/****** md5 signature: 526a36aa395ee919ad5f3bedac952d00 ******/
 		%feature("compactdefaultargs") EdgeProjAux;
-		%feature("autodoc", "Returns shapefix_edgeprojaux.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<ShapeFix_EdgeProjAux>
+
+Description
+-----------
+Returns ShapeFix_EdgeProjAux.
 ") EdgeProjAux;
 		virtual opencascade::handle<ShapeFix_EdgeProjAux> EdgeProjAux();
 
-		/****************** FixShape ******************/
-		/**** md5 signature: 178f51e71f6d84a5c9616b5fbf61610a ****/
+		/****** ShapeAlgo_ToolContainer::FixShape ******/
+		/****** md5 signature: 178f51e71f6d84a5c9616b5fbf61610a ******/
 		%feature("compactdefaultargs") FixShape;
-		%feature("autodoc", "Returns shapefix_shape.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<ShapeFix_Shape>
+
+Description
+-----------
+Returns ShapeFix_Shape.
 ") FixShape;
 		virtual opencascade::handle<ShapeFix_Shape> FixShape();
 
@@ -210,3 +226,21 @@ class ShapeAlgo_AlgoContainer:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def shapealgo_AlgoContainer(*args):
+	return shapealgo.AlgoContainer(*args)
+
+@deprecated
+def shapealgo_Init(*args):
+	return shapealgo.Init(*args)
+
+@deprecated
+def shapealgo_SetAlgoContainer(*args):
+	return shapealgo.SetAlgoContainer(*args)
+
+}

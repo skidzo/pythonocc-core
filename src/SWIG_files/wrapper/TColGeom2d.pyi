@@ -125,9 +125,9 @@ class TColGeom2d_SequenceOfGeometry:
 
 # harray1 classes
 
-class TColGeom2d_HArray1OfCurve(TColGeom2d_Array1OfCurve, Standard_Transient):
+class TColGeom2d_HArray1OfBSplineCurve(TColGeom2d_Array1OfBSplineCurve, Standard_Transient):
     def __init__(self, theLower: int, theUpper: int) -> None: ...
-    def Array1(self) -> TColGeom2d_Array1OfCurve: ...
+    def Array1(self) -> TColGeom2d_Array1OfBSplineCurve: ...
 
 
 class TColGeom2d_HArray1OfBezierCurve(TColGeom2d_Array1OfBezierCurve, Standard_Transient):
@@ -135,9 +135,9 @@ class TColGeom2d_HArray1OfBezierCurve(TColGeom2d_Array1OfBezierCurve, Standard_T
     def Array1(self) -> TColGeom2d_Array1OfBezierCurve: ...
 
 
-class TColGeom2d_HArray1OfBSplineCurve(TColGeom2d_Array1OfBSplineCurve, Standard_Transient):
+class TColGeom2d_HArray1OfCurve(TColGeom2d_Array1OfCurve, Standard_Transient):
     def __init__(self, theLower: int, theUpper: int) -> None: ...
-    def Array1(self) -> TColGeom2d_Array1OfBSplineCurve: ...
+    def Array1(self) -> TColGeom2d_Array1OfCurve: ...
 
 # harray2 classes
 # hsequence classes

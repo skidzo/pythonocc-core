@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<TNaming_Name.hxx>
 #include<TNaming_NameType.hxx>
 #include<TNaming_NamedShape.hxx>
-#include<TNaming_NamedShapeHasher.hxx>
 #include<TNaming_Naming.hxx>
 #include<TNaming_NamingTool.hxx>
 #include<TNaming_NewShapeIterator.hxx>

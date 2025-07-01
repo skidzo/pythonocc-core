@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepRepr_AssemblyComponentUsage.hxx>
 #include<StepRepr_AssemblyComponentUsageSubstitute.hxx>
 #include<StepRepr_BetweenShapeAspect.hxx>
+#include<StepRepr_BooleanRepresentationItem.hxx>
 #include<StepRepr_CentreOfSymmetry.hxx>
 #include<StepRepr_CharacterizedDefinition.hxx>
 #include<StepRepr_CharacterizedRepresentation.hxx>
@@ -68,6 +69,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepRepr_MaterialProperty.hxx>
 #include<StepRepr_MaterialPropertyRepresentation.hxx>
 #include<StepRepr_MeasureRepresentationItem.hxx>
+#include<StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include<StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include<StepRepr_ParallelOffset.hxx>
 #include<StepRepr_ParametricRepresentationContext.hxx>
@@ -80,6 +82,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepRepr_PropertyDefinitionRelationship.hxx>
 #include<StepRepr_PropertyDefinitionRepresentation.hxx>
 #include<StepRepr_QuantifiedAssemblyComponentUsage.hxx>
+#include<StepRepr_RealRepresentationItem.hxx>
 #include<StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 #include<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
 #include<StepRepr_ReprItemAndMeasureWithUnit.hxx>
@@ -88,8 +91,11 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include<StepRepr_Representation.hxx>
 #include<StepRepr_RepresentationContext.hxx>
+#include<StepRepr_RepresentationContextReference.hxx>
 #include<StepRepr_RepresentationItem.hxx>
 #include<StepRepr_RepresentationMap.hxx>
+#include<StepRepr_RepresentationOrRepresentationReference.hxx>
+#include<StepRepr_RepresentationReference.hxx>
 #include<StepRepr_RepresentationRelationship.hxx>
 #include<StepRepr_RepresentationRelationshipWithTransformation.hxx>
 #include<StepRepr_RepresentedDefinition.hxx>

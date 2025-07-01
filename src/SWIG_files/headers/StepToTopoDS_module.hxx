@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -20,9 +20,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include<StepToTopoDS.hxx>
-#include<StepToTopoDS_Builder.hxx>
 #include<StepToTopoDS_BuilderError.hxx>
-#include<StepToTopoDS_CartesianPointHasher.hxx>
 #include<StepToTopoDS_DataMapIteratorOfDataMapOfRI.hxx>
 #include<StepToTopoDS_DataMapIteratorOfDataMapOfRINames.hxx>
 #include<StepToTopoDS_DataMapIteratorOfDataMapOfTRI.hxx>
@@ -37,9 +35,9 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepToTopoDS_NMTool.hxx>
 #include<StepToTopoDS_PointEdgeMap.hxx>
 #include<StepToTopoDS_PointPair.hxx>
-#include<StepToTopoDS_PointPairHasher.hxx>
 #include<StepToTopoDS_PointVertexMap.hxx>
 #include<StepToTopoDS_Root.hxx>
+#include<StepToTopoDS_Tool.hxx>
 #include<StepToTopoDS_TranslateCompositeCurve.hxx>
 #include<StepToTopoDS_TranslateCurveBoundedSurface.hxx>
 #include<StepToTopoDS_TranslateEdge.hxx>
@@ -52,6 +50,8 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepToTopoDS_TranslatePolyLoopError.hxx>
 #include<StepToTopoDS_TranslateShell.hxx>
 #include<StepToTopoDS_TranslateShellError.hxx>
+#include<StepToTopoDS_TranslateSolid.hxx>
+#include<StepToTopoDS_TranslateSolidError.hxx>
 #include<StepToTopoDS_TranslateVertex.hxx>
 #include<StepToTopoDS_TranslateVertexError.hxx>
 #include<StepToTopoDS_TranslateVertexLoop.hxx>

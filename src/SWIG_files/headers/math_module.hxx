@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<math_Gauss.hxx>
 #include<math_GaussLeastSquare.hxx>
 #include<math_GaussMultipleIntegration.hxx>
-#include<math_GaussPoints.hxx>
 #include<math_GaussSetIntegration.hxx>
 #include<math_GaussSingleIntegration.hxx>
 #include<math_GlobOptMin.hxx>

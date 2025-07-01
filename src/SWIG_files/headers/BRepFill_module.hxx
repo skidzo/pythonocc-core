@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -67,6 +67,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<BRepFill_SequenceOfSection.hxx>
 #include<BRepFill_ShapeLaw.hxx>
 #include<BRepFill_Sweep.hxx>
+#include<BRepFill_ThruSectionErrorStatus.hxx>
 #include<BRepFill_TransitionStyle.hxx>
 #include<BRepFill_TrimEdgeTool.hxx>
 #include<BRepFill_TrimShellCorner.hxx>

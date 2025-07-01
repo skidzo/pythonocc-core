@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -20,33 +20,27 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include<NCollection_AccAllocator.hxx>
+#include<NCollection_AliasedArray.hxx>
 #include<NCollection_AlignedAllocator.hxx>
+#include<NCollection_Allocator.hxx>
 #include<NCollection_Array1.hxx>
 #include<NCollection_Array2.hxx>
 #include<NCollection_BaseAllocator.hxx>
 #include<NCollection_BaseList.hxx>
 #include<NCollection_BaseMap.hxx>
+#include<NCollection_BasePointerVector.hxx>
 #include<NCollection_BaseSequence.hxx>
-#include<NCollection_BaseVector.hxx>
 #include<NCollection_Buffer.hxx>
-#include<NCollection_Comparator.hxx>
+#include<NCollection_CellFilter.hxx>
 #include<NCollection_DataMap.hxx>
 #include<NCollection_DefaultHasher.hxx>
 #include<NCollection_DefineAlloc.hxx>
-#include<NCollection_DefineArray1.hxx>
-#include<NCollection_DefineArray2.hxx>
-#include<NCollection_DefineDataMap.hxx>
-#include<NCollection_DefineDoubleMap.hxx>
 #include<NCollection_DefineHArray1.hxx>
 #include<NCollection_DefineHArray2.hxx>
 #include<NCollection_DefineHSequence.hxx>
-#include<NCollection_DefineIndexedDataMap.hxx>
-#include<NCollection_DefineIndexedMap.hxx>
-#include<NCollection_DefineList.hxx>
-#include<NCollection_DefineMap.hxx>
-#include<NCollection_DefineSequence.hxx>
-#include<NCollection_DefineVector.hxx>
+#include<NCollection_DefineHasher.hxx>
 #include<NCollection_DoubleMap.hxx>
+#include<NCollection_DynamicArray.hxx>
 #include<NCollection_EBTree.hxx>
 #include<NCollection_HArray1.hxx>
 #include<NCollection_HArray2.hxx>
@@ -55,18 +49,23 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<NCollection_HeapAllocator.hxx>
 #include<NCollection_IncAllocator.hxx>
 #include<NCollection_IndexedDataMap.hxx>
+#include<NCollection_IndexedIterator.hxx>
 #include<NCollection_IndexedMap.hxx>
+#include<NCollection_Iterator.hxx>
 #include<NCollection_Lerp.hxx>
 #include<NCollection_List.hxx>
 #include<NCollection_ListNode.hxx>
 #include<NCollection_LocalArray.hxx>
 #include<NCollection_Map.hxx>
+#include<NCollection_MapAlgo.hxx>
+#include<NCollection_Mat3.hxx>
 #include<NCollection_Mat4.hxx>
+#include<NCollection_OccAllocator.hxx>
+#include<NCollection_Primes.hxx>
 #include<NCollection_Sequence.hxx>
 #include<NCollection_Shared.hxx>
 #include<NCollection_SparseArray.hxx>
 #include<NCollection_SparseArrayBase.hxx>
-#include<NCollection_StdAllocator.hxx>
 #include<NCollection_StlIterator.hxx>
 #include<NCollection_String.hxx>
 #include<NCollection_TListIterator.hxx>

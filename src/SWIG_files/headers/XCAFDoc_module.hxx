@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -19,10 +19,14 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #define XCAFDOC_HXX
 
 
+#include<TDF_Label.hxx>
 #include<XCAFDoc.hxx>
 #include<XCAFDoc_Area.hxx>
+#include<XCAFDoc_AssemblyGraph.hxx>
 #include<XCAFDoc_AssemblyItemId.hxx>
 #include<XCAFDoc_AssemblyItemRef.hxx>
+#include<XCAFDoc_AssemblyIterator.hxx>
+#include<XCAFDoc_AssemblyTool.hxx>
 #include<XCAFDoc_Centroid.hxx>
 #include<XCAFDoc_ClippingPlaneTool.hxx>
 #include<XCAFDoc_Color.hxx>
@@ -40,6 +44,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<XCAFDoc_GraphNode.hxx>
 #include<XCAFDoc_GraphNodeSequence.hxx>
 #include<XCAFDoc_LayerTool.hxx>
+#include<XCAFDoc_LengthUnit.hxx>
 #include<XCAFDoc_Location.hxx>
 #include<XCAFDoc_Material.hxx>
 #include<XCAFDoc_MaterialTool.hxx>
@@ -53,6 +58,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<XCAFDoc_ShapeTool.hxx>
 #include<XCAFDoc_View.hxx>
 #include<XCAFDoc_ViewTool.hxx>
+#include<XCAFDoc_VisMaterial.hxx>
+#include<XCAFDoc_VisMaterialCommon.hxx>
+#include<XCAFDoc_VisMaterialPBR.hxx>
+#include<XCAFDoc_VisMaterialTool.hxx>
 #include<XCAFDoc_Volume.hxx>
 
 #endif // XCAFDOC_HXX

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define INTIMPDOCSTRING
 "IntImp module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intimp.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_intimp.html"
 %enddef
 %module (package="OCC.Core", docstring=INTIMPDOCSTRING) IntImp
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intimp.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -41,7 +44,6 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intimp.html"
 //Dependencies
 #include<Standard_module.hxx>
 #include<NCollection_module.hxx>
-#include<gp_module.hxx>
 #include<TColgp_module.hxx>
 #include<TColStd_module.hxx>
 #include<TCollection_module.hxx>
@@ -49,7 +51,6 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intimp.html"
 %};
 %import Standard.i
 %import NCollection.i
-%import gp.i
 
 %pythoncode {
 from enum import IntEnum
@@ -66,7 +67,7 @@ enum IntImp_ConstIsoparametric {
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 
 class IntImp_ConstIsoparametric(IntEnum):
@@ -93,3 +94,6 @@ IntImp_VIsoparametricOnCaro2 = IntImp_ConstIsoparametric.IntImp_VIsoparametricOn
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}

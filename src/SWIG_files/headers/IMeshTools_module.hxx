@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<IMeshTools_CurveTessellator.hxx>
 #include<IMeshTools_MeshAlgo.hxx>
 #include<IMeshTools_MeshAlgoFactory.hxx>
+#include<IMeshTools_MeshAlgoType.hxx>
 #include<IMeshTools_MeshBuilder.hxx>
 #include<IMeshTools_ModelAlgo.hxx>
 #include<IMeshTools_ModelBuilder.hxx>

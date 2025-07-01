@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define RWSTLDOCSTRING
 "RWStl module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_rwstl.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_rwstl.html"
 %enddef
 %module (package="OCC.Core", docstring=RWSTLDOCSTRING) RWStl
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_rwstl.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -45,6 +48,17 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_rwstl.html"
 #include<Message_module.hxx>
 #include<Poly_module.hxx>
 #include<TShort_module.hxx>
+#include<Bnd_module.hxx>
+#include<IFSelect_module.hxx>
+#include<TopTools_module.hxx>
+#include<Geom_module.hxx>
+#include<Geom2d_module.hxx>
+#include<CDF_module.hxx>
+#include<PCDM_module.hxx>
+#include<TDF_module.hxx>
+#include<MoniTool_module.hxx>
+#include<Transfer_module.hxx>
+#include<Interface_module.hxx>
 #include<TColgp_module.hxx>
 #include<TColStd_module.hxx>
 #include<TCollection_module.hxx>
@@ -64,7 +78,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -84,109 +98,169 @@ from OCC.Core.Exception import *
 %rename(rwstl) RWStl;
 class RWStl {
 	public:
-		/****************** ReadAscii ******************/
-		/**** md5 signature: ee11f0bf8131771a8fb08fc5e104edad ****/
+		/****** RWStl::ReadAscii ******/
+		/****** md5 signature: a4082bfc34c1229bc435c44951da6960 ******/
 		%feature("compactdefaultargs") ReadAscii;
-		%feature("autodoc", "Read triangulation from an ascii stl file in case of error, returns null handle.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePath: OSD_Path
-theProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 opencascade::handle<Poly_Triangulation>
+
+Description
+-----------
+Read triangulation from an Ascii STL file In case of error, returns Null handle.
 ") ReadAscii;
-		static opencascade::handle<Poly_Triangulation> ReadAscii(const OSD_Path & thePath, const opencascade::handle<Message_ProgressIndicator> & theProgInd = opencascade::handle<Message_ProgressIndicator>());
+		static opencascade::handle<Poly_Triangulation> ReadAscii(const OSD_Path & thePath, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
-		/****************** ReadBinary ******************/
-		/**** md5 signature: 866da70f30bdaac89e98426c73d2e6ac ****/
+		/****** RWStl::ReadBinary ******/
+		/****** md5 signature: 715829aa852a6829b2792b5ff41018e6 ******/
 		%feature("compactdefaultargs") ReadBinary;
-		%feature("autodoc", "Read triangulation from a binary stl file in case of error, returns null handle.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePath: OSD_Path
-theProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 opencascade::handle<Poly_Triangulation>
+
+Description
+-----------
+Read triangulation from a binary STL file In case of error, returns Null handle.
 ") ReadBinary;
-		static opencascade::handle<Poly_Triangulation> ReadBinary(const OSD_Path & thePath, const opencascade::handle<Message_ProgressIndicator> & theProgInd = opencascade::handle<Message_ProgressIndicator>());
+		static opencascade::handle<Poly_Triangulation> ReadBinary(const OSD_Path & thePath, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
-		/****************** ReadFile ******************/
-		/**** md5 signature: 293310934284db880032507aba06aa6e ****/
+		/****** RWStl::ReadFile ******/
+		/****** md5 signature: 64c7a7ea1e7b324b70672cedadb30bca ******/
 		%feature("compactdefaultargs") ReadFile;
-		%feature("autodoc", "Read specified stl file and returns its content as triangulation. in case of error, returns null handle.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFile: OSD_Path
-aProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 opencascade::handle<Poly_Triangulation>
-") ReadFile;
-		static opencascade::handle<Poly_Triangulation> ReadFile(const OSD_Path & theFile, const opencascade::handle<Message_ProgressIndicator> & aProgInd = opencascade::handle<Message_ProgressIndicator>());
 
-		/****************** ReadFile ******************/
-		/**** md5 signature: 15a5b5614d960e1512f0f7cb77b371ef ****/
+Description
+-----------
+Read specified STL file and returns its content as triangulation. In case of error, returns Null handle.
+") ReadFile;
+		static opencascade::handle<Poly_Triangulation> ReadFile(const OSD_Path & theFile, const Message_ProgressRange & theProgress = Message_ProgressRange());
+
+		/****** RWStl::ReadFile ******/
+		/****** md5 signature: 742addde06afd9d8130198556696e689 ******/
 		%feature("compactdefaultargs") ReadFile;
-		%feature("autodoc", "Read specified stl file and returns its content as triangulation. in case of error, returns null handle.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theFile: char *
-aProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theFile: str
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 opencascade::handle<Poly_Triangulation>
+
+Description
+-----------
+Read specified STL file and returns its content as triangulation. In case of error, returns Null handle.
 ") ReadFile;
-		static opencascade::handle<Poly_Triangulation> ReadFile(const char * theFile, const opencascade::handle<Message_ProgressIndicator> & aProgInd = opencascade::handle<Message_ProgressIndicator>());
+		static opencascade::handle<Poly_Triangulation> ReadFile(Standard_CString theFile, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
-		/****************** WriteAscii ******************/
-		/**** md5 signature: 4e074416d39d5ad0261bcbf2e8663b50 ****/
+		/****** RWStl::ReadFile ******/
+		/****** md5 signature: 752aa6341824937d3d7f5d58f0ca70e0 ******/
+		%feature("compactdefaultargs") ReadFile;
+		%feature("autodoc", "
+Parameters
+----------
+theFile: str
+theMergeAngle: float
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
+
+Return
+-------
+opencascade::handle<Poly_Triangulation>
+
+Description
+-----------
+Read specified STL file and returns its content as triangulation. 
+Input parameter: theFile file path to read 
+Input parameter: theMergeAngle maximum angle in radians between triangles to merge equal nodes; M_PI/2 means ignore angle 
+Input parameter: theProgress progress indicator 
+Return: result triangulation or NULL in case of error.
+") ReadFile;
+		static opencascade::handle<Poly_Triangulation> ReadFile(Standard_CString theFile, const Standard_Real theMergeAngle, const Message_ProgressRange & theProgress = Message_ProgressRange());
+
+		/****** RWStl::ReadFile ******/
+		/****** md5 signature: c6a3a71adb575f87eef05ec5d74e495a ******/
+		%feature("compactdefaultargs") ReadFile;
+		%feature("autodoc", "
+Parameters
+----------
+theFile: str
+theMergeAngle: float
+theTriangList: Poly_Triangulation
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
+
+Return
+-------
+None
+
+Description
+-----------
+Read specified STL file and fills triangulation list for multi-domain case. 
+Input parameter: theFile file path to read 
+Input parameter: theMergeAngle maximum angle in radians between triangles to merge equal nodes; M_PI/2 means ignore angle @param[out] theTriangList triangulation list for multi-domain case 
+Input parameter: theProgress progress indicator.
+") ReadFile;
+		static void ReadFile(Standard_CString theFile, const Standard_Real theMergeAngle, NCollection_Sequence<opencascade::handle<Poly_Triangulation> > & theTriangList, const Message_ProgressRange & theProgress = Message_ProgressRange());
+
+		/****** RWStl::WriteAscii ******/
+		/****** md5 signature: 8cb39ba5b5c9e3b27f4e1ec1bd12de9c ******/
 		%feature("compactdefaultargs") WriteAscii;
-		%feature("autodoc", "Write the meshing in a file following the ascii format of an stl file. returns false if the cannot be opened;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theMesh: Poly_Triangulation
 thePath: OSD_Path
-theProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+write the meshing in a file following the Ascii format of an STL file. Returns false if the cannot be opened;.
 ") WriteAscii;
-		static Standard_Boolean WriteAscii(const opencascade::handle<Poly_Triangulation> & theMesh, const OSD_Path & thePath, const opencascade::handle<Message_ProgressIndicator> & theProgInd = opencascade::handle<Message_ProgressIndicator>());
+		static Standard_Boolean WriteAscii(const opencascade::handle<Poly_Triangulation> & theMesh, const OSD_Path & thePath, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
-		/****************** WriteBinary ******************/
-		/**** md5 signature: c16756be3ac5eccd7cb2b9a471cb70ac ****/
+		/****** RWStl::WriteBinary ******/
+		/****** md5 signature: 3a7e5b47e0a20ed5065a6f3593a90ac4 ******/
 		%feature("compactdefaultargs") WriteBinary;
-		%feature("autodoc", "Write triangulation to binary stl file. binary format of an stl file. returns false if the cannot be opened;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theMesh: Poly_Triangulation
 thePath: OSD_Path
-theProgInd: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Write triangulation to binary STL file. binary format of an STL file. Returns false if the cannot be opened;.
 ") WriteBinary;
-		static Standard_Boolean WriteBinary(const opencascade::handle<Poly_Triangulation> & theMesh, const OSD_Path & thePath, const opencascade::handle<Message_ProgressIndicator> & theProgInd = opencascade::handle<Message_ProgressIndicator>());
+		static Standard_Boolean WriteBinary(const opencascade::handle<Poly_Triangulation> & theMesh, const OSD_Path & thePath, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
 };
 
@@ -211,3 +285,41 @@ class RWStl_Reader:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def rwstl_ReadAscii(*args):
+	return rwstl.ReadAscii(*args)
+
+@deprecated
+def rwstl_ReadBinary(*args):
+	return rwstl.ReadBinary(*args)
+
+@deprecated
+def rwstl_ReadFile(*args):
+	return rwstl.ReadFile(*args)
+
+@deprecated
+def rwstl_ReadFile(*args):
+	return rwstl.ReadFile(*args)
+
+@deprecated
+def rwstl_ReadFile(*args):
+	return rwstl.ReadFile(*args)
+
+@deprecated
+def rwstl_ReadFile(*args):
+	return rwstl.ReadFile(*args)
+
+@deprecated
+def rwstl_WriteAscii(*args):
+	return rwstl.WriteAscii(*args)
+
+@deprecated
+def rwstl_WriteBinary(*args):
+	return rwstl.WriteBinary(*args)
+
+}

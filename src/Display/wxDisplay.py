@@ -24,7 +24,7 @@ import time
 try:
     import wx
 except ImportError:
-    raise ImportError('Please install wxPython.')
+    raise ImportError("Please install wxPython.")
 from OCC.Display import OCCViewer
 
 
@@ -51,7 +51,7 @@ class wxBaseViewer(wx.Panel):
         self._inited = False
 
     def GetWinId(self):
-        """ Returns the windows Id as an integer.
+        """Returns the windows Id as an integer.
         issue with GetHandle on Linux for wx versions
         >3 or 4. Window must be displayed before GetHandle is
         called. For that, just wait for a few milliseconds/seconds
@@ -66,8 +66,8 @@ class wxBaseViewer(wx.Panel):
         timeout = 10  # 10 seconds
         win_id = self.GetHandle()
         init_time = time.time()
-        delta_t = 0.  # elapsed time, initialized to 0 before the while loop
-        # if ever win_id is 0, enter the loop untill it gets a value
+        delta_t = 0.0  # elapsed time, initialized to 0 before the while loop
+        # if ever win_id is 0, enter the loop until it gets a value
         while win_id == 0 and delta_t < timeout:
             time.sleep(0.1)
             wx.SafeYield()
@@ -140,8 +140,9 @@ class wxViewer3d(wxBaseViewer):
         self.dragStartPos = None
 
     def InitDriver(self):
-        self._display = OCCViewer.Viewer3d(self.GetWinId())
-        self._display.Create()
+        self._display = OCCViewer.Viewer3d()
+        self._display.Create(window_handle=self.GetWinId(), parent=self)
+
         self._display.SetModeShaded()
         self._inited = True
 
@@ -152,20 +153,24 @@ class wxViewer3d(wxBaseViewer):
         def set_shade_mode():
             self._display.DisableAntiAliasing()
             self._display.SetModeShaded()
-        self._key_map = {ord('W'): self._display.SetModeWireFrame,
-                         ord('S'): set_shade_mode,
-                         ord('A'): self._display.EnableAntiAliasing,
-                         ord('B'): self._display.DisableAntiAliasing,
-                         ord('H'): self._display.SetModeHLR,
-                         ord('G'): self._display.SetSelectionModeVertex
-                        }
+
+        self._key_map = {
+            ord("W"): self._display.SetModeWireFrame,
+            ord("S"): set_shade_mode,
+            ord("A"): self._display.EnableAntiAliasing,
+            ord("B"): self._display.DisableAntiAliasing,
+            ord("H"): self._display.SetModeHLR,
+            ord("G"): self._display.SetSelectionModeVertex,
+            306: lambda: print("Shift pressed"),
+        }
 
     def OnKeyDown(self, evt):
         code = evt.GetKeyCode()
         try:
             self._key_map[code]()
+            print("Key pressed: %i" % code)
         except KeyError:
-            print('unrecognized key %i' % evt.GetKeyCode())
+            print("Unrecognized key pressed %i" % code)
 
     def OnMaximize(self, event):
         if self._inited:
@@ -213,7 +218,7 @@ class wxViewer3d(wxBaseViewer):
         pt = evt.GetPosition()
         if self._select_area:
             [Xmin, Ymin, dx, dy] = self._drawbox
-            self._display.SelectArea(Xmin, Ymin, Xmin+dx, Ymin+dy)
+            self._display.SelectArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
             self._select_area = False
         else:
             self._display.Select(pt.x, pt.y)
@@ -221,7 +226,7 @@ class wxViewer3d(wxBaseViewer):
     def OnRightUp(self, evt):
         if self._zoom_area:
             [Xmin, Ymin, dx, dy] = self._drawbox
-            self._display.ZoomArea(Xmin, Ymin, Xmin+dx, Ymin+dy)
+            self._display.ZoomArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
             self._zoom_area = False
 
     def OnMiddleUp(self, evt):
@@ -237,10 +242,7 @@ class wxViewer3d(wxBaseViewer):
 
     def OnWheelScroll(self, evt):
         # Zooming by wheel
-        if evt.GetWheelRotation() > 0:
-            zoom_factor = 2.
-        else:
-            zoom_factor = 0.5
+        zoom_factor = 2.0 if evt.GetWheelRotation() > 0 else 0.5
         self._display.Repaint()
         self._display.ZoomFactor(zoom_factor)
 
@@ -252,16 +254,14 @@ class wxViewer3d(wxBaseViewer):
         if abs(dx) <= tolerance and abs(dy) <= tolerance:
             return
         dc = wx.ClientDC(self)
-        dc.BeginDrawing()
         dc.SetPen(wx.Pen(wx.WHITE, 1, wx.DOT))
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
         dc.SetLogicalFunction(wx.XOR)
         if self._drawbox:
             r = wx.Rect(*self._drawbox)
-            dc.DrawRectangleRect(r)
+            dc.DrawRectangle(r)
         r = wx.Rect(self.dragStartPos.x, self.dragStartPos.y, dx, dy)
-        dc.DrawRectangleRect(r)
-        dc.EndDrawing()
+        dc.DrawRectangle(r)
         self._drawbox = [self.dragStartPos.x, self.dragStartPos.y, dx, dy]
 
     def OnMotion(self, evt):
@@ -274,7 +274,9 @@ class wxViewer3d(wxBaseViewer):
         # DYNAMIC ZOOM
         elif evt.RightIsDown() and not evt.ShiftDown():
             self._display.Repaint()
-            self._display.DynamicZoom(abs(self.dragStartPos.x), abs(self.dragStartPos.y), abs(pt.x), abs(pt.y))
+            self._display.DynamicZoom(
+                abs(self.dragStartPos.x), abs(self.dragStartPos.y), abs(pt.x), abs(pt.y)
+            )
             self.dragStartPos.x = pt.x
             self.dragStartPos.y = pt.y
             self._drawbox = False
@@ -301,8 +303,14 @@ class wxViewer3d(wxBaseViewer):
 def TestWxDisplay():
     class AppFrame(wx.Frame):
         def __init__(self, parent):
-            wx.Frame.__init__(self, parent, -1, "wxDisplay3d sample",
-                              style=wx.DEFAULT_FRAME_STYLE, size=(640, 480))
+            wx.Frame.__init__(
+                self,
+                parent,
+                -1,
+                "wxDisplay3d sample",
+                style=wx.DEFAULT_FRAME_STYLE,
+                size=(640, 480),
+            )
             self.canva = wxViewer3d(self)
 
         def runTests(self):
@@ -317,6 +325,7 @@ def TestWxDisplay():
     frame.runTests()
     app.SetTopWindow(frame)
     app.MainLoop()
+
 
 if __name__ == "__main__":
     TestWxDisplay()

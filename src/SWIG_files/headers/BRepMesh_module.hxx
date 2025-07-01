@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -20,17 +20,24 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include<BRepMesh_BaseMeshAlgo.hxx>
+#include<BRepMesh_BoundaryParamsRangeSplitter.hxx>
 #include<BRepMesh_Circle.hxx>
 #include<BRepMesh_CircleInspector.hxx>
 #include<BRepMesh_CircleTool.hxx>
 #include<BRepMesh_Classifier.hxx>
+#include<BRepMesh_ConeRangeSplitter.hxx>
 #include<BRepMesh_ConstrainedBaseMeshAlgo.hxx>
 #include<BRepMesh_Context.hxx>
 #include<BRepMesh_CurveTessellator.hxx>
+#include<BRepMesh_CustomBaseMeshAlgo.hxx>
 #include<BRepMesh_CustomDelaunayBaseMeshAlgo.hxx>
+#include<BRepMesh_CylinderRangeSplitter.hxx>
 #include<BRepMesh_DataStructureOfDelaun.hxx>
+#include<BRepMesh_DefaultRangeSplitter.hxx>
 #include<BRepMesh_Deflection.hxx>
 #include<BRepMesh_DegreeOfFreedom.hxx>
+#include<BRepMesh_DelabellaBaseMeshAlgo.hxx>
+#include<BRepMesh_DelabellaMeshAlgoFactory.hxx>
 #include<BRepMesh_Delaun.hxx>
 #include<BRepMesh_DelaunayBaseMeshAlgo.hxx>
 #include<BRepMesh_DelaunayDeflectionControlMeshAlgo.hxx>
@@ -41,6 +48,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<BRepMesh_EdgeDiscret.hxx>
 #include<BRepMesh_EdgeParameterProvider.hxx>
 #include<BRepMesh_EdgeTessellationExtractor.hxx>
+#include<BRepMesh_ExtrusionRangeSplitter.hxx>
 #include<BRepMesh_FaceChecker.hxx>
 #include<BRepMesh_FaceDiscret.hxx>
 #include<BRepMesh_FactoryError.hxx>
@@ -53,6 +61,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<BRepMesh_ModelHealer.hxx>
 #include<BRepMesh_ModelPostProcessor.hxx>
 #include<BRepMesh_ModelPreProcessor.hxx>
+#include<BRepMesh_NURBSRangeSplitter.hxx>
 #include<BRepMesh_NodeInsertionMeshAlgo.hxx>
 #include<BRepMesh_OrientedEdge.hxx>
 #include<BRepMesh_PairOfIndex.hxx>
@@ -61,7 +70,12 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<BRepMesh_SelectorOfDataStructureOfDelaun.hxx>
 #include<BRepMesh_ShapeTool.hxx>
 #include<BRepMesh_ShapeVisitor.hxx>
+#include<BRepMesh_SphereRangeSplitter.hxx>
+#include<BRepMesh_TorusRangeSplitter.hxx>
 #include<BRepMesh_Triangle.hxx>
+#include<BRepMesh_Triangulator.hxx>
+#include<BRepMesh_UVParamRangeSplitter.hxx>
+#include<BRepMesh_UndefinedRangeSplitter.hxx>
 #include<BRepMesh_Vertex.hxx>
 #include<BRepMesh_VertexInspector.hxx>
 #include<BRepMesh_VertexTool.hxx>

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<TopoDSToStep_MakeStepFace.hxx>
 #include<TopoDSToStep_MakeStepVertex.hxx>
 #include<TopoDSToStep_MakeStepWire.hxx>
+#include<TopoDSToStep_MakeTessellatedItem.hxx>
 #include<TopoDSToStep_MakeVertexError.hxx>
 #include<TopoDSToStep_MakeWireError.hxx>
 #include<TopoDSToStep_Root.hxx>

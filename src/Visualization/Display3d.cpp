@@ -44,7 +44,7 @@ static const Handle(Standard_Transient)& WClass()
 Display3d::Display3d()
   : myIsOffscreen(false), mySizeX(0), mySizeY(0)
 {
-  printf(" ###### 3D rendering pipe initialisation #####\n");
+  printf("####### 3D rendering pipe initialisation #####\n");
   printf("Display3d class initialization starting ...\n");
   // Create graphic driver
   Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
@@ -53,20 +53,73 @@ Display3d::Display3d()
   {
   GetGraphicDriver() = new OpenGl_GraphicDriver(aDisplayConnection);
   }
-  printf("Graphic_Driver created.\n");
+  printf("OpenGl_GraphicDriver created.\n");
   // Create V3dViewer and V3d_View
   myV3dViewer = new V3d_Viewer(GetGraphicDriver());
   printf("V3d_Viewer created.\n");
   // Create AISInteractiveViewer
   myAISContext = new AIS_InteractiveContext(myV3dViewer);
+  if (myAISContext.IsNull())
+  {
+  Message::SendFail ("Error: no AIS_InteractiveContext.");
+  }
+  else
+  {
   printf("AIS_InteractiveContext created.\n");
+  }
   // Create view
-  myV3dView = myV3dViewer->CreateView();  
+  myV3dView = myV3dViewer->CreateView();
+  if (myV3dView.IsNull())
+  {
+  Message::SendFail("No active viewer.");
+  }
+  else
+  {
   printf("V3d_View created\n");
+  }
+  // create camera
+  myGraphic3dCamera = myV3dView -> Camera();
+  if (myGraphic3dCamera.IsNull())
+  {
+  Message::SendFail("No camera.");
+  }
+  else
+  {
+  printf("Graphic3d_Camera created\n");
+  }
+  // create structure manager
+  myGraphic3dStructureManager = myAISContext -> MainPrsMgr() -> StructureManager();
+  if (myGraphic3dStructureManager.IsNull())
+  {
+  Message::SendFail("No structure manager.");
+  }
+  else
+  {
+  printf("Graphic3d_StructureManager created\n");
+  }
+
 }
 
 Display3d::~Display3d()
 {
+}
+
+void Display3d::GlInfo()
+{
+  printf("OpenGl information:\n");
+  TColStd_IndexedDataMapOfStringString aDict;
+  myV3dView->DiagnosticInformation(aDict, Graphic3d_DiagnosticInfo_Short);
+  TCollection_AsciiString aText="";
+  for (TColStd_IndexedDataMapOfStringString::Iterator aValueIter(aDict); aValueIter.More(); aValueIter.Next())
+  {
+    if (!aText.IsEmpty())
+    {
+      aText += "\n";
+    }
+    aText += TCollection_AsciiString("  ") + aValueIter.Key() + ": " + aValueIter.Value();
+  }
+  aText += "\n";
+  printf("%s", aText.ToCString());
 }
 
 Standard_Boolean Display3d::InitOffscreen(int size_x, int size_y)
@@ -75,7 +128,7 @@ Standard_Boolean Display3d::InitOffscreen(int size_x, int size_y)
   SetSize(size_x, size_y);
 
   printf("Display3d class successfully initialized.\n");
-  printf(" ########################################\n");
+  printf("#########################################\n");
   return true;
 }
 
@@ -129,12 +182,16 @@ Standard_Boolean Display3d::GetSize(int &size_x, int &size_y)
   return false;
 }
 
-Standard_Boolean Display3d::GetImageData(const char* &data, size_t &size, const Graphic3d_BufferType& theBufferType)
+Standard_Boolean Display3d::GetImageData(int width,
+                                         int height,
+                                         const char* &data,
+                                         size_t &size,
+                                         const Graphic3d_BufferType& theBufferType)
 {
   if(myIsOffscreen)
   {
     static Image_PixMap anImage;
-    if (myV3dView->ToPixMap (anImage, mySizeX, mySizeY, theBufferType))
+    if (myV3dView->ToPixMap (anImage, width, height, theBufferType))
     {
       data = (const char*)anImage.Data();
       size = anImage.SizeBytes();
@@ -161,7 +218,7 @@ void Display3d::Init(long window_handle)
   myV3dView->SetWindow(myWindow);
   if (!myWindow->IsMapped()) myWindow->Map();
   printf("Display3d class successfully initialized.\n");
-  printf(" ########################################\n");
+  printf("#########################################\n");
 }
 
 void Display3d::ChangeRenderingParams(int Method,

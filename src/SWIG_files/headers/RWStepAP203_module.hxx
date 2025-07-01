@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -19,16 +19,5 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #define RWSTEPAP203_HXX
 
 
-#include<RWStepAP203_RWCcDesignApproval.hxx>
-#include<RWStepAP203_RWCcDesignCertification.hxx>
-#include<RWStepAP203_RWCcDesignContract.hxx>
-#include<RWStepAP203_RWCcDesignDateAndTimeAssignment.hxx>
-#include<RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.hxx>
-#include<RWStepAP203_RWCcDesignSecurityClassification.hxx>
-#include<RWStepAP203_RWCcDesignSpecificationReference.hxx>
-#include<RWStepAP203_RWChange.hxx>
-#include<RWStepAP203_RWChangeRequest.hxx>
-#include<RWStepAP203_RWStartRequest.hxx>
-#include<RWStepAP203_RWStartWork.hxx>
 
 #endif // RWSTEPAP203_HXX

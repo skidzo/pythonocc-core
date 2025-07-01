@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -26,12 +26,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<MoniTool_DataMapIteratorOfDataMapOfTimer.hxx>
 #include<MoniTool_DataMapOfShapeTransient.hxx>
 #include<MoniTool_DataMapOfTimer.hxx>
-#include<MoniTool_ElemHasher.hxx>
 #include<MoniTool_Element.hxx>
 #include<MoniTool_HSequenceOfElement.hxx>
 #include<MoniTool_IndexedDataMapOfShapeTransient.hxx>
 #include<MoniTool_IntVal.hxx>
-#include<MoniTool_MTHasher.hxx>
 #include<MoniTool_Macros.hxx>
 #include<MoniTool_RealVal.hxx>
 #include<MoniTool_SequenceOfElement.hxx>

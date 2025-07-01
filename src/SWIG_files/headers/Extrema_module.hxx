@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -68,14 +68,15 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<Extrema_GenLocateExtPS.hxx>
 #include<Extrema_GenLocateExtSS.hxx>
 #include<Extrema_GlobOptFuncCC.hxx>
+#include<Extrema_GlobOptFuncCQuadric.hxx>
 #include<Extrema_GlobOptFuncCS.hxx>
+#include<Extrema_GlobOptFuncConicS.hxx>
 #include<Extrema_HArray1OfPOnCurv.hxx>
 #include<Extrema_HArray1OfPOnCurv2d.hxx>
 #include<Extrema_HArray1OfPOnSurf.hxx>
 #include<Extrema_HArray2OfPOnCurv.hxx>
 #include<Extrema_HArray2OfPOnCurv2d.hxx>
 #include<Extrema_HArray2OfPOnSurf.hxx>
-#include<Extrema_HArray2OfPOnSurfParams.hxx>
 #include<Extrema_HUBTreeOfSphere.hxx>
 #include<Extrema_LocECC.hxx>
 #include<Extrema_LocECC2d.hxx>

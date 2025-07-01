@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -30,6 +30,8 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx>
 #include<BRepExtrema_OverlapTool.hxx>
 #include<BRepExtrema_Poly.hxx>
+#include<BRepExtrema_ProximityDistTool.hxx>
+#include<BRepExtrema_ProximityValueTool.hxx>
 #include<BRepExtrema_SelfIntersection.hxx>
 #include<BRepExtrema_SeqOfSolution.hxx>
 #include<BRepExtrema_ShapeProximity.hxx>

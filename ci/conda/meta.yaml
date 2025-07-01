@@ -1,4 +1,4 @@
-{% set version = "7.4.0" %}
+{% set version = "7.9.0" %}
 
 package:
   name: pythonocc-core
@@ -14,31 +14,39 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ cdt('libx11-devel') }}         # [linux]
     - {{ cdt('xorg-x11-proto-devel') }} # [linux]
     - {{ cdt('mesa-libgl-devel') }}     # [linux]
+    - {{ cdt('libxi-devel') }}          # [linux]
     - ninja
     - cmake
-    - swig >=3.0.11
+    - swig ==4.3.1
 
   host:
     - python {{ python }}
-    - opencascade ==7.4.0
+    - occt ==7.9.0
+    - numpy >=1.17
 
   run:
-    - opencascade ==7.4.0
-    - python
+    - occt ==7.9.0
+    - numpy >=1.17
 
 test:
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI
+    - OCC.Core.Tesselator
   requires:
     - pyqt >=5
     - mypy
+    - pytest
+    - svgwrite
+    - wxpython >=4
+    - pyside6
 
 about:
   home: https://github.com/tpaviot/pythonocc-core
   license: LGPL
-  summary: An industrial strength 3D CAD python package
+  summary: Python package for 3D geometry CAD/BIM/CAM

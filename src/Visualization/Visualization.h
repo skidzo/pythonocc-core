@@ -30,16 +30,18 @@
   #include <Xw_Window.hxx>
 #endif
 
+#include <Aspect_Handle.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <AIS_Shape.hxx>
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_RenderingMode.hxx>
 #include <Graphic3d_StereoMode.hxx>
-#include <Graphic3d_Mat4.hxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Vec4.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <Aspect_DisplayConnection.hxx>
@@ -68,19 +70,28 @@ public:
   Standard_EXPORT void DisableVBO();
   Standard_EXPORT Handle_V3d_View& GetView() {return myV3dView;};
 	Standard_EXPORT Handle_V3d_Viewer& GetViewer() {return myV3dViewer;};
-	Standard_EXPORT Handle_AIS_InteractiveContext GetContext() {return myAISContext;};
+  Standard_EXPORT Handle_Graphic3d_Camera& GetCamera() {return myGraphic3dCamera;};
+	Standard_EXPORT Handle_AIS_InteractiveContext& GetContext() {return myAISContext;};
+  Standard_EXPORT Handle_Graphic3d_StructureManager& GetStructureManager() {return myGraphic3dStructureManager;};
 	Standard_EXPORT void Test();
+  Standard_EXPORT void GlInfo();
 
   Standard_EXPORT bool IsOffscreen();
   Standard_EXPORT bool InitOffscreen(int size_x, int size_y);
   Standard_EXPORT bool SetSize(int size_x, int size_y);
   Standard_EXPORT bool GetSize(int &size_x, int &size_y);
-  Standard_EXPORT bool GetImageData(const char* &data, size_t &size, const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
+  Standard_EXPORT bool GetImageData(int width,
+                                    int height,
+                                    const char* &data,
+                                    size_t &size,
+                                    const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 
 protected:
    Handle_AIS_InteractiveContext myAISContext;
    Handle_V3d_Viewer myV3dViewer;
    Handle_V3d_View myV3dView;
+   Handle_Graphic3d_Camera myGraphic3dCamera;
+   Handle_Graphic3d_StructureManager myGraphic3dStructureManager;
 
    int mySizeX;
    int mySizeY;

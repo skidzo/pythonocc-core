@@ -17,7 +17,6 @@
 ##You should have received a copy of the GNU Lesser General Public License
 ##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
 import sys
 
 from OCC.Display.backend import load_wx
@@ -26,10 +25,10 @@ from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 
 # check for wx
 if not load_wx():
-    print("wx required to run this test")
-    sys.exit()
+    raise IOError("wx required to run this test")
 
-print('wx test')
-wx_display, start_display, add_menu, add_function_to_menu = init_display('wx')
-my_box_1 = BRepPrimAPI_MakeBox(10., 20., 30.).Shape()
-wx_display.DisplayShape(my_box_1, update=True)
+print("wx test running ...")
+wx_display, start_display, add_menu, add_function_to_menu = init_display("wx")
+my_box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()
+wx_display.DisplayShape(my_box, update=True)
+print("wx test ok.")

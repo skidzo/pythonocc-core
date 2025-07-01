@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define MATHDOCSTRING
 "math module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_math.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_math.html"
 %enddef
 %module (package="OCC.Core", docstring=MATHDOCSTRING) math
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_math.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -62,6 +65,10 @@ from enum import IntEnum
 from OCC.Core.Exception import *
 };
 
+
+%include "math_VectorBase.hxx";
+%template(math_Vector) math_VectorBase<double>;
+typedef math_VectorBase<double> math_Vector;
 /* public enums */
 enum math_Status {
 	math_OK = 0,
@@ -73,7 +80,7 @@ enum math_Status {
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 
 class math_Status(IntEnum):
@@ -95,40 +102,8 @@ math_NotBracketed = math_Status.math_NotBracketed
 
 /* templates */
 %template(math_Array1OfValueAndWeight) NCollection_Array1<math_ValueAndWeight>;
+Array1ExtendIter(math_ValueAndWeight)
 
-%extend NCollection_Array1<math_ValueAndWeight> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 /* end templates declaration */
 
 /* typedefs */
@@ -144,91 +119,107 @@ typedef NCollection_Array1<math_ValueAndWeight> math_Array1OfValueAndWeight;
 %rename(math) math;
 class math {
 	public:
-		/****************** GaussPoints ******************/
-		/**** md5 signature: 446a90f3001d7ded069143d0209104bf ****/
+		/****** math::GaussPoints ******/
+		/****** md5 signature: 446a90f3001d7ded069143d0209104bf ******/
 		%feature("compactdefaultargs") GaussPoints;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 Points: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") GaussPoints;
 		static void GaussPoints(const Standard_Integer Index, math_Vector & Points);
 
-		/****************** GaussPointsMax ******************/
-		/**** md5 signature: 021532a8fefc3658153f6c8c5f78eb5a ****/
+		/****** math::GaussPointsMax ******/
+		/****** md5 signature: 021532a8fefc3658153f6c8c5f78eb5a ******/
 		%feature("compactdefaultargs") GaussPointsMax;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") GaussPointsMax;
 		static Standard_Integer GaussPointsMax();
 
-		/****************** GaussWeights ******************/
-		/**** md5 signature: 5d66427e1e084482b8ee69ca83d5849c ****/
+		/****** math::GaussWeights ******/
+		/****** md5 signature: 5d66427e1e084482b8ee69ca83d5849c ******/
 		%feature("compactdefaultargs") GaussWeights;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 Weights: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") GaussWeights;
 		static void GaussWeights(const Standard_Integer Index, math_Vector & Weights);
 
-		/****************** KronrodPointsAndWeights ******************/
-		/**** md5 signature: 99c3b88d38de525c6d1eefdbb7333a1f ****/
+		/****** math::KronrodPointsAndWeights ******/
+		/****** md5 signature: 99c3b88d38de525c6d1eefdbb7333a1f ******/
 		%feature("compactdefaultargs") KronrodPointsAndWeights;
-		%feature("autodoc", "Returns a vector of kronrod points and a vector of their weights for gauss-kronrod computation method. index should be odd and greater then or equal to 3, as the number of kronrod points is equal to 2*n + 1, where n is a number of gauss points. points and weights should have the size equal to index. each even element of points represents a gauss point value of n-th gauss quadrature. the values from index equal to 3 to 123 are stored in a table (see the file math_kronrod.cxx). if index is greater, then points and weights will be computed. returns standard_true if index is odd, it is equal to the size of points and weights and the computation of points and weights is performed successfully. otherwise this method returns standard_false.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 Points: math_Vector
 Weights: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Returns a vector of Kronrod points and a vector of their weights for Gauss-Kronrod computation method. Index should be odd and greater then or equal to 3, as the number of Kronrod points is equal to 2*N + 1, where N is a number of Gauss points. Points and Weights should have the size equal to Index. Each even element of Points represents a Gauss point value of N-th Gauss quadrature. The values from Index equal to 3 to 123 are stored in a table (see the file math_Kronrod.cxx). If Index is greater, then points and weights will be computed. Returns Standard_True if Index is odd, it is equal to the size of Points and Weights and the computation of Points and Weights is performed successfully. Otherwise this method returns Standard_False.
 ") KronrodPointsAndWeights;
 		static Standard_Boolean KronrodPointsAndWeights(const Standard_Integer Index, math_Vector & Points, math_Vector & Weights);
 
-		/****************** KronrodPointsMax ******************/
-		/**** md5 signature: 9877451b96fc7394956a8fd6d14372a7 ****/
+		/****** math::KronrodPointsMax ******/
+		/****** md5 signature: 9877451b96fc7394956a8fd6d14372a7 ******/
 		%feature("compactdefaultargs") KronrodPointsMax;
-		%feature("autodoc", "Returns the maximal number of points for that the values are stored in the table. if the number is greater then kronrodpointsmax, the points will be computed.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the maximal number of points for that the values are stored in the table. If the number is greater then KronrodPointsMax, the points will be computed.
 ") KronrodPointsMax;
 		static Standard_Integer KronrodPointsMax();
 
-		/****************** OrderedGaussPointsAndWeights ******************/
-		/**** md5 signature: 6c74a30dedcd119fddcf50d75dbcb349 ****/
+		/****** math::OrderedGaussPointsAndWeights ******/
+		/****** md5 signature: 6c74a30dedcd119fddcf50d75dbcb349 ******/
 		%feature("compactdefaultargs") OrderedGaussPointsAndWeights;
-		%feature("autodoc", "Returns a vector of gauss points and a vector of their weights. the difference with the method gausspoints is the following: - the points are returned in increasing order. - if index is greater then gausspointsmax, the points are computed. returns standard_true if index is positive, points' and weights' length is equal to index, points and weights are successfully computed.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 Points: math_Vector
 Weights: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Returns a vector of Gauss points and a vector of their weights. The difference with the method GaussPoints is the following: - the points are returned in increasing order. - if Index is greater then GaussPointsMax, the points are computed. Returns Standard_True if Index is positive, Points' and Weights' length is equal to Index, Points and Weights are successfully computed.
 ") OrderedGaussPointsAndWeights;
 		static Standard_Boolean OrderedGaussPointsAndWeights(const Standard_Integer Index, math_Vector & Points, math_Vector & Weights);
 
@@ -246,164 +237,198 @@ bool
 ******************/
 class math_BFGS {
 	public:
-		/****************** math_BFGS ******************/
-		/**** md5 signature: f148c060e15332eef81439ed868d8841 ****/
+		/****** math_BFGS::math_BFGS ******/
+		/****** md5 signature: f148c060e15332eef81439ed868d8841 ******/
 		%feature("compactdefaultargs") math_BFGS;
-		%feature("autodoc", "Initializes the computation of the minimum of a function with nbvariables. tolerance, zeps and nbiterations are described in the method perform. warning: a call to the perform method must be made after this initialization to effectively compute the minimum of the function f.
-
+		%feature("autodoc", "
 Parameters
 ----------
 NbVariables: int
-Tolerance: float,optional
-	default value is 1.0e-8
-NbIterations: int,optional
-	default value is 200
-ZEPS: float,optional
-	default value is 1.0e-12
+Tolerance: float (optional, default to 1.0e-8)
+NbIterations: int (optional, default to 200)
+ZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initializes the computation of the minimum of a function with NbVariables. Tolerance, ZEPS and NbIterations are described in the method Perform. Warning: A call to the Perform method must be made after this initialization to effectively compute the minimum of the function F.
 ") math_BFGS;
 		 math_BFGS(const Standard_Integer NbVariables, const Standard_Real Tolerance = 1.0e-8, const Standard_Integer NbIterations = 200, const Standard_Real ZEPS = 1.0e-12);
 
+		/****** math_BFGS::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Gradient ******************/
-		/**** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_BFGS::Gradient ******/
+		/****** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Returns the gradient vector at the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the gradient vector at the minimum. Exception NotDone is raised if the minimum was not found.
 ") Gradient;
 		const math_Vector & Gradient();
 
-		/****************** Gradient ******************/
-		/**** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ****/
+		/****** math_BFGS::Gradient ******/
+		/****** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Returns the value of the gradient vector at the minimum in grad. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of grad is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Grad: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the value of the gradient vector at the minimum in Grad. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Grad is not equal to the range of the StartingPoint.
 ") Gradient;
 		void Gradient(math_Vector & Grad);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_BFGS::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: aaa562131a0a88c1d1917423041f858d ****/
+		/****** math_BFGS::IsSolutionReached ******/
+		/****** md5 signature: aaa562131a0a88c1d1917423041f858d ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "This method is called at the end of each iteration to check if the solution is found. it can be redefined in a sub-class to implement a specific test to stop the iterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_MultipleVarFunctionWithGradient
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+This method is called at the end of each iteration to check if the solution is found. It can be redefined in a sub-class to implement a specific test to stop the iterations.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunctionWithGradient & F);
 
-		/****************** Location ******************/
-		/**** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ****/
+		/****** math_BFGS::Location ******/
+		/****** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Returns the location vector of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the location vector of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Location;
 		const math_Vector & Location();
 
-		/****************** Location ******************/
-		/**** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ****/
+		/****** math_BFGS::Location ******/
+		/****** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Outputs the location vector of the minimum in loc. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of loc is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Loc: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the location vector of the minimum in Loc. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Loc is not equal to the range of the StartingPoint.
 ") Location;
 		void Location(math_Vector & Loc);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: c6e52c305b40f67530895542ef579d78 ****/
+		/****** math_BFGS::Minimum ******/
+		/****** md5 signature: c6e52c305b40f67530895542ef579d78 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Returns the value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Minimum;
 		Standard_Real Minimum();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_BFGS::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done in the calculation of the minimum. the exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations really done in the calculation of the minimum. The exception NotDone is raised if the minimum was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: fd260abe732f3e3a63d8ede80f882039 ****/
+		/****** math_BFGS::Perform ******/
+		/****** md5 signature: fd260abe732f3e3a63d8ede80f882039 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Given the starting point startingpoint, minimization is done on the function f. the solution f = fi is found when : 2.0 * abs(fi - fi-1) <= tolerance * (abs(fi) + abs(fi-1) + zeps). tolerance, zeps and maximum number of iterations are given in the constructor.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_MultipleVarFunctionWithGradient
 StartingPoint: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the starting point StartingPoint, minimization is done on the function F. The solution F = Fi is found when: 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS). Tolerance, ZEPS and maximum number of iterations are given in the constructor.
 ") Perform;
 		void Perform(math_MultipleVarFunctionWithGradient & F, const math_Vector & StartingPoint);
 
-		/****************** SetBoundary ******************/
-		/**** md5 signature: 3dc06701c9c41177e0e859238df70613 ****/
+		/****** math_BFGS::SetBoundary ******/
+		/****** md5 signature: 3dc06701c9c41177e0e859238df70613 ******/
 		%feature("compactdefaultargs") SetBoundary;
-		%feature("autodoc", "Set boundaries for conditional optimization. the expected indices range of vectors is [1, nbvariables].
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLeftBorder: math_Vector
 theRightBorder: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set boundaries for conditional optimization. The expected indices range of vectors is [1, NbVariables].
 ") SetBoundary;
 		void SetBoundary(const math_Vector & theLeftBorder, const math_Vector & theRightBorder);
 
@@ -421,104 +446,130 @@ None
 **************************/
 class math_BissecNewton {
 	public:
-		/****************** math_BissecNewton ******************/
-		/**** md5 signature: 294795766c1064cda2aaf334b2e0c502 ****/
+		/****** math_BissecNewton::math_BissecNewton ******/
+		/****** md5 signature: 294795766c1064cda2aaf334b2e0c502 ******/
 		%feature("compactdefaultargs") math_BissecNewton;
-		%feature("autodoc", "Constructor. @param thextolerance - algorithm tolerance.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theXTolerance: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor. 
+Parameter theXTolerance - algorithm tolerance.
 ") math_BissecNewton;
 		 math_BissecNewton(const Standard_Real theXTolerance);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ****/
+		/****** math_BissecNewton::Derivative ******/
+		/****** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Returns the value of the derivative at the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the derivative at the root. Exception NotDone is raised if the minimum was not found.
 ") Derivative;
 		Standard_Real Derivative();
 
+		/****** math_BissecNewton::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_BissecNewton::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Tests is the root has been successfully found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Tests is the root has been successfully found.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: 6882ef34f833632bbf1cecda440ca8e3 ****/
+		/****** math_BissecNewton::IsSolutionReached ******/
+		/****** md5 signature: 6882ef34f833632bbf1cecda440ca8e3 ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "This method is called at the end of each iteration to check if the solution has been found. it can be redefined in a sub-class to implement a specific test to stop the iterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionWithDerivative
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+This method is called at the end of each iteration to check if the solution has been found. It can be redefined in a sub-class to implement a specific test to stop the iterations.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_FunctionWithDerivative & theFunction);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 91a3a6746b682eb243be44708127c09d ****/
+		/****** math_BissecNewton::Perform ******/
+		/****** md5 signature: 91a3a6746b682eb243be44708127c09d ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "A combination of newton-raphson and bissection methods is done to find the root of the function f between the bounds bound1 and bound2 on the function f. the tolerance required on the root is given by tolx. the solution is found when: abs(xi - xi-1) <= tolx and f(xi) * f(xi-1) <= 0 the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
 Bound1: float
 Bound2: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+A combination of Newton-Raphson and bissection methods is done to find the root of the function F between the bounds Bound1 and Bound2 on the function F. The tolerance required on the root is given by TolX. The solution is found when: abs(Xi - Xi-1) <= TolX and F(Xi) * F(Xi-1) <= 0 The maximum number of iterations allowed is given by NbIterations.
 ") Perform;
 		void Perform(math_FunctionWithDerivative & F, const Standard_Real Bound1, const Standard_Real Bound2, const Standard_Integer NbIterations = 100);
 
-		/****************** Root ******************/
-		/**** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ****/
+		/****** math_BissecNewton::Root ******/
+		/****** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the root. Exception NotDone is raised if the minimum was not found.
 ") Root;
 		Standard_Real Root();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_BissecNewton::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the function at the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the function at the root. Exception NotDone is raised if the minimum was not found.
 ") Value;
 		Standard_Real Value();
 
@@ -536,44 +587,49 @@ float
 ****************************/
 class math_BracketMinimum {
 	public:
-		/****************** math_BracketMinimum ******************/
-		/**** md5 signature: f1f4af70be6dc77d556ee2c41cc63355 ****/
+		/****** math_BracketMinimum::math_BracketMinimum ******/
+		/****** md5 signature: f1f4af70be6dc77d556ee2c41cc63355 ******/
 		%feature("compactdefaultargs") math_BracketMinimum;
-		%feature("autodoc", "Constructor preparing a and b parameters only. it does not perform the job.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
 B: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor preparing A and B parameters only. It does not perform the job.
 ") math_BracketMinimum;
 		 math_BracketMinimum(const Standard_Real A, const Standard_Real B);
 
-		/****************** math_BracketMinimum ******************/
-		/**** md5 signature: e18e44b489b22bad963980abf271eb94 ****/
+		/****** math_BracketMinimum::math_BracketMinimum ******/
+		/****** md5 signature: e18e44b489b22bad963980abf271eb94 ******/
 		%feature("compactdefaultargs") math_BracketMinimum;
-		%feature("autodoc", "Given two initial values this class computes a bracketing triplet of abscissae ax, bx, cx (such that bx is between ax and cx, f(bx) is less than both f(bx) and f(cx)) the brent minimization is done on the function f.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
 A: float
 B: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given two initial values this class computes a bracketing triplet of abscissae Ax, Bx, Cx (such that Bx is between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx)) the Brent minimization is done on the function F.
 ") math_BracketMinimum;
 		 math_BracketMinimum(math_Function & F, const Standard_Real A, const Standard_Real B);
 
-		/****************** math_BracketMinimum ******************/
-		/**** md5 signature: 0ee9a1303656829bfe5bf5f526946996 ****/
+		/****** math_BracketMinimum::math_BracketMinimum ******/
+		/****** md5 signature: 0ee9a1303656829bfe5bf5f526946996 ******/
 		%feature("compactdefaultargs") math_BracketMinimum;
-		%feature("autodoc", "Given two initial values this class computes a bracketing triplet of abscissae ax, bx, cx (such that bx is between ax and cx, f(bx) is less than both f(bx) and f(cx)) the brent minimization is done on the function f. this constructor has to be used if f(a) is known.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
@@ -581,17 +637,20 @@ A: float
 B: float
 FA: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given two initial values this class computes a bracketing triplet of abscissae Ax, Bx, Cx (such that Bx is between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx)) the Brent minimization is done on the function F. This constructor has to be used if F(A) is known.
 ") math_BracketMinimum;
 		 math_BracketMinimum(math_Function & F, const Standard_Real A, const Standard_Real B, const Standard_Real FA);
 
-		/****************** math_BracketMinimum ******************/
-		/**** md5 signature: a9d765656525593c5665b19f977d8062 ****/
+		/****** math_BracketMinimum::math_BracketMinimum ******/
+		/****** md5 signature: a9d765656525593c5665b19f977d8062 ******/
 		%feature("compactdefaultargs") math_BracketMinimum;
-		%feature("autodoc", "Given two initial values this class computes a bracketing triplet of abscissae ax, bx, cx (such that bx is between ax and cx, f(bx) is less than both f(bx) and f(cx)) the brent minimization is done on the function f. this constructor has to be used if f(a) and f(b) are known.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
@@ -600,121 +659,154 @@ B: float
 FA: float
 FB: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given two initial values this class computes a bracketing triplet of abscissae Ax, Bx, Cx (such that Bx is between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx)) the Brent minimization is done on the function F. This constructor has to be used if F(A) and F(B) are known.
 ") math_BracketMinimum;
 		 math_BracketMinimum(math_Function & F, const Standard_Real A, const Standard_Real B, const Standard_Real FA, const Standard_Real FB);
 
-
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** FunctionValues ******************/
-		/**** md5 signature: 1c73efc8bd333bc361f9878adf3d2f5e ****/
-		%feature("compactdefaultargs") FunctionValues;
-		%feature("autodoc", "Returns the bracketed triplet function values. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
+		/****** math_BracketMinimum::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
 Parameters
 ----------
 
-Returns
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_BracketMinimum::FunctionValues ******/
+		/****** md5 signature: 1c73efc8bd333bc361f9878adf3d2f5e ******/
+		%feature("compactdefaultargs") FunctionValues;
+		%feature("autodoc", "
+Parameters
+----------
+
+Return
 -------
 FA: float
 FB: float
 FC: float
+
+Description
+-----------
+returns the bracketed triplet function values. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") FunctionValues;
 		void FunctionValues(Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_BracketMinimum::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 5f24d0600029702cc66b5c9352636cdd ****/
+		/****** math_BracketMinimum::Perform ******/
+		/****** md5 signature: 5f24d0600029702cc66b5c9352636cdd ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "The method performing the job. it is called automatically by constructors with the function.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The method performing the job. It is called automatically by constructors with the function.
 ") Perform;
 		void Perform(math_Function & F);
 
-		/****************** SetFA ******************/
-		/**** md5 signature: 0d2056ad2385a7bd7b3ce105e529078d ****/
+		/****** math_BracketMinimum::SetFA ******/
+		/****** md5 signature: 0d2056ad2385a7bd7b3ce105e529078d ******/
 		%feature("compactdefaultargs") SetFA;
-		%feature("autodoc", "Set function value at a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set function value at A.
 ") SetFA;
 		void SetFA(const Standard_Real theValue);
 
-		/****************** SetFB ******************/
-		/**** md5 signature: 795bbf2f054392ffc5b0674d1d822dcc ****/
+		/****** math_BracketMinimum::SetFB ******/
+		/****** md5 signature: 795bbf2f054392ffc5b0674d1d822dcc ******/
 		%feature("compactdefaultargs") SetFB;
-		%feature("autodoc", "Set function value at b.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set function value at B.
 ") SetFB;
 		void SetFB(const Standard_Real theValue);
 
-		/****************** SetLimits ******************/
-		/**** md5 signature: 244ce499a1293dceaf0e98e832ce5b8d ****/
+		/****** math_BracketMinimum::SetLimits ******/
+		/****** md5 signature: 244ce499a1293dceaf0e98e832ce5b8d ******/
 		%feature("compactdefaultargs") SetLimits;
-		%feature("autodoc", "Set limits of the parameter. by default no limits are applied to the parameter change. if no minimum is found in limits then isdone() will return false. the user is in charge of providing a and b to be in limits.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLeft: float
 theRight: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set limits of the parameter. By default no limits are applied to the parameter change. If no minimum is found in limits then IsDone() will return false. The user is in charge of providing A and B to be in limits.
 ") SetLimits;
 		void SetLimits(const Standard_Real theLeft, const Standard_Real theRight);
 
-		/****************** Values ******************/
-		/**** md5 signature: baabf4c49592a0df3dc04019ef8d908e ****/
+		/****** math_BracketMinimum::Values ******/
+		/****** md5 signature: baabf4c49592a0df3dc04019ef8d908e ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Returns the bracketed triplet of abscissae. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
+		%feature("autodoc", "
 Parameters
 ----------
 
-Returns
+Return
 -------
 A: float
 B: float
 C: float
+
+Description
+-----------
+Returns the bracketed triplet of abscissae. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") Values;
 		void Values(Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue);
 
@@ -732,77 +824,95 @@ C: float
 ***************************/
 class math_BracketedRoot {
 	public:
-		/****************** math_BracketedRoot ******************/
-		/**** md5 signature: d40b8328cf4dbbdcc928ef30e6f10368 ****/
+		/****** math_BracketedRoot::math_BracketedRoot ******/
+		/****** md5 signature: d40b8328cf4dbbdcc928ef30e6f10368 ******/
 		%feature("compactdefaultargs") math_BracketedRoot;
-		%feature("autodoc", "The brent method is used to find the root of the function f between the bounds bound1 and bound2 on the function f. if f(bound1)*f(bound2) >0 the brent method fails. the tolerance required for the root is given by tolerance. the solution is found when : abs(xi - xi-1) <= tolerance; the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
 Bound1: float
 Bound2: float
 Tolerance: float
-NbIterations: int,optional
-	default value is 100
-ZEPS: float,optional
-	default value is 1.0e-12
+NbIterations: int (optional, default to 100)
+ZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Brent method is used to find the root of the function F between the bounds Bound1 and Bound2 on the function F. If F(Bound1)*F(Bound2) >0 the Brent method fails. The tolerance required for the root is given by Tolerance. The solution is found when: abs(Xi - Xi-1) <= Tolerance; The maximum number of iterations allowed is given by NbIterations.
 ") math_BracketedRoot;
 		 math_BracketedRoot(math_Function & F, const Standard_Real Bound1, const Standard_Real Bound2, const Standard_Real Tolerance, const Standard_Integer NbIterations = 100, const Standard_Real ZEPS = 1.0e-12);
 
+		/****** math_BracketedRoot::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_BracketedRoot::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_BracketedRoot::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done during the computation of the Root. Exception NotDone is raised if the minimum was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Root ******************/
-		/**** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ****/
+		/****** math_BracketedRoot::Root ******/
+		/****** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the root. Exception NotDone is raised if the minimum was not found.
 ") Root;
 		Standard_Real Root();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_BracketedRoot::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the function at the root. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the function at the root. Exception NotDone is raised if the minimum was not found.
 ") Value;
 		Standard_Real Value();
 
@@ -820,117 +930,138 @@ float
 **************************/
 class math_BrentMinimum {
 	public:
-		/****************** math_BrentMinimum ******************/
-		/**** md5 signature: 2417b805a0283037e8f6d6abe4401da0 ****/
+		/****** math_BrentMinimum::math_BrentMinimum ******/
+		/****** md5 signature: 2417b805a0283037e8f6d6abe4401da0 ******/
 		%feature("compactdefaultargs") math_BrentMinimum;
-		%feature("autodoc", "This constructor should be used in a sub-class to initialize correctly all the fields of this class.
-
+		%feature("autodoc", "
 Parameters
 ----------
 TolX: float
-NbIterations: int,optional
-	default value is 100
-ZEPS: float,optional
-	default value is 1.0e-12
+NbIterations: int (optional, default to 100)
+ZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+This constructor should be used in a sub-class to initialize correctly all the fields of this class.
 ") math_BrentMinimum;
 		 math_BrentMinimum(const Standard_Real TolX, const Standard_Integer NbIterations = 100, const Standard_Real ZEPS = 1.0e-12);
 
-		/****************** math_BrentMinimum ******************/
-		/**** md5 signature: 83d66f919c7527f0bc6b52773adc6880 ****/
+		/****** math_BrentMinimum::math_BrentMinimum ******/
+		/****** md5 signature: 83d66f919c7527f0bc6b52773adc6880 ******/
 		%feature("compactdefaultargs") math_BrentMinimum;
-		%feature("autodoc", "This constructor should be used in a sub-class to initialize correctly all the fields of this class. it has to be used if f(bx) is known.
-
+		%feature("autodoc", "
 Parameters
 ----------
 TolX: float
 Fbx: float
-NbIterations: int,optional
-	default value is 100
-ZEPS: float,optional
-	default value is 1.0e-12
+NbIterations: int (optional, default to 100)
+ZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+This constructor should be used in a sub-class to initialize correctly all the fields of this class. It has to be used if F(Bx) is known.
 ") math_BrentMinimum;
 		 math_BrentMinimum(const Standard_Real TolX, const Standard_Real Fbx, const Standard_Integer NbIterations = 100, const Standard_Real ZEPS = 1.0e-12);
 
+		/****** math_BrentMinimum::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_BrentMinimum::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: 8c387e7d2be0b3045be6372a308b524d ****/
+		/****** math_BrentMinimum::IsSolutionReached ******/
+		/****** md5 signature: 8c387e7d2be0b3045be6372a308b524d ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "This method is called at the end of each iteration to check if the solution is found. it can be redefined in a sub-class to implement a specific test to stop the iterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+This method is called at the end of each iteration to check if the solution is found. It can be redefined in a sub-class to implement a specific test to stop the iterations.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_Function & theFunction);
 
-		/****************** Location ******************/
-		/**** md5 signature: b4f000468710d05c1f656dc631d278d7 ****/
+		/****** math_BrentMinimum::Location ******/
+		/****** md5 signature: b4f000468710d05c1f656dc631d278d7 ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Returns the location value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the location value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Location;
 		Standard_Real Location();
 
-		/****************** Minimum ******************/
-		/**** md5 signature: c6e52c305b40f67530895542ef579d78 ****/
+		/****** math_BrentMinimum::Minimum ******/
+		/****** md5 signature: c6e52c305b40f67530895542ef579d78 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Returns the value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Minimum;
 		Standard_Real Minimum();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_BrentMinimum::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done during the computation of the minimum. Exception NotDone is raised if the minimum was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 57ce13ea45e8519cbe4160a5190bb346 ****/
+		/****** math_BrentMinimum::Perform ******/
+		/****** md5 signature: 57ce13ea45e8519cbe4160a5190bb346 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Brent minimization is performed on function f from a given bracketing triplet of abscissas ax, bx, cx (such that bx is between ax and cx, f(bx) is less than both f(bx) and f(cx)) the solution is found when: abs(xi - xi-1) <= tolx * abs(xi) + zeps;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
@@ -938,9 +1069,13 @@ Ax: float
 Bx: float
 Cx: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Brent minimization is performed on function F from a given bracketing triplet of abscissas Ax, Bx, Cx (such that Bx is between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx)) The solution is found when: abs(Xi - Xi-1) <= TolX * abs(Xi) + ZEPS;.
 ") Perform;
 		void Perform(math_Function & F, const Standard_Real Ax, const Standard_Real Bx, const Standard_Real Cx);
 
@@ -958,57 +1093,65 @@ None
 ******************************/
 class math_BullardGenerator {
 	public:
-		/****************** math_BullardGenerator ******************/
-		/**** md5 signature: 07a559474d096973d7f90362f8ec9a2b ****/
+		/****** math_BullardGenerator::math_BullardGenerator ******/
+		/****** md5 signature: 07a559474d096973d7f90362f8ec9a2b ******/
 		%feature("compactdefaultargs") math_BullardGenerator;
-		%feature("autodoc", "Creates new xorshift 64-bit rng.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theSeed: unsigned int,optional
-	default value is 1
+theSeed: unsigned int (optional, default to 1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Creates new Xorshift 64-bit RNG.
 ") math_BullardGenerator;
 		 math_BullardGenerator(unsigned int theSeed = 1);
 
-		/****************** NextInt ******************/
-		/**** md5 signature: ea144b3b3f31717d76be8c78ee0cdda2 ****/
+		/****** math_BullardGenerator::NextInt ******/
+		/****** md5 signature: ea144b3b3f31717d76be8c78ee0cdda2 ******/
 		%feature("compactdefaultargs") NextInt;
-		%feature("autodoc", "Generates new 64-bit integer value.
-
-Returns
+		%feature("autodoc", "Return
 -------
 unsigned int
+
+Description
+-----------
+Generates new 64-bit integer value.
 ") NextInt;
 		unsigned int NextInt();
 
-		/****************** NextReal ******************/
-		/**** md5 signature: 518bd5bd33c549f94c41aadf30a5c1af ****/
+		/****** math_BullardGenerator::NextReal ******/
+		/****** md5 signature: 518bd5bd33c549f94c41aadf30a5c1af ******/
 		%feature("compactdefaultargs") NextReal;
-		%feature("autodoc", "Generates new floating-point value.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Generates new floating-point value.
 ") NextReal;
 		Standard_Real NextReal();
 
-		/****************** SetSeed ******************/
-		/**** md5 signature: 2e05b7e10b8ef82dc91203e7d39fee0f ****/
+		/****** math_BullardGenerator::SetSeed ******/
+		/****** md5 signature: 2e05b7e10b8ef82dc91203e7d39fee0f ******/
 		%feature("compactdefaultargs") SetSeed;
-		%feature("autodoc", "Setup new seed / reset defaults.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theSeed: unsigned int,optional
-	default value is 1
+theSeed: unsigned int (optional, default to 1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Setup new seed / reset defaults.
 ") SetSeed;
 		void SetSeed(unsigned int theSeed = 1);
 
@@ -1026,51 +1169,60 @@ None
 ******************************************/
 class math_ComputeGaussPointsAndWeights {
 	public:
-		/****************** math_ComputeGaussPointsAndWeights ******************/
-		/**** md5 signature: 4fab9d77c66048ba64a4b362e69803e4 ****/
+		/****** math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights ******/
+		/****** md5 signature: 4fab9d77c66048ba64a4b362e69803e4 ******/
 		%feature("compactdefaultargs") math_ComputeGaussPointsAndWeights;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Number: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_ComputeGaussPointsAndWeights;
 		 math_ComputeGaussPointsAndWeights(const Standard_Integer Number);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_ComputeGaussPointsAndWeights::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Points ******************/
-		/**** md5 signature: 8d8263eda279f3bc27a032c0bc14bb35 ****/
+		/****** math_ComputeGaussPointsAndWeights::Points ******/
+		/****** md5 signature: 8d8263eda279f3bc27a032c0bc14bb35 ******/
 		%feature("compactdefaultargs") Points;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+No available documentation.
 ") Points;
 		math_Vector Points();
 
-		/****************** Weights ******************/
-		/**** md5 signature: 747bc1b76638516a5f353931c8f0bb19 ****/
+		/****** math_ComputeGaussPointsAndWeights::Weights ******/
+		/****** md5 signature: 747bc1b76638516a5f353931c8f0bb19 ******/
 		%feature("compactdefaultargs") Weights;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+No available documentation.
 ") Weights;
 		math_Vector Weights();
 
@@ -1088,51 +1240,60 @@ math_Vector
 ********************************************/
 class math_ComputeKronrodPointsAndWeights {
 	public:
-		/****************** math_ComputeKronrodPointsAndWeights ******************/
-		/**** md5 signature: 1dad53e47976ca58567676ceb4bdd042 ****/
+		/****** math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights ******/
+		/****** md5 signature: 1dad53e47976ca58567676ceb4bdd042 ******/
 		%feature("compactdefaultargs") math_ComputeKronrodPointsAndWeights;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Number: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_ComputeKronrodPointsAndWeights;
 		 math_ComputeKronrodPointsAndWeights(const Standard_Integer Number);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_ComputeKronrodPointsAndWeights::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Points ******************/
-		/**** md5 signature: 8d8263eda279f3bc27a032c0bc14bb35 ****/
+		/****** math_ComputeKronrodPointsAndWeights::Points ******/
+		/****** md5 signature: 8d8263eda279f3bc27a032c0bc14bb35 ******/
 		%feature("compactdefaultargs") Points;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+No available documentation.
 ") Points;
 		math_Vector Points();
 
-		/****************** Weights ******************/
-		/**** md5 signature: 747bc1b76638516a5f353931c8f0bb19 ****/
+		/****** math_ComputeKronrodPointsAndWeights::Weights ******/
+		/****** md5 signature: 747bc1b76638516a5f353931c8f0bb19 ******/
 		%feature("compactdefaultargs") Weights;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+No available documentation.
 ") Weights;
 		math_Vector Weights();
 
@@ -1150,92 +1311,115 @@ math_Vector
 *******************/
 class math_Crout {
 	public:
-		/****************** math_Crout ******************/
-		/**** md5 signature: b1d44e1db688e6194254f0528e6dcfe0 ****/
+		/****** math_Crout::math_Crout ******/
+		/****** md5 signature: b1d44e1db688e6194254f0528e6dcfe0 ******/
 		%feature("compactdefaultargs") math_Crout;
-		%feature("autodoc", "Given an input matrix a, this algorithm inverts a by the crout algorithm. the user can give only the inferior triangle for the implementation. a can be decomposed like this: a = l * d * t(l) where l is triangular inferior and d is diagonal. if one element of a is less than minpivot, a is considered as singular. exception notsquare is raised if a is not a square matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
-MinPivot: float,optional
-	default value is 1.0e-20
+MinPivot: float (optional, default to 1.0e-20)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix A, this algorithm inverts A by the Crout algorithm. The user can give only the inferior triangle for the implementation. A can be decomposed like this: A = L * D * T(L) where L is triangular inferior and D is diagonal. If one element of A is less than MinPivot, A is considered as singular. Exception NotSquare is raised if A is not a square matrix.
 ") math_Crout;
 		 math_Crout(const math_Matrix & A, const Standard_Real MinPivot = 1.0e-20);
 
-		/****************** Determinant ******************/
-		/**** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ****/
+		/****** math_Crout::Determinant ******/
+		/****** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ******/
 		%feature("compactdefaultargs") Determinant;
-		%feature("autodoc", "Returns the value of the determinant of the previously lu decomposed matrix a. zero is returned if the matrix a is considered as singular. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the determinant of the previously LU decomposed matrix A. Zero is returned if the matrix A is considered as singular. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") Determinant;
 		Standard_Real Determinant();
 
+		/****** math_Crout::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Inverse ******************/
-		/**** md5 signature: 3ac969006d2d462bc1e6ea2d7d8929e6 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Crout::Inverse ******/
+		/****** md5 signature: 3ac969006d2d462bc1e6ea2d7d8929e6 ******/
 		%feature("compactdefaultargs") Inverse;
-		%feature("autodoc", "Returns the inverse matrix of a. only the inferior triangle is returned. exception notdone is raised if notdone.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+returns the inverse matrix of A. Only the inferior triangle is returned. Exception NotDone is raised if NotDone.
 ") Inverse;
 		const math_Matrix & Inverse();
 
-		/****************** Invert ******************/
-		/**** md5 signature: 3042934a9caa618d22aceb841b1bb048 ****/
+		/****** math_Crout::Invert ******/
+		/****** md5 signature: 3042934a9caa618d22aceb841b1bb048 ******/
 		%feature("compactdefaultargs") Invert;
-		%feature("autodoc", "Returns in inv the inverse matrix of a. only the inferior triangle is returned. exception notdone is raised if notdone.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Inv: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+returns in Inv the inverse matrix of A. Only the inferior triangle is returned. Exception NotDone is raised if NotDone.
 ") Invert;
 		void Invert(math_Matrix & Inv);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_Crout::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if all has been correctly done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if all has been correctly done.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Solve ******************/
-		/**** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ****/
+		/****** math_Crout::Solve ******/
+		/****** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ******/
 		%feature("compactdefaultargs") Solve;
-		%feature("autodoc", "Given an input vector <b>, this routine returns the solution of the set of linear equations a . x = b. exception notdone is raised if the decomposition was not done successfully. exception dimensionerror is raised if the range of b is not equal to the rowrange of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: math_Vector
 X: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input vector <B>, this routine returns the solution of the set of linear equations A . X = B. Exception NotDone is raised if the decomposition was not done successfully. Exception DimensionError is raised if the range of B is not equal to the rowrange of A.
 ") Solve;
 		void Solve(const math_Vector & B, math_Vector & X);
 
@@ -1253,11 +1437,10 @@ None
 ***********************************/
 class math_DirectPolynomialRoots {
 	public:
-		/****************** math_DirectPolynomialRoots ******************/
-		/**** md5 signature: 4b89fc095312b7ac31ee64733ec53978 ****/
+		/****** math_DirectPolynomialRoots::math_DirectPolynomialRoots ******/
+		/****** md5 signature: 4b89fc095312b7ac31ee64733ec53978 ******/
 		%feature("compactdefaultargs") math_DirectPolynomialRoots;
-		%feature("autodoc", "Computes all the real roots of the polynomial ax4 + bx3 + cx2 + dx + e using a direct method.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
@@ -1266,17 +1449,20 @@ C: float
 D: float
 E: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+computes all the real roots of the polynomial Ax4 + Bx3 + Cx2 + Dx + E using a direct method.
 ") math_DirectPolynomialRoots;
 		 math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D, const Standard_Real E);
 
-		/****************** math_DirectPolynomialRoots ******************/
-		/**** md5 signature: 7f953a82c8476f2e56307f4856455483 ****/
+		/****** math_DirectPolynomialRoots::math_DirectPolynomialRoots ******/
+		/****** md5 signature: 7f953a82c8476f2e56307f4856455483 ******/
 		%feature("compactdefaultargs") math_DirectPolynomialRoots;
-		%feature("autodoc", "Computes all the real roots of the polynomial ax3 + bx2 + cx + d using a direct method.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
@@ -1284,98 +1470,126 @@ B: float
 C: float
 D: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+computes all the real roots of the polynomial Ax3 + Bx2 + Cx + D using a direct method.
 ") math_DirectPolynomialRoots;
 		 math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D);
 
-		/****************** math_DirectPolynomialRoots ******************/
-		/**** md5 signature: ef36e58d27a5dba6bcaaf03fec6d38f1 ****/
+		/****** math_DirectPolynomialRoots::math_DirectPolynomialRoots ******/
+		/****** md5 signature: ef36e58d27a5dba6bcaaf03fec6d38f1 ******/
 		%feature("compactdefaultargs") math_DirectPolynomialRoots;
-		%feature("autodoc", "Computes all the real roots of the polynomial ax2 + bx + c using a direct method.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
 B: float
 C: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+computes all the real roots of the polynomial Ax2 + Bx + C using a direct method.
 ") math_DirectPolynomialRoots;
 		 math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B, const Standard_Real C);
 
-		/****************** math_DirectPolynomialRoots ******************/
-		/**** md5 signature: 5acbed2e722c829a79af8a81f7bed988 ****/
+		/****** math_DirectPolynomialRoots::math_DirectPolynomialRoots ******/
+		/****** md5 signature: 5acbed2e722c829a79af8a81f7bed988 ******/
 		%feature("compactdefaultargs") math_DirectPolynomialRoots;
-		%feature("autodoc", "Computes the real root of the polynomial ax + b.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
 B: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+computes the real root of the polynomial Ax + B.
 ") math_DirectPolynomialRoots;
 		 math_DirectPolynomialRoots(const Standard_Real A, const Standard_Real B);
 
+		/****** math_DirectPolynomialRoots::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** InfiniteRoots ******************/
-		/**** md5 signature: 6c844bee82586a7c3f4a33590d02fc3c ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_DirectPolynomialRoots::InfiniteRoots ******/
+		/****** md5 signature: 6c844bee82586a7c3f4a33590d02fc3c ******/
 		%feature("compactdefaultargs") InfiniteRoots;
-		%feature("autodoc", "Returns true if there is an infinity of roots, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if there is an infinity of roots, otherwise returns false.
 ") InfiniteRoots;
 		Standard_Boolean InfiniteRoots();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_DirectPolynomialRoots::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbSolutions ******************/
-		/**** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ****/
+		/****** math_DirectPolynomialRoots::NbSolutions ******/
+		/****** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ******/
 		%feature("compactdefaultargs") NbSolutions;
-		%feature("autodoc", "Returns the number of solutions. an exception is raised if there are an infinity of roots.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of solutions. An exception is raised if there are an infinity of roots.
 ") NbSolutions;
 		Standard_Integer NbSolutions();
 
-		/****************** Value ******************/
-		/**** md5 signature: ce64f743863f7841a0200359c4eca81a ****/
+		/****** math_DirectPolynomialRoots::Value ******/
+		/****** md5 signature: ce64f743863f7841a0200359c4eca81a ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the nieme root. an exception is raised if there are an infinity of roots. exception rangeerror is raised if nieme is < 1 or nieme > nbsolutions.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Nieme: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+returns the value of the Nieme root. An exception is raised if there are an infinity of roots. Exception RangeError is raised if Nieme is < 1 or Nieme > NbSolutions.
 ") Value;
 		Standard_Real Value(const Standard_Integer Nieme);
 
@@ -1393,11 +1607,10 @@ float
 ***********************/
 class math_DoubleTab {
 	public:
-		/****************** math_DoubleTab ******************/
-		/**** md5 signature: dd62dc7a503b4e9ead3497c539a154c9 ****/
+		/****** math_DoubleTab::math_DoubleTab ******/
+		/****** md5 signature: dd62dc7a503b4e9ead3497c539a154c9 ******/
 		%feature("compactdefaultargs") math_DoubleTab;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LowerRow: int
@@ -1405,17 +1618,20 @@ UpperRow: int
 LowerCol: int
 UpperCol: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_DoubleTab;
 		 math_DoubleTab(const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
 
-		/****************** math_DoubleTab ******************/
-		/**** md5 signature: 718f878a1d36f54a6b5077cc2090da04 ****/
+		/****** math_DoubleTab::math_DoubleTab ******/
+		/****** md5 signature: 718f878a1d36f54a6b5077cc2090da04 ******/
 		%feature("compactdefaultargs") math_DoubleTab;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Tab: Standard_Address
@@ -1424,95 +1640,116 @@ UpperRow: int
 LowerCol: int
 UpperCol: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_DoubleTab;
 		 math_DoubleTab(const Standard_Address Tab, const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
 
-		/****************** math_DoubleTab ******************/
-		/**** md5 signature: f723304f2213117bdd24c71e050bd649 ****/
+		/****** math_DoubleTab::math_DoubleTab ******/
+		/****** md5 signature: f723304f2213117bdd24c71e050bd649 ******/
 		%feature("compactdefaultargs") math_DoubleTab;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Other: math_DoubleTab
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_DoubleTab;
 		 math_DoubleTab(const math_DoubleTab & Other);
 
-		/****************** Copy ******************/
-		/**** md5 signature: e7e1b8d80620906bbc481a937d0b33da ****/
+		/****** math_DoubleTab::Copy ******/
+		/****** md5 signature: e7e1b8d80620906bbc481a937d0b33da ******/
 		%feature("compactdefaultargs") Copy;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Other: math_DoubleTab
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Copy;
 		void Copy(math_DoubleTab & Other);
 
-		/****************** Free ******************/
-		/**** md5 signature: adf04b00a0d9dc585c1f31bcdbc395bf ****/
+		/****** math_DoubleTab::Free ******/
+		/****** md5 signature: adf04b00a0d9dc585c1f31bcdbc395bf ******/
 		%feature("compactdefaultargs") Free;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Free;
 		void Free();
 
-		/****************** Init ******************/
-		/**** md5 signature: 408522793f4cf840b93ec255a9edba4e ****/
+		/****** math_DoubleTab::Init ******/
+		/****** md5 signature: 408522793f4cf840b93ec255a9edba4e ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 InitValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Init;
 		void Init(const Standard_Real InitValue);
 
-		/****************** SetLowerCol ******************/
-		/**** md5 signature: 493e3ef08fa74bceb5c3e382aadd7a03 ****/
+		/****** math_DoubleTab::SetLowerCol ******/
+		/****** md5 signature: 493e3ef08fa74bceb5c3e382aadd7a03 ******/
 		%feature("compactdefaultargs") SetLowerCol;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LowerCol: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") SetLowerCol;
 		void SetLowerCol(const Standard_Integer LowerCol);
 
-		/****************** SetLowerRow ******************/
-		/**** md5 signature: e72a8f19553efe52063a6089415a0532 ****/
+		/****** math_DoubleTab::SetLowerRow ******/
+		/****** md5 signature: e72a8f19553efe52063a6089415a0532 ******/
 		%feature("compactdefaultargs") SetLowerRow;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LowerRow: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") SetLowerRow;
 		void SetLowerRow(const Standard_Integer LowerRow);
 
@@ -1543,71 +1780,84 @@ None
 *********************************/
 class math_EigenValuesSearcher {
 	public:
-		/****************** math_EigenValuesSearcher ******************/
-		/**** md5 signature: 2120d48f824288d3987ddb5fd3ca1421 ****/
+		/****** math_EigenValuesSearcher::math_EigenValuesSearcher ******/
+		/****** md5 signature: 2120d48f824288d3987ddb5fd3ca1421 ******/
 		%feature("compactdefaultargs") math_EigenValuesSearcher;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Diagonal: TColStd_Array1OfReal
 Subdiagonal: TColStd_Array1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_EigenValuesSearcher;
 		 math_EigenValuesSearcher(const TColStd_Array1OfReal & Diagonal, const TColStd_Array1OfReal & Subdiagonal);
 
-		/****************** Dimension ******************/
-		/**** md5 signature: e4bdde894007391dd45dcb2fa38eb0af ****/
+		/****** math_EigenValuesSearcher::Dimension ******/
+		/****** md5 signature: e4bdde894007391dd45dcb2fa38eb0af ******/
 		%feature("compactdefaultargs") Dimension;
-		%feature("autodoc", "Returns the dimension of matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the dimension of matrix.
 ") Dimension;
 		Standard_Integer Dimension();
 
-		/****************** EigenValue ******************/
-		/**** md5 signature: 0ab1fd10421232a0a802aadf342fdf04 ****/
+		/****** math_EigenValuesSearcher::EigenValue ******/
+		/****** md5 signature: 0ab1fd10421232a0a802aadf342fdf04 ******/
 		%feature("compactdefaultargs") EigenValue;
-		%feature("autodoc", "Returns the index_th eigen value of matrix index must be in [1, dimension()].
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the Index_th eigen value of matrix Index must be in [1, Dimension()].
 ") EigenValue;
 		Standard_Real EigenValue(const Standard_Integer Index);
 
-		/****************** EigenVector ******************/
-		/**** md5 signature: 73ae866c64caa8314d69872926c396c5 ****/
+		/****** math_EigenValuesSearcher::EigenVector ******/
+		/****** md5 signature: 73ae866c64caa8314d69872926c396c5 ******/
 		%feature("compactdefaultargs") EigenVector;
-		%feature("autodoc", "Returns the index_th eigen vector of matrix index must be in [1, dimension()].
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the Index_th eigen vector of matrix Index must be in [1, Dimension()].
 ") EigenVector;
 		math_Vector EigenVector(const Standard_Integer Index);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_EigenValuesSearcher::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns standard_true if computation is performed successfully.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns Standard_True if computation is performed successfully.
 ") IsDone;
 		Standard_Boolean IsDone();
 
@@ -1625,147 +1875,179 @@ bool
 ******************/
 class math_FRPR {
 	public:
-		/****************** math_FRPR ******************/
-		/**** md5 signature: a66fe8e5bfed9e9c8162762a301a19ba ****/
+		/****** math_FRPR::math_FRPR ******/
+		/****** md5 signature: a66fe8e5bfed9e9c8162762a301a19ba ******/
 		%feature("compactdefaultargs") math_FRPR;
-		%feature("autodoc", "Initializes the computation of the minimum of f. warning: constructor does not perform computations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunctionWithGradient
 theTolerance: float
-theNbIterations: int,optional
-	default value is 200
-theZEPS: float,optional
-	default value is 1.0e-12
+theNbIterations: int (optional, default to 200)
+theZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initializes the computation of the minimum of F. Warning: constructor does not perform computations.
 ") math_FRPR;
 		 math_FRPR(const math_MultipleVarFunctionWithGradient & theFunction, const Standard_Real theTolerance, const Standard_Integer theNbIterations = 200, const Standard_Real theZEPS = 1.0e-12);
 
+		/****** math_FRPR::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Gradient ******************/
-		/**** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_FRPR::Gradient ******/
+		/****** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Returns the gradient vector at the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the gradient vector at the minimum. Exception NotDone is raised if the minimum was not found.
 ") Gradient;
 		const math_Vector & Gradient();
 
-		/****************** Gradient ******************/
-		/**** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ****/
+		/****** math_FRPR::Gradient ******/
+		/****** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Outputs the gradient vector at the minimum in grad. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of grad is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Grad: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the gradient vector at the minimum in Grad. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Grad is not equal to the range of the StartingPoint.
 ") Gradient;
 		void Gradient(math_Vector & Grad);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_FRPR::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: 7ba44d3080e2281d0c476dff3710be5e ****/
+		/****** math_FRPR::IsSolutionReached ******/
+		/****** md5 signature: 7ba44d3080e2281d0c476dff3710be5e ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "The solution f = fi is found when: 2.0 * abs(fi - fi-1) <= tolerance * (abs(fi) + abs(fi-1)) + zeps. the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunctionWithGradient
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+The solution F = Fi is found when: 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS. The maximum number of iterations allowed is given by NbIterations.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunctionWithGradient & theFunction);
 
-		/****************** Location ******************/
-		/**** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ****/
+		/****** math_FRPR::Location ******/
+		/****** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Returns the location vector of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the location vector of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Location;
 		const math_Vector & Location();
 
-		/****************** Location ******************/
-		/**** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ****/
+		/****** math_FRPR::Location ******/
+		/****** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Outputs the location vector of the minimum in loc. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of loc is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Loc: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the location vector of the minimum in Loc. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Loc is not equal to the range of the StartingPoint.
 ") Location;
 		void Location(math_Vector & Loc);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: c6e52c305b40f67530895542ef579d78 ****/
+		/****** math_FRPR::Minimum ******/
+		/****** md5 signature: c6e52c305b40f67530895542ef579d78 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Returns the value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Minimum;
 		Standard_Real Minimum();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_FRPR::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done during the computation of the minimum. Exception NotDone is raised if the minimum was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 0868ba98170667ca3228919fdb674a2e ****/
+		/****** math_FRPR::Perform ******/
+		/****** md5 signature: 0868ba98170667ca3228919fdb674a2e ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "The solution f = fi is found when 2.0 * abs(fi - fi-1) <= tolerance * (abs(fi) + abs(fi-1) + zeps).
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunctionWithGradient
 theStartingPoint: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The solution F = Fi is found when 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
 ") Perform;
 		void Perform(math_MultipleVarFunctionWithGradient & theFunction, const math_Vector & theStartingPoint);
 
@@ -1784,29 +2066,34 @@ None
 %nodefaultctor math_Function;
 class math_Function {
 	public:
-		/****************** GetStateNumber ******************/
-		/**** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ****/
+		/****** math_Function::GetStateNumber ******/
+		/****** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ******/
 		%feature("compactdefaultargs") GetStateNumber;
-		%feature("autodoc", "Returns the state of the function corresponding to the latest call of any methods associated with the function. this function is called by each of the algorithms described later which defined the function integer algorithm::statenumber(). the algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this statenumber. byu default, this method returns 0 (which means for the algorithm: no state has been saved). it is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an integer that allows retrieval of the state.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the state of the function corresponding to the latest call of any methods associated with the function. This function is called by each of the algorithms described later which defined the function Integer Algorithm::StateNumber(). The algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this StateNumber. Byu default, this method returns 0 (which means for the algorithm: no state has been saved). It is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an Integer that allows retrieval of the state.
 ") GetStateNumber;
 		virtual Standard_Integer GetStateNumber();
 
-		/****************** Value ******************/
-		/**** md5 signature: 4743230a1413804c068db1aa9417569d ****/
+		/****** math_Function::Value ******/
+		/****** md5 signature: 4743230a1413804c068db1aa9417569d ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the value of the function <f> for a given value of variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+Computes the value of the function <F> for a given value of variable <X>. returns True if the computation was done successfully, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const Standard_Real X, Standard_Real &OutValue);
 
@@ -1824,11 +2111,10 @@ F: float
 ******************************/
 class math_FunctionAllRoots {
 	public:
-		/****************** math_FunctionAllRoots ******************/
-		/**** md5 signature: 39adf3c78fcbd13d7730434fbc1708cd ****/
+		/****** math_FunctionAllRoots::math_FunctionAllRoots ******/
+		/****** md5 signature: 39adf3c78fcbd13d7730434fbc1708cd ******/
 		%feature("compactdefaultargs") math_FunctionAllRoots;
-		%feature("autodoc", "The algorithm uses the sample to find intervals on which the function is null. an interval is found if, for at least two consecutive points of the sample, ui and ui+1, we get |f(ui)|<=epsnul and |f(ui+1)|<=epsnul. the real bounds of an interval are computed with the functionroots. algorithm. between two intervals, the roots of the function f are calculated using the functionroots algorithm.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
@@ -1837,112 +2123,143 @@ EpsX: float
 EpsF: float
 EpsNul: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The algorithm uses the sample to find intervals on which the function is null. An interval is found if, for at least two consecutive points of the sample, Ui and Ui+1, we get |F(Ui)|<=EpsNul and |F(Ui+1)|<=EpsNul. The real bounds of an interval are computed with the FunctionRoots. algorithm. Between two intervals, the roots of the function F are calculated using the FunctionRoots algorithm.
 ") math_FunctionAllRoots;
 		 math_FunctionAllRoots(math_FunctionWithDerivative & F, const math_FunctionSample & S, const Standard_Real EpsX, const Standard_Real EpsF, const Standard_Real EpsNul);
 
+		/****** math_FunctionAllRoots::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** GetInterval ******************/
-		/**** md5 signature: 6687e7adaceb5b49c509c22d7f0c75d8 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_FunctionAllRoots::GetInterval ******/
+		/****** md5 signature: 6687e7adaceb5b49c509c22d7f0c75d8 ******/
 		%feature("compactdefaultargs") GetInterval;
-		%feature("autodoc", "Returns the interval of parameter of range index. an exception is raised if isdone returns false; an exception is raised if index<=0 or index >nbintervals.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 A: float
 B: float
+
+Description
+-----------
+Returns the interval of parameter of range Index. An exception is raised if IsDone returns False; An exception is raised if Index<=0 or Index >Nbintervals.
 ") GetInterval;
 		void GetInterval(const Standard_Integer Index, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** GetIntervalState ******************/
-		/**** md5 signature: e71f08c028a1b0bade4b8d80ac40b26a ****/
+		/****** math_FunctionAllRoots::GetIntervalState ******/
+		/****** md5 signature: e71f08c028a1b0bade4b8d80ac40b26a ******/
 		%feature("compactdefaultargs") GetIntervalState;
-		%feature("autodoc", "Returns the state number associated to the interval index. an exception is raised if isdone returns false; an exception is raised if index<=0 or index >nbintervals.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 IFirst: int
 ILast: int
+
+Description
+-----------
+returns the State Number associated to the interval Index. An exception is raised if IsDone returns False; An exception is raised if Index<=0 or Index >Nbintervals.
 ") GetIntervalState;
 		void GetIntervalState(const Standard_Integer Index, Standard_Integer &OutValue, Standard_Integer &OutValue);
 
-		/****************** GetPoint ******************/
-		/**** md5 signature: 0305e05ec1e18bd3c210afc18b48917e ****/
+		/****** math_FunctionAllRoots::GetPoint ******/
+		/****** md5 signature: 0305e05ec1e18bd3c210afc18b48917e ******/
 		%feature("compactdefaultargs") GetPoint;
-		%feature("autodoc", "Returns the parameter of the point of range index. an exception is raised if isdone returns false; an exception is raised if index<=0 or index >nbpoints.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the parameter of the point of range Index. An exception is raised if IsDone returns False; An exception is raised if Index<=0 or Index >NbPoints.
 ") GetPoint;
 		Standard_Real GetPoint(const Standard_Integer Index);
 
-		/****************** GetPointState ******************/
-		/**** md5 signature: ae45bebd132b6cfea2959aaa813e38f7 ****/
+		/****** math_FunctionAllRoots::GetPointState ******/
+		/****** md5 signature: ae45bebd132b6cfea2959aaa813e38f7 ******/
 		%feature("compactdefaultargs") GetPointState;
-		%feature("autodoc", "Returns the state number associated to the point index. an exception is raised if isdone returns false; an exception is raised if index<=0 or index >nbintervals.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+returns the State Number associated to the point Index. An exception is raised if IsDone returns False; An exception is raised if Index<=0 or Index >Nbintervals.
 ") GetPointState;
 		Standard_Integer GetPointState(const Standard_Integer Index);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_FunctionAllRoots::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computation has been done successfully.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if the computation has been done successfully.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIntervals ******************/
-		/**** md5 signature: 64f54fde4d9752772b52d73d27261bcb ****/
+		/****** math_FunctionAllRoots::NbIntervals ******/
+		/****** md5 signature: 64f54fde4d9752772b52d73d27261bcb ******/
 		%feature("compactdefaultargs") NbIntervals;
-		%feature("autodoc", "Returns the number of intervals on which the function is null. an exception is raised if isdone returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of intervals on which the function is Null. An exception is raised if IsDone returns False.
 ") NbIntervals;
 		Standard_Integer NbIntervals();
 
-		/****************** NbPoints ******************/
-		/**** md5 signature: 1d4bbbd7c4dda4f1e56c00ae994bedbe ****/
+		/****** math_FunctionAllRoots::NbPoints ******/
+		/****** md5 signature: 1d4bbbd7c4dda4f1e56c00ae994bedbe ******/
 		%feature("compactdefaultargs") NbPoints;
-		%feature("autodoc", "Returns the number of points where the function is null. an exception is raised if isdone returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of points where the function is Null. An exception is raised if IsDone returns False.
 ") NbPoints;
 		Standard_Integer NbPoints();
 
@@ -1960,30 +2277,31 @@ int
 **************************/
 class math_FunctionRoot {
 	public:
-		/****************** math_FunctionRoot ******************/
-		/**** md5 signature: 545a447b64e5b6f379c749f9310c1f5e ****/
+		/****** math_FunctionRoot::math_FunctionRoot ******/
+		/****** md5 signature: 545a447b64e5b6f379c749f9310c1f5e ******/
 		%feature("compactdefaultargs") math_FunctionRoot;
-		%feature("autodoc", "The newton-raphson method is done to find the root of the function f from the initial guess guess.the tolerance required on the root is given by tolerance. iterations are stopped if the expected solution does not stay in the range a..b. the solution is found when abs(xi - xi-1) <= tolerance; the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
 Guess: float
 Tolerance: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton-Raphson method is done to find the root of the function F from the initial guess Guess.The tolerance required on the root is given by Tolerance. Iterations are stopped if the expected solution does not stay in the range A..B. The solution is found when abs(Xi - Xi-1) <= Tolerance; The maximum number of iterations allowed is given by NbIterations.
 ") math_FunctionRoot;
 		 math_FunctionRoot(math_FunctionWithDerivative & F, const Standard_Real Guess, const Standard_Real Tolerance, const Standard_Integer NbIterations = 100);
 
-		/****************** math_FunctionRoot ******************/
-		/**** md5 signature: f0d284eec7b2ebd629f92df29c4b7b65 ****/
+		/****** math_FunctionRoot::math_FunctionRoot ******/
+		/****** md5 signature: f0d284eec7b2ebd629f92df29c4b7b65 ******/
 		%feature("compactdefaultargs") math_FunctionRoot;
-		%feature("autodoc", "The newton-raphson method is done to find the root of the function f from the initial guess guess. the tolerance required on the root is given by tolerance. iterations are stopped if the expected solution does not stay in the range a..b the solution is found when abs(xi - xi-1) <= tolerance; the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
@@ -1991,75 +2309,97 @@ Guess: float
 Tolerance: float
 A: float
 B: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton-Raphson method is done to find the root of the function F from the initial guess Guess. The tolerance required on the root is given by Tolerance. Iterations are stopped if the expected solution does not stay in the range A..B The solution is found when abs(Xi - Xi-1) <= Tolerance; The maximum number of iterations allowed is given by NbIterations.
 ") math_FunctionRoot;
 		 math_FunctionRoot(math_FunctionWithDerivative & F, const Standard_Real Guess, const Standard_Real Tolerance, const Standard_Real A, const Standard_Real B, const Standard_Integer NbIterations = 100);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ****/
+		/****** math_FunctionRoot::Derivative ******/
+		/****** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Returns the value of the derivative at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the derivative at the root. Exception NotDone is raised if the root was not found.
 ") Derivative;
 		Standard_Real Derivative();
 
+		/****** math_FunctionRoot::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_FunctionRoot::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_FunctionRoot::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done on the computation of the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done on the computation of the Root. Exception NotDone is raised if the root was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Root ******************/
-		/**** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ****/
+		/****** math_FunctionRoot::Root ******/
+		/****** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the root. Exception NotDone is raised if the root was not found.
 ") Root;
 		Standard_Real Root();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_FunctionRoot::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the function at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the function at the root. Exception NotDone is raised if the root was not found.
 ") Value;
 		Standard_Real Value();
 
@@ -2077,100 +2417,120 @@ float
 ***************************/
 class math_FunctionRoots {
 	public:
-		/****************** math_FunctionRoots ******************/
-		/**** md5 signature: abf707bf72f290b30f6f389c3c53da02 ****/
+		/****** math_FunctionRoots::math_FunctionRoots ******/
+		/****** md5 signature: abf707bf72f290b30f6f389c3c53da02 ******/
 		%feature("compactdefaultargs") math_FunctionRoots;
-		%feature("autodoc", "Calculates all the real roots of a function f-k within the range a..b. whithout conditions on a and b a solution x is found when abs(xi - xi-1) <= epsx and abs(f(xi)-k) <= epsf. the function is considered as null between a and b if abs(f-k) <= epsnull within this range.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
 A: float
 B: float
 NbSample: int
-EpsX: float,optional
-	default value is 0.0
-EpsF: float,optional
-	default value is 0.0
-EpsNull: float,optional
-	default value is 0.0
-K: float,optional
-	default value is 0.0
+EpsX: float (optional, default to 0.0)
+EpsF: float (optional, default to 0.0)
+EpsNull: float (optional, default to 0.0)
+K: float (optional, default to 0.0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Calculates all the real roots of a function F-K within the range A..B. without conditions on A and B A solution X is found when abs(Xi - Xi-1) <= Epsx and abs(F(Xi)-K) <= EpsF. The function is considered as null between A and B if abs(F-K) <= EpsNull within this range.
 ") math_FunctionRoots;
 		 math_FunctionRoots(math_FunctionWithDerivative & F, const Standard_Real A, const Standard_Real B, const Standard_Integer NbSample, const Standard_Real EpsX = 0.0, const Standard_Real EpsF = 0.0, const Standard_Real EpsNull = 0.0, const Standard_Real K = 0.0);
 
+		/****** math_FunctionRoots::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsAllNull ******************/
-		/**** md5 signature: e00a1caef8eb3e9a54836fe956196c51 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_FunctionRoots::IsAllNull ******/
+		/****** md5 signature: e00a1caef8eb3e9a54836fe956196c51 ******/
 		%feature("compactdefaultargs") IsAllNull;
-		%feature("autodoc", "Returns true if the function is considered as null between a and b. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+returns true if the function is considered as null between A and B. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") IsAllNull;
 		Standard_Boolean IsAllNull();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_FunctionRoots::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbSolutions ******************/
-		/**** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ****/
+		/****** math_FunctionRoots::NbSolutions ******/
+		/****** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ******/
 		%feature("compactdefaultargs") NbSolutions;
-		%feature("autodoc", "Returns the number of solutions found. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of solutions found. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") NbSolutions;
 		Standard_Integer NbSolutions();
 
-		/****************** StateNumber ******************/
-		/**** md5 signature: d20185d797d6ee1ddfa25e8eb9f4c38f ****/
+		/****** math_FunctionRoots::StateNumber ******/
+		/****** md5 signature: d20185d797d6ee1ddfa25e8eb9f4c38f ******/
 		%feature("compactdefaultargs") StateNumber;
-		%feature("autodoc", "Returns the statenumber of the nieme root. exception rangeerror is raised if nieme is < 1 or nieme > nbsolutions.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Nieme: int
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+returns the StateNumber of the Nieme root. Exception RangeError is raised if Nieme is < 1 or Nieme > NbSolutions.
 ") StateNumber;
 		Standard_Integer StateNumber(const Standard_Integer Nieme);
 
-		/****************** Value ******************/
-		/**** md5 signature: ce64f743863f7841a0200359c4eca81a ****/
+		/****** math_FunctionRoots::Value ******/
+		/****** md5 signature: ce64f743863f7841a0200359c4eca81a ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the nth value of the root of function f. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
+		%feature("autodoc", "
 Parameters
 ----------
 Nieme: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the Nth value of the root of function F. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") Value;
 		Standard_Real Value(const Standard_Integer Nieme);
 
@@ -2188,61 +2548,72 @@ float
 ****************************/
 class math_FunctionSample {
 	public:
-		/****************** math_FunctionSample ******************/
-		/**** md5 signature: ca41d1216a18facca22beb41ec5f7052 ****/
+		/****** math_FunctionSample::math_FunctionSample ******/
+		/****** md5 signature: ca41d1216a18facca22beb41ec5f7052 ******/
 		%feature("compactdefaultargs") math_FunctionSample;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
 B: float
 N: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_FunctionSample;
 		 math_FunctionSample(const Standard_Real A, const Standard_Real B, const Standard_Integer N);
 
-		/****************** Bounds ******************/
-		/**** md5 signature: 04ba7e6cd4378e996946f1d9439d3da5 ****/
+		/****** math_FunctionSample::Bounds ******/
+		/****** md5 signature: 04ba7e6cd4378e996946f1d9439d3da5 ******/
 		%feature("compactdefaultargs") Bounds;
-		%feature("autodoc", "Returns the bounds of parameters.
-
+		%feature("autodoc", "
 Parameters
 ----------
 
-Returns
+Return
 -------
 A: float
 B: float
+
+Description
+-----------
+Returns the bounds of parameters.
 ") Bounds;
 		virtual void Bounds(Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** GetParameter ******************/
-		/**** md5 signature: ee75993f5910b04b1fbdbaf2e5bb8839 ****/
+		/****** math_FunctionSample::GetParameter ******/
+		/****** md5 signature: ee75993f5910b04b1fbdbaf2e5bb8839 ******/
 		%feature("compactdefaultargs") GetParameter;
-		%feature("autodoc", "Returns the value of parameter of the point of range index : a + ((index-1)/(nbpoints-1))*b. an exception is raised if index<=0 or index>nbpoints.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the value of parameter of the point of range Index: A + ((Index-1)/(NbPoints-1))*B. An exception is raised if Index<=0 or Index>NbPoints.
 ") GetParameter;
 		virtual Standard_Real GetParameter(const Standard_Integer Index);
 
-		/****************** NbPoints ******************/
-		/**** md5 signature: 1d4bbbd7c4dda4f1e56c00ae994bedbe ****/
+		/****** math_FunctionSample::NbPoints ******/
+		/****** md5 signature: 1d4bbbd7c4dda4f1e56c00ae994bedbe ******/
 		%feature("compactdefaultargs") NbPoints;
-		%feature("autodoc", "Returns the number of sample points.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of sample points.
 ") NbPoints;
 		Standard_Integer NbPoints();
 
@@ -2261,52 +2632,61 @@ int
 %nodefaultctor math_FunctionSet;
 class math_FunctionSet {
 	public:
-		/****************** GetStateNumber ******************/
-		/**** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ****/
+		/****** math_FunctionSet::GetStateNumber ******/
+		/****** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ******/
 		%feature("compactdefaultargs") GetStateNumber;
-		%feature("autodoc", "Returns the state of the function corresponding to the latestcall of any methods associated with the function. this function is called by each of the algorithms described later which define the function integer algorithm::statenumber(). the algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this statenumber. byu default, this method returns 0 (which means for the algorithm: no state has been saved). it is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an integer that allows retrieval of the state.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the state of the function corresponding to the latestcall of any methods associated with the function. This function is called by each of the algorithms described later which define the function Integer Algorithm::StateNumber(). The algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this StateNumber. Byu default, this method returns 0 (which means for the algorithm: no state has been saved). It is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an Integer that allows retrieval of the state.
 ") GetStateNumber;
 		virtual Standard_Integer GetStateNumber();
 
-		/****************** NbEquations ******************/
-		/**** md5 signature: ba4fd9483f383d968d2ec54d4ae3fbf1 ****/
+		/****** math_FunctionSet::NbEquations ******/
+		/****** md5 signature: ba4fd9483f383d968d2ec54d4ae3fbf1 ******/
 		%feature("compactdefaultargs") NbEquations;
-		%feature("autodoc", "Returns the number of equations of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of equations of the function.
 ") NbEquations;
 		virtual Standard_Integer NbEquations();
 
-		/****************** NbVariables ******************/
-		/**** md5 signature: 9592108ebf305562827d51d05d64eecc ****/
+		/****** math_FunctionSet::NbVariables ******/
+		/****** md5 signature: 9592108ebf305562827d51d05d64eecc ******/
 		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "Returns the number of variables of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of variables of the function.
 ") NbVariables;
 		virtual Standard_Integer NbVariables();
 
-		/****************** Value ******************/
-		/**** md5 signature: fbdd70146ff924dbae65883aeb76c6f7 ****/
+		/****** math_FunctionSet::Value ******/
+		/****** md5 signature: fbdd70146ff924dbae65883aeb76c6f7 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the values <f> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 F: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Computes the values <F> of the functions for the variable <X>. returns True if the computation was done successfully, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const math_Vector & X, math_Vector & F);
 
@@ -2324,236 +2704,282 @@ bool
 *****************************/
 class math_FunctionSetRoot {
 	public:
-		/****************** math_FunctionSetRoot ******************/
-		/**** md5 signature: 414ab675eefb861155019331ee3dd3b5 ****/
+		/****** math_FunctionSetRoot::math_FunctionSetRoot ******/
+		/****** md5 signature: 414ab675eefb861155019331ee3dd3b5 ******/
 		%feature("compactdefaultargs") math_FunctionSetRoot;
-		%feature("autodoc", "Is used in a sub-class to initialize correctly all the fields of this class. the range (1, f.nbvariables()) must be especially respected for all vectors and matrix declarations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionSetWithDerivatives
 Tolerance: math_Vector
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+is used in a sub-class to initialize correctly all the fields of this class. The range (1, F.NbVariables()) must be especially respected for all vectors and matrix declarations.
 ") math_FunctionSetRoot;
 		 math_FunctionSetRoot(math_FunctionSetWithDerivatives & F, const math_Vector & Tolerance, const Standard_Integer NbIterations = 100);
 
-		/****************** math_FunctionSetRoot ******************/
-		/**** md5 signature: d03ee6cdc8f09be698f4adb5d6369bef ****/
+		/****** math_FunctionSetRoot::math_FunctionSetRoot ******/
+		/****** md5 signature: d03ee6cdc8f09be698f4adb5d6369bef ******/
 		%feature("compactdefaultargs") math_FunctionSetRoot;
-		%feature("autodoc", "Is used in a sub-class to initialize correctly all the fields of this class. the range (1, f.nbvariables()) must be especially respected for all vectors and matrix declarations. the method settolerance must be called after this constructor.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionSetWithDerivatives
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+is used in a sub-class to initialize correctly all the fields of this class. The range (1, F.NbVariables()) must be especially respected for all vectors and matrix declarations. The method SetTolerance must be called after this constructor.
 ") math_FunctionSetRoot;
 		 math_FunctionSetRoot(math_FunctionSetWithDerivatives & F, const Standard_Integer NbIterations = 100);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: 3dcf53e070495d3f965a044124317010 ****/
+		/****** math_FunctionSetRoot::Derivative ******/
+		/****** md5 signature: fcd9ef2e33cbc01b115f3add2846c468 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Returns the matrix value of the derivative at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the matrix value of the derivative at the root. Exception NotDone is raised if the root was not found.
 ") Derivative;
 		const math_Matrix & Derivative();
 
-		/****************** Derivative ******************/
-		/**** md5 signature: a541fd37b04e5a32f186e9bd160ab411 ****/
+		/****** math_FunctionSetRoot::Derivative ******/
+		/****** md5 signature: 7c4478e7f2c54768ee35dbf6b4914076 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Outputs the matrix value of the derivative at the root in der. exception notdone is raised if the root was not found. exception dimensionerror is raised if the column range of <der> is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Der: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the matrix value of the derivative at the root in Der. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the column range of <Der> is not equal to the range of the startingPoint.
 ") Derivative;
 		void Derivative(math_Matrix & Der);
 
+		/****** math_FunctionSetRoot::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** FunctionSetErrors ******************/
-		/**** md5 signature: f60cf743c92edccf04b38617ec21af42 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_FunctionSetRoot::FunctionSetErrors ******/
+		/****** md5 signature: 5c3b5fe11df662477290ea4121b545af ******/
 		%feature("compactdefaultargs") FunctionSetErrors;
-		%feature("autodoc", "Returns the vector value of the error done on the functions at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the vector value of the error done on the functions at the root. Exception NotDone is raised if the root was not found.
 ") FunctionSetErrors;
 		const math_Vector & FunctionSetErrors();
 
-		/****************** FunctionSetErrors ******************/
-		/**** md5 signature: 42d5fb93e272f054a74fbe4bd77ad1f2 ****/
+		/****** math_FunctionSetRoot::FunctionSetErrors ******/
+		/****** md5 signature: 42d5fb93e272f054a74fbe4bd77ad1f2 ******/
 		%feature("compactdefaultargs") FunctionSetErrors;
-		%feature("autodoc", "Outputs the vector value of the error done on the functions at the root in err. exception notdone is raised if the root was not found. exception dimensionerror is raised if the range of err is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Err: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the vector value of the error done on the functions at the root in Err. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the range of Err is not equal to the range of the StartingPoint.
 ") FunctionSetErrors;
 		void FunctionSetErrors(math_Vector & Err);
 
-		/****************** IsDivergent ******************/
-		/**** md5 signature: 34d4726b89ed546a888bb10215580d36 ****/
+		/****** math_FunctionSetRoot::IsDivergent ******/
+		/****** md5 signature: 96410564fded70ab52b25d92b739e5b8 ******/
 		%feature("compactdefaultargs") IsDivergent;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsDivergent;
 		Standard_Boolean IsDivergent();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_FunctionSetRoot::IsDone ******/
+		/****** md5 signature: e385477ab1bec806154173d4a550fd68 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: 8f22da97fa90e99c4558e184c58d5b3e ****/
+		/****** math_FunctionSetRoot::IsSolutionReached ******/
+		/****** md5 signature: 2a9a392515a38070b5013e85c5f9b31f ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "This routine is called at the end of each iteration to check if the solution was found. it can be redefined in a sub-class to implement a specific test to stop the iterations. in this case, the solution is found when: abs(xi - xi-1) <= tolerance for all unknowns.
-
+		%feature("autodoc", "
 Parameters
 ----------
-F: math_FunctionSetWithDerivatives
+&: math_FunctionSetWithDerivatives
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+This routine is called at the end of each iteration to check if the solution was found. It can be redefined in a sub-class to implement a specific test to stop the iterations. In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance for all unknowns.
 ") IsSolutionReached;
-		virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives & F);
+		virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives &);
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_FunctionSetRoot::NbIterations ******/
+		/****** md5 signature: afa9e692e88494ad7998dd4619f3c08a ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations really done during the computation of the root. Exception NotDone is raised if the root was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 65314f15eb332ce8899089638e7703dd ****/
+		/****** math_FunctionSetRoot::Perform ******/
+		/****** md5 signature: 65314f15eb332ce8899089638e7703dd ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Improves the root of function from the initial guess point. the infinum and supremum may be given to constrain the solution. in this case, the solution is found when: abs(xi - xi-1)(j) <= tolerance(j) for all unknowns.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
 theStartingPoint: math_Vector
-theStopOnDivergent: bool,optional
-	default value is Standard_False
+theStopOnDivergent: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Improves the root of function from the initial guess point. The infinum and supremum may be given to constrain the solution. In this case, the solution is found when: abs(Xi - Xi-1)(j) <= Tolerance(j) for all unknowns.
 ") Perform;
 		void Perform(math_FunctionSetWithDerivatives & theFunction, const math_Vector & theStartingPoint, const Standard_Boolean theStopOnDivergent = Standard_False);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 242967ab11990758c7cab15d7ad9aa30 ****/
+		/****** math_FunctionSetRoot::Perform ******/
+		/****** md5 signature: 242967ab11990758c7cab15d7ad9aa30 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Improves the root of function from the initial guess point. the infinum and supremum may be given to constrain the solution. in this case, the solution is found when: abs(xi - xi-1) <= tolerance for all unknowns.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
 theStartingPoint: math_Vector
 theInfBound: math_Vector
 theSupBound: math_Vector
-theStopOnDivergent: bool,optional
-	default value is Standard_False
+theStopOnDivergent: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Improves the root of function from the initial guess point. The infinum and supremum may be given to constrain the solution. In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance for all unknowns.
 ") Perform;
 		void Perform(math_FunctionSetWithDerivatives & theFunction, const math_Vector & theStartingPoint, const math_Vector & theInfBound, const math_Vector & theSupBound, const Standard_Boolean theStopOnDivergent = Standard_False);
 
-		/****************** Root ******************/
-		/**** md5 signature: 877a7a2963433958443904730046ad0c ****/
+		/****** math_FunctionSetRoot::Root ******/
+		/****** md5 signature: 467f474c854f954a53bf30f3d82b793e ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root of function f. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the value of the root of function F. Exception NotDone is raised if the root was not found.
 ") Root;
 		const math_Vector & Root();
 
-		/****************** Root ******************/
-		/**** md5 signature: a6e973993b4c58ebb2497c195b8005ce ****/
+		/****** math_FunctionSetRoot::Root ******/
+		/****** md5 signature: a6e973993b4c58ebb2497c195b8005ce ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Outputs the root vector in root. exception notdone is raised if the root was not found. exception dimensionerror is raised if the range of root is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Root: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Outputs the root vector in Root. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the range of Root is not equal to the range of the StartingPoint.
 ") Root;
 		void Root(math_Vector & Root);
 
-		/****************** SetTolerance ******************/
-		/**** md5 signature: 250dc0de55bf130c92f097c07324b042 ****/
+		/****** math_FunctionSetRoot::SetTolerance ******/
+		/****** md5 signature: 250dc0de55bf130c92f097c07324b042 ******/
 		%feature("compactdefaultargs") SetTolerance;
-		%feature("autodoc", "Initializes the tolerance values.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Tolerance: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initializes the tolerance values.
 ") SetTolerance;
 		void SetTolerance(const math_Vector & Tolerance);
 
-		/****************** StateNumber ******************/
-		/**** md5 signature: c825243d16208354db2b16a295147184 ****/
+		/****** math_FunctionSetRoot::StateNumber ******/
+		/****** md5 signature: f01709bfa944492be6fea9699946cca6 ******/
 		%feature("compactdefaultargs") StateNumber;
-		%feature("autodoc", "Returns the statenumber (as returned by f.getstatenumber()) associated to the root found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the stateNumber (as returned by F.GetStateNumber()) associated to the root found.
 ") StateNumber;
 		Standard_Integer StateNumber();
 
@@ -2571,98 +2997,121 @@ int
 *******************/
 class math_Gauss {
 	public:
-		/****************** math_Gauss ******************/
-		/**** md5 signature: 6a94db55724cec84e15299a05d1b3a6f ****/
+		/****** math_Gauss::math_Gauss ******/
+		/****** md5 signature: 73ea5f1f86c396552a8862c45d31d1e4 ******/
 		%feature("compactdefaultargs") math_Gauss;
-		%feature("autodoc", "Given an input n x n matrix a this constructor performs its lu decomposition with partial pivoting (interchange of rows). this lu decomposition is stored internally and may be used to do subsequent calculation. if the largest pivot found is less than minpivot the matrix a is considered as singular. exception notsquare is raised if a is not a square matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
-MinPivot: float,optional
-	default value is 1.0e-20
-aProgress: Message_ProgressIndicator,optional
-	default value is opencascade::handle<Message_ProgressIndicator>()
+MinPivot: float (optional, default to 1.0e-20)
+theProgress: Message_ProgressRange (optional, default to Message_ProgressRange())
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input n X n matrix A this constructor performs its LU decomposition with partial pivoting (interchange of rows). This LU decomposition is stored internally and may be used to do subsequent calculation. If the largest pivot found is less than MinPivot the matrix A is considered as singular. Exception NotSquare is raised if A is not a square matrix.
 ") math_Gauss;
-		 math_Gauss(const math_Matrix & A, const Standard_Real MinPivot = 1.0e-20, const opencascade::handle<Message_ProgressIndicator> & aProgress = opencascade::handle<Message_ProgressIndicator>());
+		 math_Gauss(const math_Matrix & A, const Standard_Real MinPivot = 1.0e-20, const Message_ProgressRange & theProgress = Message_ProgressRange());
 
-		/****************** Determinant ******************/
-		/**** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ****/
+		/****** math_Gauss::Determinant ******/
+		/****** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ******/
 		%feature("compactdefaultargs") Determinant;
-		%feature("autodoc", "This routine returns the value of the determinant of the previously lu decomposed matrix a. exception notdone may be raised if the decomposition of a was not done successfully, zero is returned if the matrix a was considered as singular.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+This routine returns the value of the determinant of the previously LU decomposed matrix A. Exception NotDone may be raised if the decomposition of A was not done successfully, zero is returned if the matrix A was considered as singular.
 ") Determinant;
 		Standard_Real Determinant();
 
+		/****** math_Gauss::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Invert ******************/
-		/**** md5 signature: 3042934a9caa618d22aceb841b1bb048 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Gauss::Invert ******/
+		/****** md5 signature: 3042934a9caa618d22aceb841b1bb048 ******/
 		%feature("compactdefaultargs") Invert;
-		%feature("autodoc", "This routine outputs inv the inverse of the previously lu decomposed matrix a. exception dimensionerror is raised if the ranges of b are not equal to the ranges of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Inv: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+This routine outputs Inv the inverse of the previously LU decomposed matrix A. Exception DimensionError is raised if the ranges of B are not equal to the ranges of A.
 ") Invert;
 		void Invert(math_Matrix & Inv);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: e385477ab1bec806154173d4a550fd68 ****/
+		/****** math_Gauss::IsDone ******/
+		/****** md5 signature: e385477ab1bec806154173d4a550fd68 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Solve ******************/
-		/**** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ****/
+		/****** math_Gauss::Solve ******/
+		/****** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ******/
 		%feature("compactdefaultargs") Solve;
-		%feature("autodoc", "Given the input vector b this routine returns the solution x of the set of linear equations a . x = b. exception notdone is raised if the decomposition of a was not done successfully. exception dimensionerror is raised if the range of b is not equal to the number of rows of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: math_Vector
 X: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the input Vector B this routine returns the solution X of the set of linear equations A . X = B. Exception NotDone is raised if the decomposition of A was not done successfully. Exception DimensionError is raised if the range of B is not equal to the number of rows of A.
 ") Solve;
 		void Solve(const math_Vector & B, math_Vector & X);
 
-		/****************** Solve ******************/
-		/**** md5 signature: ffb635af399b50012aab56eaf9ca4225 ****/
+		/****** math_Gauss::Solve ******/
+		/****** md5 signature: ffb635af399b50012aab56eaf9ca4225 ******/
 		%feature("compactdefaultargs") Solve;
-		%feature("autodoc", "Given the input vector b this routine solves the set of linear equations a . x = b. b is replaced by the vector solution x. exception notdone is raised if the decomposition of a was not done successfully. exception dimensionerror is raised if the range of b is not equal to the number of rows of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the input Vector B this routine solves the set of linear equations A . X = B. B is replaced by the vector solution X. Exception NotDone is raised if the decomposition of A was not done successfully. Exception DimensionError is raised if the range of B is not equal to the number of rows of A.
 ") Solve;
 		void Solve(math_Vector & B);
 
@@ -2680,55 +3129,71 @@ None
 ******************************/
 class math_GaussLeastSquare {
 	public:
-		/****************** math_GaussLeastSquare ******************/
-		/**** md5 signature: f2803bab78676aba3ad0384c8579aa81 ****/
+		/****** math_GaussLeastSquare::math_GaussLeastSquare ******/
+		/****** md5 signature: f2803bab78676aba3ad0384c8579aa81 ******/
 		%feature("compactdefaultargs") math_GaussLeastSquare;
-		%feature("autodoc", "Given an input n x m matrix a with n >= m this constructor performs the lu decomposition with partial pivoting (interchange of rows) of the matrix aa = a.transposed() * a; this lu decomposition is stored internally and may be used to do subsequent calculation. if the largest pivot found is less than minpivot the matrix <a> is considered as singular.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
-MinPivot: float,optional
-	default value is 1.0e-20
+MinPivot: float (optional, default to 1.0e-20)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input n X m matrix A with n >= m this constructor performs the LU decomposition with partial pivoting (interchange of rows) of the matrix AA = A.Transposed() * A; This LU decomposition is stored internally and may be used to do subsequent calculation. If the largest pivot found is less than MinPivot the matrix <A> is considered as singular.
 ") math_GaussLeastSquare;
 		 math_GaussLeastSquare(const math_Matrix & A, const Standard_Real MinPivot = 1.0e-20);
 
+		/****** math_GaussLeastSquare::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_GaussLeastSquare::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.e.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.e.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Solve ******************/
-		/**** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ****/
+		/****** math_GaussLeastSquare::Solve ******/
+		/****** md5 signature: ee147e7d65a116bd9db2ac0eb3018d6f ******/
 		%feature("compactdefaultargs") Solve;
-		%feature("autodoc", "Given the input vector <b> this routine solves the set of linear equations a . x = b. exception notdone is raised if the decomposition of a was not done successfully. exception dimensionerror is raised if the range of b inv is not equal to the rowrange of a. exception dimensionerror is raised if the range of x inv is not equal to the colrange of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: math_Vector
 X: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the input Vector <B> this routine solves the set of linear equations A . X = B. Exception NotDone is raised if the decomposition of A was not done successfully. Exception DimensionError is raised if the range of B Inv is not equal to the rowrange of A. Exception DimensionError is raised if the range of X Inv is not equal to the colrange of A.
 ") Solve;
 		void Solve(const math_Vector & B, math_Vector & X);
 
@@ -2746,11 +3211,10 @@ None
 **************************************/
 class math_GaussMultipleIntegration {
 	public:
-		/****************** math_GaussMultipleIntegration ******************/
-		/**** md5 signature: 70f32a9670faa17902d312aaf809dc84 ****/
+		/****** math_GaussMultipleIntegration::math_GaussMultipleIntegration ******/
+		/****** md5 signature: 70f32a9670faa17902d312aaf809dc84 ******/
 		%feature("compactdefaultargs") math_GaussMultipleIntegration;
-		%feature("autodoc", "The gauss-legendre integration with order = points of integration for each unknow, is done on the function f between the bounds lower and upper.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_MultipleVarFunction
@@ -2758,39 +3222,56 @@ Lower: math_Vector
 Upper: math_Vector
 Order: math_IntegerVector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Gauss-Legendre integration with Order = points of integration for each unknown, is done on the function F between the bounds Lower and Upper.
 ") math_GaussMultipleIntegration;
 		 math_GaussMultipleIntegration(math_MultipleVarFunction & F, const math_Vector & Lower, const math_Vector & Upper, const math_IntegerVector & Order);
 
+		/****** math_GaussMultipleIntegration::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_GaussMultipleIntegration::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if all has been correctly done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+returns True if all has been correctly done.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_GaussMultipleIntegration::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the integral.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the integral.
 ") Value;
 		Standard_Real Value();
 
@@ -2808,11 +3289,10 @@ float
 *********************************/
 class math_GaussSetIntegration {
 	public:
-		/****************** math_GaussSetIntegration ******************/
-		/**** md5 signature: ccc7194f05e1d20cdc9dff8f00019009 ****/
+		/****** math_GaussSetIntegration::math_GaussSetIntegration ******/
+		/****** md5 signature: ccc7194f05e1d20cdc9dff8f00019009 ******/
 		%feature("compactdefaultargs") math_GaussSetIntegration;
-		%feature("autodoc", "The gauss-legendre integration with order = points of integration for each unknow, is done on the function f between the bounds lower and upper.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionSet
@@ -2820,39 +3300,56 @@ Lower: math_Vector
 Upper: math_Vector
 Order: math_IntegerVector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Gauss-Legendre integration with Order = points of integration for each unknown, is done on the function F between the bounds Lower and Upper.
 ") math_GaussSetIntegration;
 		 math_GaussSetIntegration(math_FunctionSet & F, const math_Vector & Lower, const math_Vector & Upper, const math_IntegerVector & Order);
 
+		/****** math_GaussSetIntegration::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_GaussSetIntegration::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if all has been correctly done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+returns True if all has been correctly done.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Value ******************/
-		/**** md5 signature: da451945ce62c2e97eedc01217c3028f ****/
+		/****** math_GaussSetIntegration::Value ******/
+		/****** md5 signature: da451945ce62c2e97eedc01217c3028f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the integral.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the value of the integral.
 ") Value;
 		const math_Vector & Value();
 
@@ -2870,22 +3367,23 @@ math_Vector
 ************************************/
 class math_GaussSingleIntegration {
 	public:
-		/****************** math_GaussSingleIntegration ******************/
-		/**** md5 signature: 97916529d16b246659c2539c47b5f077 ****/
+		/****** math_GaussSingleIntegration::math_GaussSingleIntegration ******/
+		/****** md5 signature: 97916529d16b246659c2539c47b5f077 ******/
 		%feature("compactdefaultargs") math_GaussSingleIntegration;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_GaussSingleIntegration;
 		 math_GaussSingleIntegration();
 
-		/****************** math_GaussSingleIntegration ******************/
-		/**** md5 signature: 51a1434ce735fb74c6227fcecf43d1e3 ****/
+		/****** math_GaussSingleIntegration::math_GaussSingleIntegration ******/
+		/****** md5 signature: 51a1434ce735fb74c6227fcecf43d1e3 ******/
 		%feature("compactdefaultargs") math_GaussSingleIntegration;
-		%feature("autodoc", "The gauss-legendre integration with n = order points of integration, is done on the function f between the bounds lower and upper.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
@@ -2893,17 +3391,20 @@ Lower: float
 Upper: float
 Order: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Gauss-Legendre integration with N = Order points of integration, is done on the function F between the bounds Lower and Upper.
 ") math_GaussSingleIntegration;
 		 math_GaussSingleIntegration(math_Function & F, const Standard_Real Lower, const Standard_Real Upper, const Standard_Integer Order);
 
-		/****************** math_GaussSingleIntegration ******************/
-		/**** md5 signature: 97b50fd948af172f5a0f143ab8773768 ****/
+		/****** math_GaussSingleIntegration::math_GaussSingleIntegration ******/
+		/****** md5 signature: 97b50fd948af172f5a0f143ab8773768 ******/
 		%feature("compactdefaultargs") math_GaussSingleIntegration;
-		%feature("autodoc", "The gauss-legendre integration with n = order points of integration and given tolerance = tol is done on the function f between the bounds lower and upper.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_Function
@@ -2912,39 +3413,56 @@ Upper: float
 Order: int
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Gauss-Legendre integration with N = Order points of integration and given tolerance = Tol is done on the function F between the bounds Lower and Upper.
 ") math_GaussSingleIntegration;
 		 math_GaussSingleIntegration(math_Function & F, const Standard_Real Lower, const Standard_Real Upper, const Standard_Integer Order, const Standard_Real Tol);
 
+		/****** math_GaussSingleIntegration::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_GaussSingleIntegration::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if all has been correctly done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+returns True if all has been correctly done.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_GaussSingleIntegration::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the integral.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the integral.
 ") Value;
 		Standard_Real Value();
 
@@ -2963,230 +3481,293 @@ float
 class math_GlobOptMin {
 	public:
 		class NCollection_CellFilter_Inspector {};
-		/****************** math_GlobOptMin ******************/
-		/**** md5 signature: ca64c1e0567a10f058ead911634be37a ****/
+		/****** math_GlobOptMin::math_GlobOptMin ******/
+		/****** md5 signature: ca64c1e0567a10f058ead911634be37a ******/
 		%feature("compactdefaultargs") math_GlobOptMin;
-		%feature("autodoc", "Constructor. perform method is not called from it. @param thefunc - objective functional. @param thelowerborder - lower corner of the search box. @param theupperborder - upper corner of the search box. @param thec - lipschitz constant. @param thediscretizationtol - parameter space discretization tolerance. @param thesametol - functional value space indifference tolerance.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunc: math_MultipleVarFunction *
 theLowerBorder: math_Vector
 theUpperBorder: math_Vector
-theC: float,optional
-	default value is 9
-theDiscretizationTol: float,optional
-	default value is 1.0e-2
-theSameTol: float,optional
-	default value is 1.0e-7
+theC: float (optional, default to 9)
+theDiscretizationTol: float (optional, default to 1.0e-2)
+theSameTol: float (optional, default to 1.0e-7)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor. Perform method is not called from it. 
+Parameter theFunc - objective functional. 
+Parameter theLowerBorder - lower corner of the search box. 
+Parameter theUpperBorder - upper corner of the search box. 
+Parameter theC - Lipschitz constant. 
+Parameter theDiscretizationTol - parameter space discretization tolerance. 
+Parameter theSameTol - functional value space indifference tolerance.
 ") math_GlobOptMin;
 		 math_GlobOptMin(math_MultipleVarFunction * theFunc, const math_Vector & theLowerBorder, const math_Vector & theUpperBorder, const Standard_Real theC = 9, const Standard_Real theDiscretizationTol = 1.0e-2, const Standard_Real theSameTol = 1.0e-7);
 
-		/****************** GetContinuity ******************/
-		/**** md5 signature: 8fc1a115d32e6c038011baa4542ce9ee ****/
+		/****** math_GlobOptMin::GetContinuity ******/
+		/****** md5 signature: 8fc1a115d32e6c038011baa4542ce9ee ******/
 		%feature("compactdefaultargs") GetContinuity;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") GetContinuity;
 		Standard_Integer GetContinuity();
 
-		/****************** GetF ******************/
-		/**** md5 signature: e2d80181d22382966f76c2b7388843b5 ****/
+		/****** math_GlobOptMin::GetF ******/
+		/****** md5 signature: e2d80181d22382966f76c2b7388843b5 ******/
 		%feature("compactdefaultargs") GetF;
-		%feature("autodoc", "Get best functional value.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Get best functional value.
 ") GetF;
 		Standard_Real GetF();
 
-		/****************** GetFunctionalMinimalValue ******************/
-		/**** md5 signature: 3fda6f005c0b7a9cc05bcc067e5af42a ****/
+		/****** math_GlobOptMin::GetFunctionalMinimalValue ******/
+		/****** md5 signature: 3fda6f005c0b7a9cc05bcc067e5af42a ******/
 		%feature("compactdefaultargs") GetFunctionalMinimalValue;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") GetFunctionalMinimalValue;
 		Standard_Real GetFunctionalMinimalValue();
 
-		/****************** GetLipConstState ******************/
-		/**** md5 signature: c4288e61ff39bf6e928aa9d8e66b8b8e ****/
+		/****** math_GlobOptMin::GetLipConstState ******/
+		/****** md5 signature: c4288e61ff39bf6e928aa9d8e66b8b8e ******/
 		%feature("compactdefaultargs") GetLipConstState;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") GetLipConstState;
 		Standard_Boolean GetLipConstState();
 
-		/****************** GetTol ******************/
-		/**** md5 signature: 93891d3ae67f7376cfc9fdc8a29db359 ****/
+		/****** math_GlobOptMin::GetTol ******/
+		/****** md5 signature: 93891d3ae67f7376cfc9fdc8a29db359 ******/
 		%feature("compactdefaultargs") GetTol;
-		%feature("autodoc", "Method to get tolerances. @param thediscretizationtol - parameter space discretization tolerance. @param thesametol - functional value space indifference tolerance.
-
+		%feature("autodoc", "
 Parameters
 ----------
 
-Returns
+Return
 -------
 theDiscretizationTol: float
 theSameTol: float
+
+Description
+-----------
+Method to get tolerances. 
+Parameter theDiscretizationTol - parameter space discretization tolerance. 
+Parameter theSameTol - functional value space indifference tolerance.
 ") GetTol;
 		void GetTol(Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** NbExtrema ******************/
-		/**** md5 signature: 57a2ec9f9d1fe41ee91c407be12b9e2e ****/
+		/****** math_GlobOptMin::NbExtrema ******/
+		/****** md5 signature: 57a2ec9f9d1fe41ee91c407be12b9e2e ******/
 		%feature("compactdefaultargs") NbExtrema;
-		%feature("autodoc", "Return count of global extremas.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Return count of global extremas.
 ") NbExtrema;
 		Standard_Integer NbExtrema();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 10db8f17c813777ba5d8d5249b5e8807 ****/
+		/****** math_GlobOptMin::Perform ******/
+		/****** md5 signature: 10db8f17c813777ba5d8d5249b5e8807 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "@param isfindsinglesolution - defines whether to find single solution or all solutions.
-
+		%feature("autodoc", "
 Parameters
 ----------
-isFindSingleSolution: bool,optional
-	default value is Standard_False
+isFindSingleSolution: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Parameter isFindSingleSolution - defines whether to find single solution or all solutions.
 ") Perform;
 		void Perform(const Standard_Boolean isFindSingleSolution = Standard_False);
 
-		/****************** Points ******************/
-		/**** md5 signature: bee54730807c8349111572ee6d330ea8 ****/
+		/****** math_GlobOptMin::Points ******/
+		/****** md5 signature: bee54730807c8349111572ee6d330ea8 ******/
 		%feature("compactdefaultargs") Points;
-		%feature("autodoc", "Return solution theindex, 1 <= theindex <= nbextrema.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theIndex: int
 theSol: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Return solution theIndex, 1 <= theIndex <= NbExtrema.
 ") Points;
 		void Points(const Standard_Integer theIndex, math_Vector & theSol);
 
-		/****************** SetContinuity ******************/
-		/**** md5 signature: 1f10150f24d207b042da65493c81cb45 ****/
+		/****** math_GlobOptMin::SetContinuity ******/
+		/****** md5 signature: 1f10150f24d207b042da65493c81cb45 ******/
 		%feature("compactdefaultargs") SetContinuity;
-		%feature("autodoc", "Set / get continuity of local borders splits (0 ~ c0, 1 ~ c1, 2 ~ c2).
-
+		%feature("autodoc", "
 Parameters
 ----------
 theCont: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set / Get continuity of local borders splits (0 ~ C0, 1 ~ C1, 2 ~ C2).
 ") SetContinuity;
 		void SetContinuity(const Standard_Integer theCont);
 
-		/****************** SetFunctionalMinimalValue ******************/
-		/**** md5 signature: 29b24164c13be9e8a33b2433d137b35b ****/
+		/****** math_GlobOptMin::SetFunctionalMinimalValue ******/
+		/****** md5 signature: 29b24164c13be9e8a33b2433d137b35b ******/
 		%feature("compactdefaultargs") SetFunctionalMinimalValue;
-		%feature("autodoc", "Set / get functional minimal value.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theMinimalValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set / Get functional minimal value.
 ") SetFunctionalMinimalValue;
 		void SetFunctionalMinimalValue(const Standard_Real theMinimalValue);
 
-		/****************** SetGlobalParams ******************/
-		/**** md5 signature: 1e821fc9cd49a39a8aa5598e35144696 ****/
+		/****** math_GlobOptMin::SetGlobalParams ******/
+		/****** md5 signature: 1e821fc9cd49a39a8aa5598e35144696 ******/
 		%feature("compactdefaultargs") SetGlobalParams;
-		%feature("autodoc", "@param thefunc - objective functional. @param thelowerborder - lower corner of the search box. @param theupperborder - upper corner of the search box. @param thec - lipschitz constant. @param thediscretizationtol - parameter space discretization tolerance. @param thesametol - functional value space indifference tolerance.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunc: math_MultipleVarFunction *
 theLowerBorder: math_Vector
 theUpperBorder: math_Vector
-theC: float,optional
-	default value is 9
-theDiscretizationTol: float,optional
-	default value is 1.0e-2
-theSameTol: float,optional
-	default value is 1.0e-7
+theC: float (optional, default to 9)
+theDiscretizationTol: float (optional, default to 1.0e-2)
+theSameTol: float (optional, default to 1.0e-7)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Parameter theFunc - objective functional. 
+Parameter theLowerBorder - lower corner of the search box. 
+Parameter theUpperBorder - upper corner of the search box. 
+Parameter theC - Lipschitz constant. 
+Parameter theDiscretizationTol - parameter space discretization tolerance. 
+Parameter theSameTol - functional value space indifference tolerance.
 ") SetGlobalParams;
 		void SetGlobalParams(math_MultipleVarFunction * theFunc, const math_Vector & theLowerBorder, const math_Vector & theUpperBorder, const Standard_Real theC = 9, const Standard_Real theDiscretizationTol = 1.0e-2, const Standard_Real theSameTol = 1.0e-7);
 
-		/****************** SetLipConstState ******************/
-		/**** md5 signature: 7d78882b77454ea2717bf8982269eba2 ****/
+		/****** math_GlobOptMin::SetLipConstState ******/
+		/****** md5 signature: 7d78882b77454ea2717bf8982269eba2 ******/
 		%feature("compactdefaultargs") SetLipConstState;
-		%feature("autodoc", "Set / get lipchitz constant modification state. true means that the constant is locked and unlocked otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFlag: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set / Get Lipchitz constant modification state. True means that the constant is locked and unlocked otherwise.
 ") SetLipConstState;
 		void SetLipConstState(const Standard_Boolean theFlag);
 
-		/****************** SetLocalParams ******************/
-		/**** md5 signature: 97018be93cbbbef470df3a2b89577642 ****/
+		/****** math_GlobOptMin::SetLocalParams ******/
+		/****** md5 signature: 97018be93cbbbef470df3a2b89577642 ******/
 		%feature("compactdefaultargs") SetLocalParams;
-		%feature("autodoc", "Method to reduce bounding box. perform will use this box. @param thelocala - lower corner of the local box. @param thelocalb - upper corner of the local box.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLocalA: math_Vector
 theLocalB: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Method to reduce bounding box. Perform will use this box. 
+Parameter theLocalA - lower corner of the local box. 
+Parameter theLocalB - upper corner of the local box.
 ") SetLocalParams;
 		void SetLocalParams(const math_Vector & theLocalA, const math_Vector & theLocalB);
 
-		/****************** SetTol ******************/
-		/**** md5 signature: 098d9b82c9cd87d7fa9e6bc3f44418f3 ****/
+		/****** math_GlobOptMin::SetTol ******/
+		/****** md5 signature: 098d9b82c9cd87d7fa9e6bc3f44418f3 ******/
 		%feature("compactdefaultargs") SetTol;
-		%feature("autodoc", "Method to set tolerances. @param thediscretizationtol - parameter space discretization tolerance. @param thesametol - functional value space indifference tolerance.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theDiscretizationTol: float
 theSameTol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Method to set tolerances. 
+Parameter theDiscretizationTol - parameter space discretization tolerance. 
+Parameter theSameTol - functional value space indifference tolerance.
 ") SetTol;
 		void SetTol(const Standard_Real theDiscretizationTol, const Standard_Real theSameTol);
+
+		/****** math_GlobOptMin::isDone ******/
+		/****** md5 signature: fbb42ba7dccdaf2fe81e0200c743c59b ******/
+		%feature("compactdefaultargs") isDone;
+		%feature("autodoc", "Return
+-------
+bool
+
+Description
+-----------
+Return computation state of the algorithm.
+") isDone;
+		Standard_Boolean isDone();
 
 };
 
@@ -3194,10 +3775,6 @@ None
 %extend math_GlobOptMin {
 	%pythoncode {
 	__repr__ = _dumps_object
-
-	@methodnotwrapped
-	def isDone(self):
-		pass
 	}
 };
 
@@ -3206,29 +3783,30 @@ None
 *************************/
 class math_Householder {
 	public:
-		/****************** math_Householder ******************/
-		/**** md5 signature: 0977a727cabb6b46a670fe908eb1753f ****/
+		/****** math_Householder::math_Householder ******/
+		/****** md5 signature: 0977a727cabb6b46a670fe908eb1753f ******/
 		%feature("compactdefaultargs") math_Householder;
-		%feature("autodoc", "Given an input matrix a with n>= m, given an input matrix b this constructor performs the least square resolution of the set of linear equations a.x = b for each column of b. if a column norm is less than eps, the resolution can't be done. exception dimensionerror is raised if the row number of b is different from the a row number.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
 B: math_Matrix
-EPS: float,optional
-	default value is 1.0e-20
+EPS: float (optional, default to 1.0e-20)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix A with n>= m, given an input matrix B this constructor performs the least square resolution of the set of linear equations A.X = B for each column of B. If a column norm is less than EPS, the resolution can't be done. Exception DimensionError is raised if the row number of B is different from the A row number.
 ") math_Householder;
 		 math_Householder(const math_Matrix & A, const math_Matrix & B, const Standard_Real EPS = 1.0e-20);
 
-		/****************** math_Householder ******************/
-		/**** md5 signature: 6b08abf2667048b63bf62cc4cec6098a ****/
+		/****** math_Householder::math_Householder ******/
+		/****** md5 signature: 6b08abf2667048b63bf62cc4cec6098a ******/
 		%feature("compactdefaultargs") math_Householder;
-		%feature("autodoc", "Given an input matrix a with n>= m, given an input matrix b this constructor performs the least square resolution of the set of linear equations a.x = b for each column of b. if a column norm is less than eps, the resolution can't be done. exception dimensionerror is raised if the row number of b is different from the a row number.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
@@ -3237,77 +3815,97 @@ lowerArow: int
 upperArow: int
 lowerAcol: int
 upperAcol: int
-EPS: float,optional
-	default value is 1.0e-20
+EPS: float (optional, default to 1.0e-20)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix A with n>= m, given an input matrix B this constructor performs the least square resolution of the set of linear equations A.X = B for each column of B. If a column norm is less than EPS, the resolution can't be done. Exception DimensionError is raised if the row number of B is different from the A row number.
 ") math_Householder;
 		 math_Householder(const math_Matrix & A, const math_Matrix & B, const Standard_Integer lowerArow, const Standard_Integer upperArow, const Standard_Integer lowerAcol, const Standard_Integer upperAcol, const Standard_Real EPS = 1.0e-20);
 
-		/****************** math_Householder ******************/
-		/**** md5 signature: 31207a701d238011e64bcf4e903940ce ****/
+		/****** math_Householder::math_Householder ******/
+		/****** md5 signature: 31207a701d238011e64bcf4e903940ce ******/
 		%feature("compactdefaultargs") math_Householder;
-		%feature("autodoc", "Given an input matrix a with n>= m, given an input vector b this constructor performs the least square resolution of the set of linear equations a.x = b. if a column norm is less than eps, the resolution can't be done. exception dimensionerror is raised if the length of b is different from the a row number.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
 B: math_Vector
-EPS: float,optional
-	default value is 1.0e-20
+EPS: float (optional, default to 1.0e-20)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix A with n>= m, given an input vector B this constructor performs the least square resolution of the set of linear equations A.X = B. If a column norm is less than EPS, the resolution can't be done. Exception DimensionError is raised if the length of B is different from the A row number.
 ") math_Householder;
 		 math_Householder(const math_Matrix & A, const math_Vector & B, const Standard_Real EPS = 1.0e-20);
 
-		/****************** AllValues ******************/
-		/**** md5 signature: 85ad23fce3cb1532a0b9d97b8d567ff9 ****/
+		/****** math_Householder::AllValues ******/
+		/****** md5 signature: 85ad23fce3cb1532a0b9d97b8d567ff9 ******/
 		%feature("compactdefaultargs") AllValues;
-		%feature("autodoc", "Returns the matrix sol of all the solutions of the system a.x = b. exception notdone is raised is the resolution has not be done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the matrix sol of all the solutions of the system A.X = B. Exception NotDone is raised is the resolution has not be done.
 ") AllValues;
 		const math_Matrix & AllValues();
 
+		/****** math_Householder::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Householder::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Value ******************/
-		/**** md5 signature: 2cffcf970207b968b9176f9228ed9f20 ****/
+		/****** math_Householder::Value ******/
+		/****** md5 signature: 2cffcf970207b968b9176f9228ed9f20 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Given the integer index, this routine returns the corresponding least square solution sol. exception notdone is raised if the resolution has not be done. exception outofrange is raised if index <=0 or index is more than the number of columns of b.
-
+		%feature("autodoc", "
 Parameters
 ----------
 sol: math_Vector
-Index: int,optional
-	default value is 1
+Index: int (optional, default to 1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the integer Index, this routine returns the corresponding least square solution sol. Exception NotDone is raised if the resolution has not be done. Exception OutOfRange is raised if Index <=0 or Index is more than the number of columns of B.
 ") Value;
 		void Value(math_Vector & sol, const Standard_Integer Index = 1);
 
@@ -3320,655 +3918,119 @@ None
 	}
 };
 
-/***************************
-* class math_IntegerVector *
-***************************/
-class math_IntegerVector {
-	public:
-		/****************** math_IntegerVector ******************/
-		/**** md5 signature: dd6f29403a7348f09b915bb39a25605e ****/
-		%feature("compactdefaultargs") math_IntegerVector;
-		%feature("autodoc", "Contructs an integervector in the range [lower..upper].
-
-Parameters
-----------
-theFirst: int
-theLast: int
-
-Returns
--------
-None
-") math_IntegerVector;
-		 math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast);
-
-		/****************** math_IntegerVector ******************/
-		/**** md5 signature: 345490133e420bea4f84e5e2707b7e52 ****/
-		%feature("compactdefaultargs") math_IntegerVector;
-		%feature("autodoc", "Contructs an integervector in the range [lower..upper] with all the elements set to theinitialvalue.
-
-Parameters
-----------
-theFirst: int
-theLast: int
-theInitialValue: int
-
-Returns
--------
-None
-") math_IntegerVector;
-		 math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast, const Standard_Integer theInitialValue);
-
-		/****************** math_IntegerVector ******************/
-		/**** md5 signature: 49fbbeb75c300b6063d437f2af6fe0bb ****/
-		%feature("compactdefaultargs") math_IntegerVector;
-		%feature("autodoc", "Constructs an integervector in the range [lower..upper] which share the 'c array' thetab.
-
-Parameters
-----------
-theTab: int *
-theFirst: int
-theLast: int
-
-Returns
--------
-None
-") math_IntegerVector;
-		 math_IntegerVector(const Standard_Integer * theTab, const Standard_Integer theFirst, const Standard_Integer theLast);
-
-		/****************** math_IntegerVector ******************/
-		/**** md5 signature: f1586b36b5b70b4ff6a229ccf65586bb ****/
-		%feature("compactdefaultargs") math_IntegerVector;
-		%feature("autodoc", "Constructs a copy for initialization. an exception is raised if the lengths of the integervectors are different.
-
-Parameters
-----------
-theOther: math_IntegerVector
-
-Returns
--------
-None
-") math_IntegerVector;
-		 math_IntegerVector(const math_IntegerVector & theOther);
-
-		/****************** Add ******************/
-		/**** md5 signature: d59b55cb3cda572381b8f137571731c8 ****/
-		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Adds the integervector 'theright' to an integervector. an exception is raised if the integervectors have not the same length. an exception is raised if the lengths are not equal.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-None
-") Add;
-		void Add(const math_IntegerVector & theRight);
-
-		/****************** Add ******************/
-		/**** md5 signature: e5eedd5faacfa5cc21b6669f312f4c1c ****/
-		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Sets an integervector to the sum of the integervector 'theleft' and the integervector 'theright'. an exception is raised if the lengths are different.
-
-Parameters
-----------
-theLeft: math_IntegerVector
-theRight: math_IntegerVector
-
-Returns
--------
-None
-") Add;
-		void Add(const math_IntegerVector & theLeft, const math_IntegerVector & theRight);
-
-		/****************** Added ******************/
-		/**** md5 signature: 11085b85ab2222269ff4b2729b81197e ****/
-		%feature("compactdefaultargs") Added;
-		%feature("autodoc", "Adds the integervector 'theright' to an integervector. an exception is raised if the integervectors have not the same length. an exception is raised if the lengths are not equal.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-math_IntegerVector
-") Added;
-		math_IntegerVector Added(const math_IntegerVector & theRight);
-
-
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Init ******************/
-		/**** md5 signature: 1fe27bc9df2ed19eff044a233606ff79 ****/
-		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize an integervector with all the elements set to theinitialvalue.
-
-Parameters
-----------
-theInitialValue: int
-
-Returns
--------
-None
-") Init;
-		void Init(const Standard_Integer theInitialValue);
-
-		/****************** Initialized ******************/
-		/**** md5 signature: bcb67217a11e3fd1e64981cd832a9562 ****/
-		%feature("compactdefaultargs") Initialized;
-		%feature("autodoc", "Initialises an integervector by copying 'theother'. an exception is raised if the lengths are different.
-
-Parameters
-----------
-theOther: math_IntegerVector
-
-Returns
--------
-math_IntegerVector
-") Initialized;
-		math_IntegerVector & Initialized(const math_IntegerVector & theOther);
-
-		/****************** Inverse ******************/
-		/**** md5 signature: e5ef7487164db57b00bf4cf434bf77ea ****/
-		%feature("compactdefaultargs") Inverse;
-		%feature("autodoc", "Returns the inverse integervector of an integervector.
-
-Returns
--------
-math_IntegerVector
-") Inverse;
-		math_IntegerVector Inverse();
-
-		/****************** Invert ******************/
-		/**** md5 signature: 980f166f600d23a8c77565829af2eeff ****/
-		%feature("compactdefaultargs") Invert;
-		%feature("autodoc", "Inverses an integervector.
-
-Returns
--------
-None
-") Invert;
-		void Invert();
-
-		/****************** Length ******************/
-		/**** md5 signature: 6b6369fdcfb9287d25c91be73ca43a4f ****/
-		%feature("compactdefaultargs") Length;
-		%feature("autodoc", "Returns the length of an integervector.
-
-Returns
--------
-int
-") Length;
-		Standard_Integer Length();
-
-		/****************** Lower ******************/
-		/**** md5 signature: 6c38bb0c1489e359c874ded75054c1be ****/
-		%feature("compactdefaultargs") Lower;
-		%feature("autodoc", "Returns the value of the lower index of an integervector.
-
-Returns
--------
-int
-") Lower;
-		Standard_Integer Lower();
-
-		/****************** Max ******************/
-		/**** md5 signature: 470538a8afd0d98566fced0034decdc6 ****/
-		%feature("compactdefaultargs") Max;
-		%feature("autodoc", "Returns the value of the index of the maximum element of an integervector.
-
-Returns
--------
-int
-") Max;
-		Standard_Integer Max();
-
-		/****************** Min ******************/
-		/**** md5 signature: 4a083fc951cd22097fbae8d3269aa1cb ****/
-		%feature("compactdefaultargs") Min;
-		%feature("autodoc", "Returns the value of the index of the minimum element of an integervector.
-
-Returns
--------
-int
-") Min;
-		Standard_Integer Min();
-
-		/****************** Multiplied ******************/
-		/**** md5 signature: fe5fc4e51ee7314bdfd41b893d4bd971 ****/
-		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the product of an integervector by an integer value.
-
-Parameters
-----------
-theRight: int
-
-Returns
--------
-math_IntegerVector
-") Multiplied;
-		math_IntegerVector Multiplied(const Standard_Integer theRight);
-
-		/****************** Multiplied ******************/
-		/**** md5 signature: dd8f42337232726d2b0bd2fbd06d93a7 ****/
-		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the inner product of 2 integervectors. an exception is raised if the lengths are not equal.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-int
-") Multiplied;
-		Standard_Integer Multiplied(const math_IntegerVector & theRight);
-
-		/****************** Multiply ******************/
-		/**** md5 signature: 6856a68c712e4c5d6632baec09c5232c ****/
-		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Returns the product of an integervector by an integer value.
-
-Parameters
-----------
-theRight: int
-
-Returns
--------
-None
-") Multiply;
-		void Multiply(const Standard_Integer theRight);
-
-		/****************** Multiply ******************/
-		/**** md5 signature: fd2120456de46c864b27187a04406c2c ****/
-		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Returns the multiplication of an integer by an integervector.
-
-Parameters
-----------
-theLeft: int
-theRight: math_IntegerVector
-
-Returns
--------
-None
-") Multiply;
-		void Multiply(const Standard_Integer theLeft, const math_IntegerVector & theRight);
-
-		/****************** Norm ******************/
-		/**** md5 signature: ef03a75c3e2c2e2728051dc33ad502de ****/
-		%feature("compactdefaultargs") Norm;
-		%feature("autodoc", "Returns the value of the norm of an integervector.
-
-Returns
--------
-float
-") Norm;
-		Standard_Real Norm();
-
-		/****************** Norm2 ******************/
-		/**** md5 signature: aa0fc8823225be6949f93bb2b3c831b7 ****/
-		%feature("compactdefaultargs") Norm2;
-		%feature("autodoc", "Returns the value of the square of the norm of an integervector.
-
-Returns
--------
-float
-") Norm2;
-		Standard_Real Norm2();
-
-		/****************** Opposite ******************/
-		/**** md5 signature: 24b0a54dc68eb531854a4f7d5f03836c ****/
-		%feature("compactdefaultargs") Opposite;
-		%feature("autodoc", "Returns the opposite of an integervector.
-
-Returns
--------
-math_IntegerVector
-") Opposite;
-		math_IntegerVector Opposite();
-
-		/****************** Set ******************/
-		/**** md5 signature: 73d586552d511e7b08e85de3ec92c081 ****/
-		%feature("compactdefaultargs") Set;
-		%feature("autodoc", "Sets an integervector from 'thei1' to 'thei2' to the integervector 'thev'; an exception is raised if 'thei1' is less than 'lowerindex' or 'thei2' is greater than 'upperindex' or 'thei1' is greater than 'thei2'. an exception is raised if 'thei2-thei1+1' is different from the length of 'thev'.
-
-Parameters
-----------
-theI1: int
-theI2: int
-theV: math_IntegerVector
-
-Returns
--------
-None
-") Set;
-		void Set(const Standard_Integer theI1, const Standard_Integer theI2, const math_IntegerVector & theV);
-
-		/****************** Slice ******************/
-		/**** md5 signature: 96cb088cbcf3941edf97a7c5a36fd697 ****/
-		%feature("compactdefaultargs") Slice;
-		%feature("autodoc", "Slices the values of the integervector between 'thei1' and 'thei2': example: [2, 1, 2, 3, 4, 5] becomes [2, 4, 3, 2, 1, 5] between 2 and 5. an exception is raised if 'thei1' is less than 'lowerindex' or 'thei2' is greater than 'upperindex'.
-
-Parameters
-----------
-theI1: int
-theI2: int
-
-Returns
--------
-math_IntegerVector
-") Slice;
-		math_IntegerVector Slice(const Standard_Integer theI1, const Standard_Integer theI2);
-
-		/****************** Subtract ******************/
-		/**** md5 signature: 7ea5decda372d35902482b059c690765 ****/
-		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Sets an integervector to the substraction of 'theright' from 'theleft'. an exception is raised if the integervectors have not the same length.
-
-Parameters
-----------
-theLeft: math_IntegerVector
-theRight: math_IntegerVector
-
-Returns
--------
-None
-") Subtract;
-		void Subtract(const math_IntegerVector & theLeft, const math_IntegerVector & theRight);
-
-		/****************** Subtract ******************/
-		/**** md5 signature: ba7d1271fd0cdca925ca6cc8a069b03a ****/
-		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Returns the subtraction of 'theright' from 'me'. an exception is raised if the integervectors have not the same length.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-None
-") Subtract;
-		void Subtract(const math_IntegerVector & theRight);
-
-		/****************** Subtracted ******************/
-		/**** md5 signature: 7fd896bca3cac6c44c43bd107bd0de46 ****/
-		%feature("compactdefaultargs") Subtracted;
-		%feature("autodoc", "Returns the subtraction of 'theright' from 'me'. an exception is raised if the integervectors have not the same length.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-math_IntegerVector
-") Subtracted;
-		math_IntegerVector Subtracted(const math_IntegerVector & theRight);
-
-		/****************** TMultiplied ******************/
-		/**** md5 signature: 13080b39e009b6f7a13a659502705477 ****/
-		%feature("compactdefaultargs") TMultiplied;
-		%feature("autodoc", "Returns the product of a vector and a real value.
-
-Parameters
-----------
-theRight: int
-
-Returns
--------
-math_IntegerVector
-") TMultiplied;
-		math_IntegerVector TMultiplied(const Standard_Integer theRight);
-
-		/****************** Upper ******************/
-		/**** md5 signature: 049ea67a2fce112afef7cc7f87f4a43d ****/
-		%feature("compactdefaultargs") Upper;
-		%feature("autodoc", "Returns the value of the upper index of an integervector.
-
-Returns
--------
-int
-") Upper;
-		Standard_Integer Upper();
-
-		/****************** Value ******************/
-		/**** md5 signature: a737b7e1628947c8b4a6110611c56acb ****/
-		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Accesses the value of index thenum of an integervector.
-
-Parameters
-----------
-theNum: int
-
-Returns
--------
-int
-") Value;
-		const Standard_Integer & Value(const Standard_Integer theNum);
-
-
-        %feature("autodoc","1");
-        %extend {
-            Standard_Integer GetValue(const Standard_Integer theNum) {
-            return (Standard_Integer) $self->Value(theNum);
-            }
-        };
-        %feature("autodoc","1");
-        %extend {
-            void SetValue(const Standard_Integer theNum,Standard_Integer value) {
-            $self->Value(theNum)=value;
-            }
-        };
-		/****************** operator * ******************/
-		/**** md5 signature: eb8b881a959d28e5cbc50023c6d0165b ****/
-		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
-Parameters
-----------
-theRight: int
-
-Returns
--------
-math_IntegerVector
-") operator *;
-		math_IntegerVector operator *(const Standard_Integer theRight);
-
-		/****************** operator * ******************/
-		/**** md5 signature: f82ed54abdb72c653000d4216de35fcd ****/
-		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-int
-") operator *;
-		Standard_Integer operator *(const math_IntegerVector & theRight);
-
-
-            %extend{
-                void __imul_wrapper__(const Standard_Integer other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
-		/****************** operator + ******************/
-		/**** md5 signature: 4be85aca9907ec496a654cd1ec103d55 ****/
-		%feature("compactdefaultargs") operator +;
-		%feature("autodoc", "No available documentation.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-math_IntegerVector
-") operator +;
-		math_IntegerVector operator +(const math_IntegerVector & theRight);
-
-
-            %extend{
-                void __iadd_wrapper__(const math_IntegerVector other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
-		/****************** operator - ******************/
-		/**** md5 signature: f0ec488bae9aeec942f9fa0e31599c2e ****/
-		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
-Returns
--------
-math_IntegerVector
-") operator -;
-		math_IntegerVector operator -();
-
-		/****************** operator - ******************/
-		/**** md5 signature: 94840c75a17b3e0700e1bd677249476e ****/
-		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
-Parameters
-----------
-theRight: math_IntegerVector
-
-Returns
--------
-math_IntegerVector
-") operator -;
-		math_IntegerVector operator -(const math_IntegerVector & theRight);
-
-
-            %extend{
-                void __isub_wrapper__(const math_IntegerVector other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
-};
-
-
-%extend math_IntegerVector {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-
 /********************
 * class math_Jacobi *
 ********************/
 class math_Jacobi {
 	public:
-		/****************** math_Jacobi ******************/
-		/**** md5 signature: dbe9c44ec68782c2201b136544699648 ****/
+		/****** math_Jacobi::math_Jacobi ******/
+		/****** md5 signature: dbe9c44ec68782c2201b136544699648 ******/
 		%feature("compactdefaultargs") math_Jacobi;
-		%feature("autodoc", "Given a real n x n matrix a, this constructor computes all its eigenvalues and eigenvectors using the jacobi method. the exception notsquare is raised if the matrix is not square. no verification that the matrix a is really symmetric is done.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given a Real n X n matrix A, this constructor computes all its eigenvalues and eigenvectors using the Jacobi method. The exception NotSquare is raised if the matrix is not square. No verification that the matrix A is really symmetric is done.
 ") math_Jacobi;
 		 math_Jacobi(const math_Matrix & A);
 
+		/****** math_Jacobi::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Jacobi::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Value ******************/
-		/**** md5 signature: 53bb8972bd4da05157e4a1056aa328d4 ****/
+		/****** math_Jacobi::Value ******/
+		/****** md5 signature: 53bb8972bd4da05157e4a1056aa328d4 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the eigenvalue number num. eigenvalues are in the range (1..n). exception notdone is raised if calculation is not done successfully.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Num: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+returns the eigenvalue number Num. Eigenvalues are in the range (1..n). Exception NotDone is raised if calculation is not done successfully.
 ") Value;
 		Standard_Real Value(const Standard_Integer Num);
 
-		/****************** Values ******************/
-		/**** md5 signature: 1f3e7a703e9049ee2a39cf978bc23008 ****/
+		/****** math_Jacobi::Values ******/
+		/****** md5 signature: 1f3e7a703e9049ee2a39cf978bc23008 ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Returns the eigenvalues vector. exception notdone is raised if calculation is not done successfully.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the eigenvalues vector. Exception NotDone is raised if calculation is not done successfully.
 ") Values;
 		const math_Vector & Values();
 
-		/****************** Vector ******************/
-		/**** md5 signature: 9be1949a91bcbaff6496d57366bfbce6 ****/
+		/****** math_Jacobi::Vector ******/
+		/****** md5 signature: 9be1949a91bcbaff6496d57366bfbce6 ******/
 		%feature("compactdefaultargs") Vector;
-		%feature("autodoc", "Returns the eigenvector v of number num. eigenvectors are in the range (1..n). exception notdone is raised if calculation is not done successfully.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Num: int
 V: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the eigenvector V of number Num. Eigenvectors are in the range (1..n). Exception NotDone is raised if calculation is not done successfully.
 ") Vector;
 		void Vector(const Standard_Integer Num, math_Vector & V);
 
-		/****************** Vectors ******************/
-		/**** md5 signature: bc7346809ab0765e767d728f947796ab ****/
+		/****** math_Jacobi::Vectors ******/
+		/****** md5 signature: bc7346809ab0765e767d728f947796ab ******/
 		%feature("compactdefaultargs") Vectors;
-		%feature("autodoc", "Returns the eigenvectors matrix. exception notdone is raised if calculation is not done successfully.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+returns the eigenvectors matrix. Exception NotDone is raised if calculation is not done successfully.
 ") Vectors;
 		const math_Matrix & Vectors();
 
@@ -3986,22 +4048,23 @@ math_Matrix
 **************************************/
 class math_KronrodSingleIntegration {
 	public:
-		/****************** math_KronrodSingleIntegration ******************/
-		/**** md5 signature: 6c28c1aa6ae7385685203db01214f7bb ****/
+		/****** math_KronrodSingleIntegration::math_KronrodSingleIntegration ******/
+		/****** md5 signature: 6c28c1aa6ae7385685203db01214f7bb ******/
 		%feature("compactdefaultargs") math_KronrodSingleIntegration;
-		%feature("autodoc", "An empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+An empty constructor.
 ") math_KronrodSingleIntegration;
 		 math_KronrodSingleIntegration();
 
-		/****************** math_KronrodSingleIntegration ******************/
-		/**** md5 signature: a66c4825bcfe0bf8105de9a70846a04e ****/
+		/****** math_KronrodSingleIntegration::math_KronrodSingleIntegration ******/
+		/****** md5 signature: a66c4825bcfe0bf8105de9a70846a04e ******/
 		%feature("compactdefaultargs") math_KronrodSingleIntegration;
-		%feature("autodoc", "Constructor. takes the function, the lower and upper bound values, the initial number of kronrod points.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
@@ -4009,17 +4072,20 @@ theLower: float
 theUpper: float
 theNbPnts: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor. Takes the function, the lower and upper bound values, the initial number of Kronrod points.
 ") math_KronrodSingleIntegration;
 		 math_KronrodSingleIntegration(math_Function & theFunction, const Standard_Real theLower, const Standard_Real theUpper, const Standard_Integer theNbPnts);
 
-		/****************** math_KronrodSingleIntegration ******************/
-		/**** md5 signature: 1264541d674ab723d8959b4f0f38f3d6 ****/
+		/****** math_KronrodSingleIntegration::math_KronrodSingleIntegration ******/
+		/****** md5 signature: 1264541d674ab723d8959b4f0f38f3d6 ******/
 		%feature("compactdefaultargs") math_KronrodSingleIntegration;
-		%feature("autodoc", "Constructor. takes the function, the lower and upper bound values, the initial number of kronrod points, the tolerance value and the maximal number of iterations as parameters.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
@@ -4029,39 +4095,46 @@ theNbPnts: int
 theTolerance: float
 theMaxNbIter: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor. Takes the function, the lower and upper bound values, the initial number of Kronrod points, the tolerance value and the maximal number of iterations as parameters.
 ") math_KronrodSingleIntegration;
 		 math_KronrodSingleIntegration(math_Function & theFunction, const Standard_Real theLower, const Standard_Real theUpper, const Standard_Integer theNbPnts, const Standard_Real theTolerance, const Standard_Integer theMaxNbIter);
 
-		/****************** AbsolutError ******************/
-		/**** md5 signature: 12eadedd827c6f2cfdee466e4014e7d9 ****/
+		/****** math_KronrodSingleIntegration::AbsolutError ******/
+		/****** md5 signature: 12eadedd827c6f2cfdee466e4014e7d9 ******/
 		%feature("compactdefaultargs") AbsolutError;
-		%feature("autodoc", "Returns the value of the relative error reached.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the relative error reached.
 ") AbsolutError;
 		Standard_Real AbsolutError();
 
-		/****************** ErrorReached ******************/
-		/**** md5 signature: a07cf8273fa0f4cf4aae707ac80776ec ****/
+		/****** math_KronrodSingleIntegration::ErrorReached ******/
+		/****** md5 signature: a07cf8273fa0f4cf4aae707ac80776ec ******/
 		%feature("compactdefaultargs") ErrorReached;
-		%feature("autodoc", "Returns the value of the relative error reached.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the relative error reached.
 ") ErrorReached;
 		Standard_Real ErrorReached();
 
-		/****************** GKRule ******************/
-		/**** md5 signature: 61b8d48e5fac2843be361258297f0961 ****/
+		/****** math_KronrodSingleIntegration::GKRule ******/
+		/****** md5 signature: 61b8d48e5fac2843be361258297f0961 ******/
 		%feature("compactdefaultargs") GKRule;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
@@ -4072,51 +4145,60 @@ theGaussW: math_Vector
 theKronrodP: math_Vector
 theKronrodW: math_Vector
 
-Returns
+Return
 -------
 theValue: float
 theError: float
+
+Description
+-----------
+No available documentation.
 ") GKRule;
 		static Standard_Boolean GKRule(math_Function & theFunction, const Standard_Real theLower, const Standard_Real theUpper, const math_Vector & theGaussP, const math_Vector & theGaussW, const math_Vector & theKronrodP, const math_Vector & theKronrodW, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_KronrodSingleIntegration::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns standard_true if computation is performed successfully.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns Standard_True if computation is performed successfully.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIterReached ******************/
-		/**** md5 signature: 92f9acbb3ab54b8a9084b8719f071226 ****/
+		/****** math_KronrodSingleIntegration::NbIterReached ******/
+		/****** md5 signature: 92f9acbb3ab54b8a9084b8719f071226 ******/
 		%feature("compactdefaultargs") NbIterReached;
-		%feature("autodoc", "Returns the number of iterations that were made to compute result.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations that were made to compute result.
 ") NbIterReached;
 		Standard_Integer NbIterReached();
 
-		/****************** OrderReached ******************/
-		/**** md5 signature: 3f413ca7400668120c788e0d2f9e7a27 ****/
+		/****** math_KronrodSingleIntegration::OrderReached ******/
+		/****** md5 signature: 3f413ca7400668120c788e0d2f9e7a27 ******/
 		%feature("compactdefaultargs") OrderReached;
-		%feature("autodoc", "Returns the number of kronrod points for which the result is computed.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of Kronrod points for which the result is computed.
 ") OrderReached;
 		Standard_Integer OrderReached();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 989ad1288ab87ac0016e952911251bca ****/
+		/****** math_KronrodSingleIntegration::Perform ******/
+		/****** md5 signature: 989ad1288ab87ac0016e952911251bca ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Computation of the integral. takes the function, the lower and upper bound values, the initial number of kronrod points, the relative tolerance value and the maximal number of iterations as parameters. thenbpnts should be odd and greater then or equal to 3.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
@@ -4124,17 +4206,20 @@ theLower: float
 theUpper: float
 theNbPnts: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computation of the integral. Takes the function, the lower and upper bound values, the initial number of Kronrod points, the relative tolerance value and the maximal number of iterations as parameters. theNbPnts should be odd and greater then or equal to 3.
 ") Perform;
 		void Perform(math_Function & theFunction, const Standard_Real theLower, const Standard_Real theUpper, const Standard_Integer theNbPnts);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 6a268e5eb0ffc5edb0663c67fce729e1 ****/
+		/****** math_KronrodSingleIntegration::Perform ******/
+		/****** md5 signature: 6a268e5eb0ffc5edb0663c67fce729e1 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Computation of the integral. takes the function, the lower and upper bound values, the initial number of kronrod points, the relative tolerance value and the maximal number of iterations as parameters. thenbpnts should be odd and greater then or equal to 3. note that thetolerance is relative, i.e. the criterion of solution reaching is: abs(kronrod - gauss)/abs(kronrod) < thetolerance. thetolerance should be positive.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_Function
@@ -4144,20 +4229,26 @@ theNbPnts: int
 theTolerance: float
 theMaxNbIter: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computation of the integral. Takes the function, the lower and upper bound values, the initial number of Kronrod points, the relative tolerance value and the maximal number of iterations as parameters. theNbPnts should be odd and greater then or equal to 3. Note that theTolerance is relative, i.e. the criterion of solution reaching is: Abs(Kronrod - Gauss)/Abs(Kronrod) < theTolerance. theTolerance should be positive.
 ") Perform;
 		void Perform(math_Function & theFunction, const Standard_Real theLower, const Standard_Real theUpper, const Standard_Integer theNbPnts, const Standard_Real theTolerance, const Standard_Integer theMaxNbIter);
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_KronrodSingleIntegration::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the integral.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the integral.
 ") Value;
 		Standard_Real Value();
 
@@ -4175,11 +4266,10 @@ float
 ********************/
 class math_Matrix {
 	public:
-		/****************** math_Matrix ******************/
-		/**** md5 signature: e6c257a1326c79f05d592f14f249809c ****/
+		/****** math_Matrix::math_Matrix ******/
+		/****** md5 signature: e6c257a1326c79f05d592f14f249809c ******/
 		%feature("compactdefaultargs") math_Matrix;
-		%feature("autodoc", "Constructs a non-initialized matrix of range [lowerrow..upperrow, lowercol..uppercol] for the constructed matrix: - lowerrow and upperrow are the indexes of the lower and upper bounds of a row, and - lowercol and uppercol are the indexes of the lower and upper bounds of a column.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LowerRow: int
@@ -4187,17 +4277,20 @@ UpperRow: int
 LowerCol: int
 UpperCol: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructs a non-initialized matrix of range [LowerRow..UpperRow, LowerCol..UpperCol] For the constructed matrix: - LowerRow and UpperRow are the indexes of the lower and upper bounds of a row, and - LowerCol and UpperCol are the indexes of the lower and upper bounds of a column.
 ") math_Matrix;
 		 math_Matrix(const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
 
-		/****************** math_Matrix ******************/
-		/**** md5 signature: 2e3ba9a1a05f36775951a59cfae5bccc ****/
+		/****** math_Matrix::math_Matrix ******/
+		/****** md5 signature: 2e3ba9a1a05f36775951a59cfae5bccc ******/
 		%feature("compactdefaultargs") math_Matrix;
-		%feature("autodoc", "Constructs a non-initialized matrix of range [lowerrow..upperrow, lowercol..uppercol] whose values are all initialized with the value initialvalue.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LowerRow: int
@@ -4206,17 +4299,20 @@ LowerCol: int
 UpperCol: int
 InitialValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+constructs a non-initialized matrix of range [LowerRow..UpperRow, LowerCol..UpperCol] whose values are all initialized with the value InitialValue.
 ") math_Matrix;
 		 math_Matrix(const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol, const Standard_Real InitialValue);
 
-		/****************** math_Matrix ******************/
-		/**** md5 signature: 9f8c3bd86fe8da9d6d6b64eab3dff60b ****/
+		/****** math_Matrix::math_Matrix ******/
+		/****** md5 signature: 9f8c3bd86fe8da9d6d6b64eab3dff60b ******/
 		%feature("compactdefaultargs") math_Matrix;
-		%feature("autodoc", "Constructs a matrix of range [lowerrow..upperrow, lowercol..uppercol] sharing data with a 'c array' pointed by tab.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Tab: Standard_Address
@@ -4225,371 +4321,450 @@ UpperRow: int
 LowerCol: int
 UpperCol: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+constructs a matrix of range [LowerRow..UpperRow, LowerCol..UpperCol] Sharing data with a 'C array' pointed by Tab.
 ") math_Matrix;
 		 math_Matrix(const Standard_Address Tab, const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
 
-		/****************** math_Matrix ******************/
-		/**** md5 signature: c9b9654b93f2e87132a71fd62bf87827 ****/
+		/****** math_Matrix::math_Matrix ******/
+		/****** md5 signature: c9b9654b93f2e87132a71fd62bf87827 ******/
 		%feature("compactdefaultargs") math_Matrix;
-		%feature("autodoc", "Constructs a matrix for copy in initialization. an exception is raised if the matrixes have not the same dimensions.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Other: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+constructs a matrix for copy in initialization. An exception is raised if the matrixes have not the same dimensions.
 ") math_Matrix;
 		 math_Matrix(const math_Matrix & Other);
 
-		/****************** Add ******************/
-		/**** md5 signature: f63e613c825158d23dec52e65c62c754 ****/
+		/****** math_Matrix::Add ******/
+		/****** md5 signature: f63e613c825158d23dec52e65c62c754 ******/
 		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Adds the matrix <right> to a matrix. an exception is raised if the dimensions are different. warning in order to save time when copying matrices, it is preferable to use operator += or the function add whenever possible.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+adds the matrix <Right> to a matrix. An exception is raised if the dimensions are different. Warning In order to save time when copying matrices, it is preferable to use operator += or the function Add whenever possible.
 ") Add;
 		void Add(const math_Matrix & Right);
 
-		/****************** Add ******************/
-		/**** md5 signature: 3c03201502470f5e631695a6b502c51f ****/
+		/****** math_Matrix::Add ******/
+		/****** md5 signature: 3c03201502470f5e631695a6b502c51f ******/
 		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Sets a matrix to the addition of <left> and <right>. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Left: math_Matrix
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a matrix to the addition of <Left> and <Right>. An exception is raised if the dimensions are different.
 ") Add;
 		void Add(const math_Matrix & Left, const math_Matrix & Right);
 
-		/****************** Added ******************/
-		/**** md5 signature: 62864dd8ca25f20a23a9d9397c81b927 ****/
+		/****** math_Matrix::Added ******/
+		/****** md5 signature: 62864dd8ca25f20a23a9d9397c81b927 ******/
 		%feature("compactdefaultargs") Added;
-		%feature("autodoc", "Adds the matrix <right> to a matrix. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+adds the matrix <Right> to a matrix. An exception is raised if the dimensions are different.
 ") Added;
 		math_Matrix Added(const math_Matrix & Right);
 
-		/****************** Col ******************/
-		/**** md5 signature: 32259ea88ecf2b63d5c88ac3c5036ec0 ****/
+		/****** math_Matrix::Col ******/
+		/****** md5 signature: b15846fb1b6a2c6ec09ca6168bece890 ******/
 		%feature("compactdefaultargs") Col;
-		%feature("autodoc", "Returns the column of index <col> of a matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Col: int
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase<>
+
+Description
+-----------
+Returns the column of index <Col> of a matrix.
 ") Col;
-		math_Vector Col(const Standard_Integer Col);
+		math_VectorBase<> Col(const Standard_Integer Col);
 
-		/****************** ColNumber ******************/
-		/**** md5 signature: 882aa03dc37daf0f801ae41010e2da38 ****/
+		/****** math_Matrix::ColNumber ******/
+		/****** md5 signature: 882aa03dc37daf0f801ae41010e2da38 ******/
 		%feature("compactdefaultargs") ColNumber;
-		%feature("autodoc", "Returns the number of rows of this matrix. note that for a matrix a you always have the following relations: - a.rownumber() = a.upperrow() - a.lowerrow() + 1 - a.colnumber() = a.uppercol() - a.lowercol() + 1 - the length of a row of a is equal to the number of columns of a, - the length of a column of a is equal to the number of rows of a.returns the row range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of rows of this matrix. Note that for a matrix A you always have the following relations: - A.RowNumber() = A.UpperRow() - A.LowerRow() + 1 - A.ColNumber() = A.UpperCol() - A.LowerCol() + 1 - the length of a row of A is equal to the number of columns of A, - the length of a column of A is equal to the number of rows of A.returns the row range of a matrix.
 ") ColNumber;
 		Standard_Integer ColNumber();
 
-		/****************** Determinant ******************/
-		/**** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ****/
+		/****** math_Matrix::Determinant ******/
+		/****** md5 signature: 5ac8cd01bd8c7b44a3e7395b4e2f6518 ******/
 		%feature("compactdefaultargs") Determinant;
-		%feature("autodoc", "Computes the determinant of a matrix. an exception is raised if the matrix is not a square matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Computes the determinant of a matrix. An exception is raised if the matrix is not a square matrix.
 ") Determinant;
 		Standard_Real Determinant();
 
-		/****************** Divide ******************/
-		/**** md5 signature: e99b8d923ead06b4e09fb05a953ab970 ****/
+		/****** math_Matrix::Divide ******/
+		/****** md5 signature: e99b8d923ead06b4e09fb05a953ab970 ******/
 		%feature("compactdefaultargs") Divide;
-		%feature("autodoc", "Divides all the elements of a matrix by the value <right>. an exception is raised if <right> = 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+divides all the elements of a matrix by the value <Right>. An exception is raised if <Right> = 0.
 ") Divide;
 		void Divide(const Standard_Real Right);
 
-		/****************** Divided ******************/
-		/**** md5 signature: 80da7af5d5ad686bdccea67e378cdef5 ****/
+		/****** math_Matrix::Divided ******/
+		/****** md5 signature: 80da7af5d5ad686bdccea67e378cdef5 ******/
 		%feature("compactdefaultargs") Divided;
-		%feature("autodoc", "Divides all the elements of a matrix by the value <right>. an exception is raised if <right> = 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+divides all the elements of a matrix by the value <Right>. An exception is raised if <Right> = 0.
 ") Divided;
 		math_Matrix Divided(const Standard_Real Right);
 
+		/****** math_Matrix::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Init ******************/
-		/**** md5 signature: 6aef026ef1fcb18a844e723ac935cd4b ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Matrix::Init ******/
+		/****** md5 signature: 6aef026ef1fcb18a844e723ac935cd4b ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all the elements of a matrix to initialvalue.
-
+		%feature("autodoc", "
 Parameters
 ----------
 InitialValue: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all the elements of a matrix to InitialValue.
 ") Init;
 		void Init(const Standard_Real InitialValue);
 
-		/****************** Initialized ******************/
-		/**** md5 signature: aa19c52ca7ffa72391b02d4d20747655 ****/
+		/****** math_Matrix::Initialized ******/
+		/****** md5 signature: aa19c52ca7ffa72391b02d4d20747655 ******/
 		%feature("compactdefaultargs") Initialized;
-		%feature("autodoc", "Matrixes are copied through assignement. an exception is raised if the dimensions are differents.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Other: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+Matrixes are copied through assignment. An exception is raised if the dimensions are different.
 ") Initialized;
 		math_Matrix & Initialized(const math_Matrix & Other);
 
-		/****************** Inverse ******************/
-		/**** md5 signature: 3d871314de3df1e3c9068e85ee518e52 ****/
+		/****** math_Matrix::Inverse ******/
+		/****** md5 signature: 3d871314de3df1e3c9068e85ee518e52 ******/
 		%feature("compactdefaultargs") Inverse;
-		%feature("autodoc", "Returns the inverse of a matrix. exception notsquare is raised if the matrix is not square. exception singularmatrix is raised if the matrix is singular.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the inverse of a matrix. Exception NotSquare is raised if the matrix is not square. Exception SingularMatrix is raised if the matrix is singular.
 ") Inverse;
 		math_Matrix Inverse();
 
-		/****************** Invert ******************/
-		/**** md5 signature: 980f166f600d23a8c77565829af2eeff ****/
+		/****** math_Matrix::Invert ******/
+		/****** md5 signature: 980f166f600d23a8c77565829af2eeff ******/
 		%feature("compactdefaultargs") Invert;
-		%feature("autodoc", "Inverts a matrix using gauss algorithm. exception notsquare is raised if the matrix is not square. exception singularmatrix is raised if the matrix is singular.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Inverts a matrix using Gauss algorithm. Exception NotSquare is raised if the matrix is not square. Exception SingularMatrix is raised if the matrix is singular.
 ") Invert;
 		void Invert();
 
-		/****************** LowerCol ******************/
-		/**** md5 signature: 4c2a41c02b1ff4c33920db1e311c338b ****/
+		/****** math_Matrix::LowerCol ******/
+		/****** md5 signature: 4c2a41c02b1ff4c33920db1e311c338b ******/
 		%feature("compactdefaultargs") LowerCol;
-		%feature("autodoc", "Returns the value of the lower index of the column range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the value of the Lower index of the column range of a matrix.
 ") LowerCol;
 		Standard_Integer LowerCol();
 
-		/****************** LowerRow ******************/
-		/**** md5 signature: 9ef9e3c2b8df37b89b31fc7702cbfb15 ****/
+		/****** math_Matrix::LowerRow ******/
+		/****** md5 signature: 9ef9e3c2b8df37b89b31fc7702cbfb15 ******/
 		%feature("compactdefaultargs") LowerRow;
-		%feature("autodoc", "Returns the value of the lower index of the row range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the value of the Lower index of the row range of a matrix.
 ") LowerRow;
 		Standard_Integer LowerRow();
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: f803a3d07f6f5abb1363c72949c30611 ****/
+		/****** math_Matrix::Multiplied ******/
+		/****** md5 signature: f803a3d07f6f5abb1363c72949c30611 ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Multiplies all the elements of a matrix by the value <right>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+multiplies all the elements of a matrix by the value <Right>.
 ") Multiplied;
 		math_Matrix Multiplied(const Standard_Real Right);
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: 3de6fa529aceeb63c22334e7f62681cb ****/
+		/****** math_Matrix::Multiplied ******/
+		/****** md5 signature: 3de6fa529aceeb63c22334e7f62681cb ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the product of 2 matrices. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the product of 2 matrices. An exception is raised if the dimensions are different.
 ") Multiplied;
 		math_Matrix Multiplied(const math_Matrix & Right);
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: 64eec8a907773d08ae3f68d23c8477dd ****/
+		/****** math_Matrix::Multiplied ******/
+		/****** md5 signature: b4056adc3e5c0bf27ded58aa21ef6614 ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the product of a matrix by a vector. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Right: math_Vector
+Right: math_VectorBase<>
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase<>
+
+Description
+-----------
+Returns the product of a matrix by a vector. An exception is raised if the dimensions are different.
 ") Multiplied;
-		math_Vector Multiplied(const math_Vector & Right);
+		math_VectorBase<> Multiplied(const math_VectorBase<> & Right);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: 5ee084e97968bb7d941b7910877f1660 ****/
+		/****** math_Matrix::Multiply ******/
+		/****** md5 signature: 5ee084e97968bb7d941b7910877f1660 ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Sets this matrix to the product of the matrix left, and the matrix right. example math_matrix a (1, 3, 1, 3); math_matrix b (1, 3, 1, 3); // a = ... , b = ... math_matrix c (1, 3, 1, 3); c.multiply(a, b); exceptions standard_dimensionerror if matrices are of incompatible dimensions, i.e. if: - the number of columns of matrix left, or the number of rows of matrix tleft is not equal to the number of rows of matrix right, or - the number of rows of matrix left, or the number of columns of matrix tleft is not equal to the number of rows of this matrix, or - the number of columns of matrix right is not equal to the number of columns of this matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets this matrix to the product of the matrix Left, and the matrix Right. Example math_Matrix A (1, 3, 1, 3); math_Matrix B (1, 3, 1, 3); // A = ... , B = ... math_Matrix C (1, 3, 1, 3); C.Multiply(A, B); Exceptions Standard_DimensionError if matrices are of incompatible dimensions, i.e. if: - the number of columns of matrix Left, or the number of rows of matrix TLeft is not equal to the number of rows of matrix Right, or - the number of rows of matrix Left, or the number of columns of matrix TLeft is not equal to the number of rows of this matrix, or - the number of columns of matrix Right is not equal to the number of columns of this matrix.
 ") Multiply;
 		void Multiply(const Standard_Real Right);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: aac6da5b9ceeb73786728535defecde8 ****/
+		/****** math_Matrix::Multiply ******/
+		/****** md5 signature: d757e89d1f4c06521af7618e8d61d820 ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Computes a matrix as the product of 2 vectors. an exception is raised if the dimensions are different. <self> = <left> * <right>.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Left: math_Vector
-Right: math_Vector
+Left: math_VectorBase<>
+Right: math_VectorBase<>
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes a matrix as the product of 2 vectors. An exception is raised if the dimensions are different. <self> = <Left> * <Right>.
 ") Multiply;
-		void Multiply(const math_Vector & Left, const math_Vector & Right);
+		void Multiply(const math_VectorBase<> & Left, const math_VectorBase<> & Right);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: a18f56da5b6c06519b2e3307243df1fb ****/
+		/****** math_Matrix::Multiply ******/
+		/****** md5 signature: a18f56da5b6c06519b2e3307243df1fb ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Computes a matrix as the product of 2 matrixes. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Left: math_Matrix
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes a matrix as the product of 2 matrixes. An exception is raised if the dimensions are different.
 ") Multiply;
 		void Multiply(const math_Matrix & Left, const math_Matrix & Right);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: 4887d31c871b6222fda620adc6ad11af ****/
+		/****** math_Matrix::Multiply ******/
+		/****** md5 signature: 4887d31c871b6222fda620adc6ad11af ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Returns the product of 2 matrices. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the product of 2 matrices. An exception is raised if the dimensions are different.
 ") Multiply;
 		void Multiply(const math_Matrix & Right);
 
-		/****************** Opposite ******************/
-		/**** md5 signature: d64b136dfbe29f763b0dd75f4193688f ****/
+		/****** math_Matrix::Opposite ******/
+		/****** md5 signature: d64b136dfbe29f763b0dd75f4193688f ******/
 		%feature("compactdefaultargs") Opposite;
-		%feature("autodoc", "Returns the opposite of a matrix. an exception is raised if the dimensions are different.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the opposite of a matrix. An exception is raised if the dimensions are different.
 ") Opposite;
 		math_Matrix Opposite();
 
-		/****************** Row ******************/
-		/**** md5 signature: 851a8974ea0e9c3398cbed144c88f1f5 ****/
+		/****** math_Matrix::Row ******/
+		/****** md5 signature: 31d2c0c130b883eeacb01ccac9c5e91f ******/
 		%feature("compactdefaultargs") Row;
-		%feature("autodoc", "Returns the row of index row of a matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Row: int
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase<>
+
+Description
+-----------
+Returns the row of index Row of a matrix.
 ") Row;
-		math_Vector Row(const Standard_Integer Row);
+		math_VectorBase<> Row(const Standard_Integer Row);
 
-		/****************** RowNumber ******************/
-		/**** md5 signature: de7ecc828bda324cd39ec9c186cfcef4 ****/
+		/****** math_Matrix::RowNumber ******/
+		/****** md5 signature: de7ecc828bda324cd39ec9c186cfcef4 ******/
 		%feature("compactdefaultargs") RowNumber;
-		%feature("autodoc", "Returns the number of rows of this matrix. note that for a matrix a you always have the following relations: - a.rownumber() = a.upperrow() - a.lowerrow() + 1 - a.colnumber() = a.uppercol() - a.lowercol() + 1 - the length of a row of a is equal to the number of columns of a, - the length of a column of a is equal to the number of rows of a.returns the row range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of rows of this matrix. Note that for a matrix A you always have the following relations: - A.RowNumber() = A.UpperRow() - A.LowerRow() + 1 - A.ColNumber() = A.UpperCol() - A.LowerCol() + 1 - the length of a row of A is equal to the number of columns of A, - the length of a column of A is equal to the number of rows of A.returns the row range of a matrix.
 ") RowNumber;
 		Standard_Integer RowNumber();
 
-		/****************** Set ******************/
-		/**** md5 signature: afc74df81c6a660ac88469cf2c7645c4 ****/
+		/****** math_Matrix::Set ******/
+		/****** md5 signature: afc74df81c6a660ac88469cf2c7645c4 ******/
 		%feature("compactdefaultargs") Set;
-		%feature("autodoc", "Sets the values of this matrix, - from index i1 to index i2 on the row dimension, and - from index j1 to index j2 on the column dimension, to those of matrix m. exceptions standard_dimensionerror if: - i1 is less than the index of the lower row bound of this matrix, or - i2 is greater than the index of the upper row bound of this matrix, or - j1 is less than the index of the lower column bound of this matrix, or - j2 is greater than the index of the upper column bound of this matrix, or - i2 - i1 + 1 is not equal to the number of rows of matrix m, or - j2 - j1 + 1 is not equal to the number of columns of matrix m.
-
+		%feature("autodoc", "
 Parameters
 ----------
 I1: int
@@ -4598,224 +4773,269 @@ J1: int
 J2: int
 M: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets the values of this matrix, - from index I1 to index I2 on the row dimension, and - from index J1 to index J2 on the column dimension, to those of matrix M. Exceptions Standard_DimensionError if: - I1 is less than the index of the lower row bound of this matrix, or - I2 is greater than the index of the upper row bound of this matrix, or - J1 is less than the index of the lower column bound of this matrix, or - J2 is greater than the index of the upper column bound of this matrix, or - I2 - I1 + 1 is not equal to the number of rows of matrix M, or - J2 - J1 + 1 is not equal to the number of columns of matrix M.
 ") Set;
 		void Set(const Standard_Integer I1, const Standard_Integer I2, const Standard_Integer J1, const Standard_Integer J2, const math_Matrix & M);
 
-		/****************** SetCol ******************/
-		/**** md5 signature: e3ab4bac3435f3c290a9f2292479499c ****/
+		/****** math_Matrix::SetCol ******/
+		/****** md5 signature: b5eace4866b0933fa40ccb4cf957535b ******/
 		%feature("compactdefaultargs") SetCol;
-		%feature("autodoc", "Sets the column of index col of a matrix to the vector <v>. an exception is raised if the dimensions are different. an exception is raises if <col> is inferior to the lower column of the matrix or <col> is superior to the upper column.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Col: int
-V: math_Vector
+V: math_VectorBase<>
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets the column of index Col of a matrix to the vector <V>. An exception is raised if the dimensions are different. An exception is raises if <Col> is inferior to the lower column of the matrix or <Col> is superior to the upper column.
 ") SetCol;
-		void SetCol(const Standard_Integer Col, const math_Vector & V);
+		void SetCol(const Standard_Integer Col, const math_VectorBase<> & V);
 
-		/****************** SetDiag ******************/
-		/**** md5 signature: b58618439e80c58e9a1a8322d9250ac3 ****/
+		/****** math_Matrix::SetDiag ******/
+		/****** md5 signature: b58618439e80c58e9a1a8322d9250ac3 ******/
 		%feature("compactdefaultargs") SetDiag;
-		%feature("autodoc", "Sets the diagonal of a matrix to the value <value>. an exception is raised if the matrix is not square.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Value: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets the diagonal of a matrix to the value <Value>. An exception is raised if the matrix is not square.
 ") SetDiag;
 		void SetDiag(const Standard_Real Value);
 
-		/****************** SetRow ******************/
-		/**** md5 signature: 668a9f23e674b9bb298d8e5b56bf77d3 ****/
+		/****** math_Matrix::SetRow ******/
+		/****** md5 signature: 2ae66ea842007fa5172475960bd4693f ******/
 		%feature("compactdefaultargs") SetRow;
-		%feature("autodoc", "Sets the row of index row of a matrix to the vector <v>. an exception is raised if the dimensions are different. an exception is raises if <row> is inferior to the lower row of the matrix or <row> is superior to the upper row.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Row: int
-V: math_Vector
+V: math_VectorBase<>
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets the row of index Row of a matrix to the vector <V>. An exception is raised if the dimensions are different. An exception is raises if <Row> is inferior to the lower row of the matrix or <Row> is superior to the upper row.
 ") SetRow;
-		void SetRow(const Standard_Integer Row, const math_Vector & V);
+		void SetRow(const Standard_Integer Row, const math_VectorBase<> & V);
 
-		/****************** Subtract ******************/
-		/**** md5 signature: 57225649e8bf41e040f2022e6ddd9393 ****/
+		/****** math_Matrix::Subtract ******/
+		/****** md5 signature: 57225649e8bf41e040f2022e6ddd9393 ******/
 		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Subtracts the matrix <right> from <self>. an exception is raised if the dimensions are different. warning in order to avoid time-consuming copying of matrices, it is preferable to use operator -= or the function subtract whenever possible.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Subtracts the matrix <Right> from <self>. An exception is raised if the dimensions are different. Warning In order to avoid time-consuming copying of matrices, it is preferable to use operator -= or the function Subtract whenever possible.
 ") Subtract;
 		void Subtract(const math_Matrix & Right);
 
-		/****************** Subtract ******************/
-		/**** md5 signature: 6dc59a1d8237c700094c97827f937e9a ****/
+		/****** math_Matrix::Subtract ******/
+		/****** md5 signature: 6dc59a1d8237c700094c97827f937e9a ******/
 		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Sets a matrix to the subtraction of the matrix <right> from the matrix <left>. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Left: math_Matrix
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets a matrix to the Subtraction of the matrix <Right> from the matrix <Left>. An exception is raised if the dimensions are different.
 ") Subtract;
 		void Subtract(const math_Matrix & Left, const math_Matrix & Right);
 
-		/****************** Subtracted ******************/
-		/**** md5 signature: 1c7b865b38ba73875bfcca9e64263fbe ****/
+		/****** math_Matrix::Subtracted ******/
+		/****** md5 signature: 1c7b865b38ba73875bfcca9e64263fbe ******/
 		%feature("compactdefaultargs") Subtracted;
-		%feature("autodoc", "Returns the result of the subtraction of <right> from <self>. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the result of the subtraction of <Right> from <self>. An exception is raised if the dimensions are different.
 ") Subtracted;
 		math_Matrix Subtracted(const math_Matrix & Right);
 
-		/****************** SwapCol ******************/
-		/**** md5 signature: 695fc375e2866be90db8ba670587a8a6 ****/
+		/****** math_Matrix::SwapCol ******/
+		/****** md5 signature: 695fc375e2866be90db8ba670587a8a6 ******/
 		%feature("compactdefaultargs") SwapCol;
-		%feature("autodoc", "Swaps the columns of index <col1> and <col2>. an exception is raised if <col1> or <col2> is out of range.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Col1: int
 Col2: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Swaps the columns of index <Col1> and <Col2>. An exception is raised if <Col1> or <Col2> is out of range.
 ") SwapCol;
 		void SwapCol(const Standard_Integer Col1, const Standard_Integer Col2);
 
-		/****************** SwapRow ******************/
-		/**** md5 signature: 3d6847fdc6234f7cf4d74bcfc2394511 ****/
+		/****** math_Matrix::SwapRow ******/
+		/****** md5 signature: 3d6847fdc6234f7cf4d74bcfc2394511 ******/
 		%feature("compactdefaultargs") SwapRow;
-		%feature("autodoc", "Swaps the rows of index row1 and row2. an exception is raised if <row1> or <row2> is out of range.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Row1: int
 Row2: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Swaps the rows of index Row1 and Row2. An exception is raised if <Row1> or <Row2> is out of range.
 ") SwapRow;
 		void SwapRow(const Standard_Integer Row1, const Standard_Integer Row2);
 
-		/****************** TMultiplied ******************/
-		/**** md5 signature: 6734da006117430718ea39422d9c8295 ****/
+		/****** math_Matrix::TMultiplied ******/
+		/****** md5 signature: 6734da006117430718ea39422d9c8295 ******/
 		%feature("compactdefaultargs") TMultiplied;
-		%feature("autodoc", "Sets this matrix to the product of the transposed matrix tleft, and the matrix right. example math_matrix a (1, 3, 1, 3); math_matrix b (1, 3, 1, 3); // a = ... , b = ... math_matrix c (1, 3, 1, 3); c.multiply(a, b); exceptions standard_dimensionerror if matrices are of incompatible dimensions, i.e. if: - the number of columns of matrix left, or the number of rows of matrix tleft is not equal to the number of rows of matrix right, or - the number of rows of matrix left, or the number of columns of matrix tleft is not equal to the number of rows of this matrix, or - the number of columns of matrix right is not equal to the number of columns of this matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+Sets this matrix to the product of the transposed matrix TLeft, and the matrix Right. Example math_Matrix A (1, 3, 1, 3); math_Matrix B (1, 3, 1, 3); // A = ... , B = ... math_Matrix C (1, 3, 1, 3); C.Multiply(A, B); Exceptions Standard_DimensionError if matrices are of incompatible dimensions, i.e. if: - the number of columns of matrix Left, or the number of rows of matrix TLeft is not equal to the number of rows of matrix Right, or - the number of rows of matrix Left, or the number of columns of matrix TLeft is not equal to the number of rows of this matrix, or - the number of columns of matrix Right is not equal to the number of columns of this matrix.
 ") TMultiplied;
 		math_Matrix TMultiplied(const Standard_Real Right);
 
-		/****************** TMultiply ******************/
-		/**** md5 signature: da28cb0adee88390ab8e0de9ae52879b ****/
+		/****** math_Matrix::TMultiply ******/
+		/****** md5 signature: da28cb0adee88390ab8e0de9ae52879b ******/
 		%feature("compactdefaultargs") TMultiply;
-		%feature("autodoc", "Returns the product of the transpose of a matrix with the matrix <right>. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the product of the transpose of a matrix with the matrix <Right>. An exception is raised if the dimensions are different.
 ") TMultiply;
 		math_Matrix TMultiply(const math_Matrix & Right);
 
-		/****************** TMultiply ******************/
-		/**** md5 signature: 2210b40e1b8db02f71e11cd9d230547e ****/
+		/****** math_Matrix::TMultiply ******/
+		/****** md5 signature: 2210b40e1b8db02f71e11cd9d230547e ******/
 		%feature("compactdefaultargs") TMultiply;
-		%feature("autodoc", "Computes a matrix to the product of the transpose of the matrix <tleft> with the matrix <right>. an exception is raised if the dimensions are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
 TLeft: math_Matrix
 Right: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes a matrix to the product of the transpose of the matrix <TLeft> with the matrix <Right>. An exception is raised if the dimensions are different.
 ") TMultiply;
 		void TMultiply(const math_Matrix & TLeft, const math_Matrix & Right);
 
-		/****************** Transpose ******************/
-		/**** md5 signature: 70e27025c56428cd3bbca609f0f0cfbd ****/
+		/****** math_Matrix::Transpose ******/
+		/****** md5 signature: 70e27025c56428cd3bbca609f0f0cfbd ******/
 		%feature("compactdefaultargs") Transpose;
-		%feature("autodoc", "Transposes a given matrix. an exception is raised if the matrix is not a square matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Transposes a given matrix. An exception is raised if the matrix is not a square matrix.
 ") Transpose;
 		void Transpose();
 
-		/****************** Transposed ******************/
-		/**** md5 signature: f93a0b9293ece867193dfa5c1e4d1e3b ****/
+		/****** math_Matrix::Transposed ******/
+		/****** md5 signature: f93a0b9293ece867193dfa5c1e4d1e3b ******/
 		%feature("compactdefaultargs") Transposed;
-		%feature("autodoc", "Teturns the transposed of a matrix. an exception is raised if the matrix is not a square matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Teturns the transposed of a matrix. An exception is raised if the matrix is not a square matrix.
 ") Transposed;
 		math_Matrix Transposed();
 
-		/****************** UpperCol ******************/
-		/**** md5 signature: 27fb568327f7fec9e573bed9b0afa9ac ****/
+		/****** math_Matrix::UpperCol ******/
+		/****** md5 signature: 27fb568327f7fec9e573bed9b0afa9ac ******/
 		%feature("compactdefaultargs") UpperCol;
-		%feature("autodoc", "Returns the value of the upper index of the column range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the value of the upper index of the column range of a matrix.
 ") UpperCol;
 		Standard_Integer UpperCol();
 
-		/****************** UpperRow ******************/
-		/**** md5 signature: d1af30a15a728feb822efd58349a197c ****/
+		/****** math_Matrix::UpperRow ******/
+		/****** md5 signature: d1af30a15a728feb822efd58349a197c ******/
 		%feature("compactdefaultargs") UpperRow;
-		%feature("autodoc", "Returns the upper index of the row range of a matrix.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the Upper index of the row range of a matrix.
 ") UpperRow;
 		Standard_Integer UpperRow();
 
@@ -4832,162 +5052,182 @@ int
             $self->Value(Row,Col)=value;
             }
         };
-		/****************** operator * ******************/
-		/**** md5 signature: 94d5051ab11d88189a0139728702f340 ****/
+		/****** math_Matrix::operator * ******/
+		/****** md5 signature: 94d5051ab11d88189a0139728702f340 ******/
 		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator *;
 		math_Matrix operator *(const Standard_Real Right);
 
-		/****************** operator * ******************/
-		/**** md5 signature: fef22e813061d79dcc8f586587289d48 ****/
+		/****** math_Matrix::operator * ******/
+		/****** md5 signature: fef22e813061d79dcc8f586587289d48 ******/
 		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator *;
 		math_Matrix operator *(const math_Matrix & Right);
 
-		/****************** operator * ******************/
-		/**** md5 signature: d07becabbde2ee3b83d3e4abadaa01f0 ****/
+		/****** math_Matrix::operator * ******/
+		/****** md5 signature: c0a9ea7843feb8ee31a4f8ef5d1efe6c ******/
 		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Right: math_Vector
+Right: math_VectorBase<>
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase<>
+
+Description
+-----------
+No available documentation.
 ") operator *;
-		math_Vector operator *(const math_Vector & Right);
+		math_VectorBase<> operator *(const math_VectorBase<> & Right);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const math_Matrix other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
-		/****************** operator + ******************/
-		/**** md5 signature: f10c070428896ea481b284cdeb5d91d2 ****/
+%extend{
+    void __imul_wrapper__(const math_Matrix other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
+		/****** math_Matrix::operator + ******/
+		/****** md5 signature: f10c070428896ea481b284cdeb5d91d2 ******/
 		%feature("compactdefaultargs") operator +;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator +;
 		math_Matrix operator +(const math_Matrix & Right);
 
 
-            %extend{
-                void __iadd_wrapper__(const math_Matrix other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
-		/****************** operator - ******************/
-		/**** md5 signature: 3ca481947ee5dec077f4109d6e290a68 ****/
+%extend{
+    void __iadd_wrapper__(const math_Matrix other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
+		/****** math_Matrix::operator - ******/
+		/****** md5 signature: 3ca481947ee5dec077f4109d6e290a68 ******/
 		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: math_Matrix
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator -;
 		math_Matrix operator -(const math_Matrix & Right);
 
-		/****************** operator - ******************/
-		/**** md5 signature: af35ddcee22eff379d56dba02133b505 ****/
+		/****** math_Matrix::operator - ******/
+		/****** md5 signature: af35ddcee22eff379d56dba02133b505 ******/
 		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator -;
 		math_Matrix operator -();
 
 
-            %extend{
-                void __isub_wrapper__(const math_Matrix other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
-		/****************** operator / ******************/
-		/**** md5 signature: 46fa5987c594ac10ecb471fa453a05b7 ****/
+%extend{
+    void __isub_wrapper__(const math_Matrix other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
+		/****** math_Matrix::operator / ******/
+		/****** md5 signature: 46fa5987c594ac10ecb471fa453a05b7 ******/
 		%feature("compactdefaultargs") operator /;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Right: float
 
-Returns
+Return
 -------
 math_Matrix
+
+Description
+-----------
+No available documentation.
 ") operator /;
 		math_Matrix operator /(const Standard_Real Right);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
@@ -5003,40 +5243,47 @@ math_Matrix
 %nodefaultctor math_MultipleVarFunction;
 class math_MultipleVarFunction {
 	public:
-		/****************** GetStateNumber ******************/
-		/**** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ****/
+		/****** math_MultipleVarFunction::GetStateNumber ******/
+		/****** md5 signature: 72c7d030f77e2ffa21bc582e871fee3f ******/
 		%feature("compactdefaultargs") GetStateNumber;
-		%feature("autodoc", "Return the state of the function corresponding to the latestt call of any methods associated to the function. this function is called by each of the algorithms described later which define the function integer algorithm::statenumber(). the algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this statenumber. byu default, this method returns 0 (which means for the algorithm: no state has been saved). it is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an integer that allows retrieval of the state.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+return the state of the function corresponding to the latestt call of any methods associated to the function. This function is called by each of the algorithms described later which define the function Integer Algorithm::StateNumber(). The algorithm has the responsibility to call this function when it has found a solution (i.e. a root or a minimum) and has to maintain the association between the solution found and this StateNumber. Byu default, this method returns 0 (which means for the algorithm: no state has been saved). It is the responsibility of the programmer to decide if he needs to save the current state of the function and to return an Integer that allows retrieval of the state.
 ") GetStateNumber;
 		virtual Standard_Integer GetStateNumber();
 
-		/****************** NbVariables ******************/
-		/**** md5 signature: 9592108ebf305562827d51d05d64eecc ****/
+		/****** math_MultipleVarFunction::NbVariables ******/
+		/****** md5 signature: 9592108ebf305562827d51d05d64eecc ******/
 		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "Returns the number of variables of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of variables of the function.
 ") NbVariables;
 		virtual Standard_Integer NbVariables();
 
-		/****************** Value ******************/
-		/**** md5 signature: e09b772d60bf0c815be5e84388582a5f ****/
+		/****** math_MultipleVarFunction::Value ******/
+		/****** md5 signature: e09b772d60bf0c815be5e84388582a5f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the values of the functions <f> for the variable <x>. returns true if the computation was done successfully, otherwise false.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+Computes the values of the Functions <F> for the variable <X>. returns True if the computation was done successfully, otherwise false.
 ") Value;
 		virtual Standard_Boolean Value(const math_Vector & X, Standard_Real &OutValue);
 
@@ -5054,31 +5301,32 @@ F: float
 ********************************/
 class math_NewtonFunctionRoot {
 	public:
-		/****************** math_NewtonFunctionRoot ******************/
-		/**** md5 signature: d6e160697bc830d86b40da2e4b705301 ****/
+		/****** math_NewtonFunctionRoot::math_NewtonFunctionRoot ******/
+		/****** md5 signature: d6e160697bc830d86b40da2e4b705301 ******/
 		%feature("compactdefaultargs") math_NewtonFunctionRoot;
-		%feature("autodoc", "The newton method is done to find the root of the function f from the initial guess guess. the tolerance required on the root is given by tolerance. the solution is found when : abs(xi - xi-1) <= epsx and abs(f(xi))<= epsf the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
 Guess: float
 EpsX: float
 EpsF: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton method is done to find the root of the function F from the initial guess Guess. The tolerance required on the root is given by Tolerance. The solution is found when: abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF The maximum number of iterations allowed is given by NbIterations.
 ") math_NewtonFunctionRoot;
 		 math_NewtonFunctionRoot(math_FunctionWithDerivative & F, const Standard_Real Guess, const Standard_Real EpsX, const Standard_Real EpsF, const Standard_Integer NbIterations = 100);
 
-		/****************** math_NewtonFunctionRoot ******************/
-		/**** md5 signature: 6b40a66ed0702090abb8012862f650a6 ****/
+		/****** math_NewtonFunctionRoot::math_NewtonFunctionRoot ******/
+		/****** md5 signature: 6b40a66ed0702090abb8012862f650a6 ******/
 		%feature("compactdefaultargs") math_NewtonFunctionRoot;
-		%feature("autodoc", "The newton method is done to find the root of the function f from the initial guess guess. the solution must be inside the interval [a, b]. the tolerance required on the root is given by tolerance. the solution is found when : abs(xi - xi-1) <= epsx and abs(f(xi))<= epsf the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
@@ -5087,111 +5335,138 @@ EpsX: float
 EpsF: float
 A: float
 B: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton method is done to find the root of the function F from the initial guess Guess. The solution must be inside the interval [A, B]. The tolerance required on the root is given by Tolerance. The solution is found when: abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF The maximum number of iterations allowed is given by NbIterations.
 ") math_NewtonFunctionRoot;
 		 math_NewtonFunctionRoot(math_FunctionWithDerivative & F, const Standard_Real Guess, const Standard_Real EpsX, const Standard_Real EpsF, const Standard_Real A, const Standard_Real B, const Standard_Integer NbIterations = 100);
 
-		/****************** math_NewtonFunctionRoot ******************/
-		/**** md5 signature: 0b3c1bbcfcbb81923f6b4fa9faa9c962 ****/
+		/****** math_NewtonFunctionRoot::math_NewtonFunctionRoot ******/
+		/****** md5 signature: 0b3c1bbcfcbb81923f6b4fa9faa9c962 ******/
 		%feature("compactdefaultargs") math_NewtonFunctionRoot;
-		%feature("autodoc", "Is used in a sub-class to initialize correctly all the fields of this class.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
 B: float
 EpsX: float
 EpsF: float
-NbIterations: int,optional
-	default value is 100
+NbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+is used in a sub-class to initialize correctly all the fields of this class.
 ") math_NewtonFunctionRoot;
 		 math_NewtonFunctionRoot(const Standard_Real A, const Standard_Real B, const Standard_Real EpsX, const Standard_Real EpsF, const Standard_Integer NbIterations = 100);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ****/
+		/****** math_NewtonFunctionRoot::Derivative ******/
+		/****** md5 signature: 63ea99dea8601c9ed801e924cf6ad25a ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Returns the value of the derivative at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the derivative at the root. Exception NotDone is raised if the root was not found.
 ") Derivative;
 		Standard_Real Derivative();
 
+		/****** math_NewtonFunctionRoot::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_NewtonFunctionRoot::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_NewtonFunctionRoot::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done on the computation of the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations really done on the computation of the Root. Exception NotDone is raised if the root was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 2a3a4e22e33b2c347173e53d44f4b810 ****/
+		/****** math_NewtonFunctionRoot::Perform ******/
+		/****** md5 signature: 2a3a4e22e33b2c347173e53d44f4b810 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Is used internally by the constructors.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionWithDerivative
 Guess: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+is used internally by the constructors.
 ") Perform;
 		void Perform(math_FunctionWithDerivative & F, const Standard_Real Guess);
 
-		/****************** Root ******************/
-		/**** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ****/
+		/****** math_NewtonFunctionRoot::Root ******/
+		/****** md5 signature: 1f1a437be6bd034392962de6cf04ded1 ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root of function <f>. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the root of function <F>. Exception NotDone is raised if the root was not found.
 ") Root;
 		Standard_Real Root();
 
-		/****************** Value ******************/
-		/**** md5 signature: 52655a2fb6642856b2c68a9331826787 ****/
+		/****** math_NewtonFunctionRoot::Value ******/
+		/****** md5 signature: 52655a2fb6642856b2c68a9331826787 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the value of the function at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the function at the root. Exception NotDone is raised if the root was not found.
 ") Value;
 		Standard_Real Value();
 
@@ -5209,161 +5484,193 @@ float
 ***********************************/
 class math_NewtonFunctionSetRoot {
 	public:
-		/****************** math_NewtonFunctionSetRoot ******************/
-		/**** md5 signature: d24c05e7550e56e32eff3a37a3caf780 ****/
+		/****** math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot ******/
+		/****** md5 signature: d24c05e7550e56e32eff3a37a3caf780 ******/
 		%feature("compactdefaultargs") math_NewtonFunctionSetRoot;
-		%feature("autodoc", "Initialize correctly all the fields of this class. the range (1, f.nbvariables()) must be especially respected for all vectors and matrix declarations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
 theXTolerance: math_Vector
 theFTolerance: float
-tehNbIterations: int,optional
-	default value is 100
+tehNbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize correctly all the fields of this class. The range (1, F.NbVariables()) must be especially respected for all vectors and matrix declarations.
 ") math_NewtonFunctionSetRoot;
 		 math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives & theFunction, const math_Vector & theXTolerance, const Standard_Real theFTolerance, const Standard_Integer tehNbIterations = 100);
 
-		/****************** math_NewtonFunctionSetRoot ******************/
-		/**** md5 signature: 0190b478f77c6bc3b2dde39b95386dae ****/
+		/****** math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot ******/
+		/****** md5 signature: 0190b478f77c6bc3b2dde39b95386dae ******/
 		%feature("compactdefaultargs") math_NewtonFunctionSetRoot;
-		%feature("autodoc", "This constructor should be used in a sub-class to initialize correctly all the fields of this class. the range (1, f.nbvariables()) must be especially respected for all vectors and matrix declarations. the method settolerance must be called before performing the algorithm.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
 theFTolerance: float
-theNbIterations: int,optional
-	default value is 100
+theNbIterations: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+This constructor should be used in a sub-class to initialize correctly all the fields of this class. The range (1, F.NbVariables()) must be especially respected for all vectors and matrix declarations. The method SetTolerance must be called before performing the algorithm.
 ") math_NewtonFunctionSetRoot;
 		 math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives & theFunction, const Standard_Real theFTolerance, const Standard_Integer theNbIterations = 100);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: 3dcf53e070495d3f965a044124317010 ****/
+		/****** math_NewtonFunctionSetRoot::Derivative ******/
+		/****** md5 signature: 3dcf53e070495d3f965a044124317010 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Returns the matrix value of the derivative at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+Returns the matrix value of the derivative at the root. Exception NotDone is raised if the root was not found.
 ") Derivative;
 		const math_Matrix & Derivative();
 
-		/****************** Derivative ******************/
-		/**** md5 signature: a541fd37b04e5a32f186e9bd160ab411 ****/
+		/****** math_NewtonFunctionSetRoot::Derivative ******/
+		/****** md5 signature: a541fd37b04e5a32f186e9bd160ab411 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Outputs the matrix value of the derivative at the root in der. exception notdone is raised if the root was not found. exception dimensionerror is raised if the range of der is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Der: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Outputs the matrix value of the derivative at the root in Der. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the range of Der is not equal to the range of the StartingPoint.
 ") Derivative;
 		void Derivative(math_Matrix & Der);
 
+		/****** math_NewtonFunctionSetRoot::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** FunctionSetErrors ******************/
-		/**** md5 signature: f60cf743c92edccf04b38617ec21af42 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_NewtonFunctionSetRoot::FunctionSetErrors ******/
+		/****** md5 signature: f60cf743c92edccf04b38617ec21af42 ******/
 		%feature("compactdefaultargs") FunctionSetErrors;
-		%feature("autodoc", "Returns the vector value of the error done on the functions at the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the vector value of the error done on the functions at the root. Exception NotDone is raised if the root was not found.
 ") FunctionSetErrors;
 		const math_Vector & FunctionSetErrors();
 
-		/****************** FunctionSetErrors ******************/
-		/**** md5 signature: 42d5fb93e272f054a74fbe4bd77ad1f2 ****/
+		/****** math_NewtonFunctionSetRoot::FunctionSetErrors ******/
+		/****** md5 signature: 42d5fb93e272f054a74fbe4bd77ad1f2 ******/
 		%feature("compactdefaultargs") FunctionSetErrors;
-		%feature("autodoc", "Outputs the vector value of the error done on the functions at the root in err. exception notdone is raised if the root was not found. exception dimensionerror is raised if the range of err is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Err: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Outputs the vector value of the error done on the functions at the root in Err. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the range of Err is not equal to the range of the StartingPoint.
 ") FunctionSetErrors;
 		void FunctionSetErrors(math_Vector & Err);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_NewtonFunctionSetRoot::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: 8f22da97fa90e99c4558e184c58d5b3e ****/
+		/****** math_NewtonFunctionSetRoot::IsSolutionReached ******/
+		/****** md5 signature: 8f22da97fa90e99c4558e184c58d5b3e ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "This method is called at the end of each iteration to check if the solution is found. vectors deltax, fvalues and jacobian matrix are consistent with the possible solution vector sol and can be inspected to decide whether the solution is reached or not.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: math_FunctionSetWithDerivatives
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+This method is called at the end of each iteration to check if the solution is found. Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the possible solution Vector Sol and can be inspected to decide whether the solution is reached or not.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_FunctionSetWithDerivatives & F);
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_NewtonFunctionSetRoot::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the root. exception notdone is raised if the root was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations really done during the computation of the Root. Exception NotDone is raised if the root was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: c614619ebede1b055764f4e9fdc50f92 ****/
+		/****** math_NewtonFunctionSetRoot::Perform ******/
+		/****** md5 signature: c614619ebede1b055764f4e9fdc50f92 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "The newton method is done to improve the root of the function from the initial guess point. the solution is found when: abs(xj - xj-1)(i) <= xtol(i) and abs(fi) <= ftol for all i;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
 theStartingPoint: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton method is done to improve the root of the function from the initial guess point. The solution is found when: abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;.
 ") Perform;
 		void Perform(math_FunctionSetWithDerivatives & theFunction, const math_Vector & theStartingPoint);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 9cda40df6a87705d9732c4f2ff942f5b ****/
+		/****** math_NewtonFunctionSetRoot::Perform ******/
+		/****** md5 signature: 9cda40df6a87705d9732c4f2ff942f5b ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "The newton method is done to improve the root of the function from the initial guess point. bounds may be given, to constrain the solution. the solution is found when: abs(xj - xj-1)(i) <= xtol(i) and abs(fi) <= ftol for all i;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_FunctionSetWithDerivatives
@@ -5371,50 +5678,62 @@ theStartingPoint: math_Vector
 theInfBound: math_Vector
 theSupBound: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The Newton method is done to improve the root of the function from the initial guess point. Bounds may be given, to constrain the solution. The solution is found when: abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;.
 ") Perform;
 		void Perform(math_FunctionSetWithDerivatives & theFunction, const math_Vector & theStartingPoint, const math_Vector & theInfBound, const math_Vector & theSupBound);
 
-		/****************** Root ******************/
-		/**** md5 signature: 877a7a2963433958443904730046ad0c ****/
+		/****** math_NewtonFunctionSetRoot::Root ******/
+		/****** md5 signature: 877a7a2963433958443904730046ad0c ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Returns the value of the root of function f. exceptions stdfail_notdone if the algorithm fails (and isdone returns false).
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the value of the root of function F. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false).
 ") Root;
 		const math_Vector & Root();
 
-		/****************** Root ******************/
-		/**** md5 signature: a6e973993b4c58ebb2497c195b8005ce ****/
+		/****** math_NewtonFunctionSetRoot::Root ******/
+		/****** md5 signature: a6e973993b4c58ebb2497c195b8005ce ******/
 		%feature("compactdefaultargs") Root;
-		%feature("autodoc", "Outputs the root vector in root. exception notdone is raised if the root was not found. exception dimensionerror is raised if the range of root is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Root: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the root vector in Root. Exception NotDone is raised if the root was not found. Exception DimensionError is raised if the range of Root is not equal to the range of the StartingPoint.
 ") Root;
 		void Root(math_Vector & Root);
 
-		/****************** SetTolerance ******************/
-		/**** md5 signature: ced3627353aa25004d5c42e4296b4972 ****/
+		/****** math_NewtonFunctionSetRoot::SetTolerance ******/
+		/****** md5 signature: ced3627353aa25004d5c42e4296b4972 ******/
 		%feature("compactdefaultargs") SetTolerance;
-		%feature("autodoc", "Initializes the tolerance values for the unknowns.
-
+		%feature("autodoc", "
 Parameters
 ----------
 XTol: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initializes the tolerance values for the unknowns.
 ") SetTolerance;
 		void SetTolerance(const math_Vector & XTol);
 
@@ -5436,173 +5755,207 @@ None
 ***************************/
 class math_NewtonMinimum {
 	public:
-		/****************** math_NewtonMinimum ******************/
-		/**** md5 signature: d6a72f1f3500ef9a43d96e7b87a82899 ****/
+		/****** math_NewtonMinimum::math_NewtonMinimum ******/
+		/****** md5 signature: d6a72f1f3500ef9a43d96e7b87a82899 ******/
 		%feature("compactdefaultargs") math_NewtonMinimum;
-		%feature("autodoc", "The tolerance required on the solution is given by tolerance. iteration are stopped if (!withsingularity) and h(f(xi)) is not definite positive (if the smaller eigenvalue of h < convexity) or isconverged() returns true for 2 successives iterations. warning: this constructor does not perform computation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunctionWithHessian
-theTolerance: float,optional
-	default value is Precision::Confusion()
-theNbIterations: int,optional
-	default value is 40
-theConvexity: float,optional
-	default value is 1.0e-6
-theWithSingularity: bool,optional
-	default value is Standard_True
+theTolerance: float (optional, default to Precision::Confusion())
+theNbIterations: int (optional, default to 40)
+theConvexity: float (optional, default to 1.0e-6)
+theWithSingularity: bool (optional, default to Standard_True)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+The tolerance required on the solution is given by Tolerance. Iteration are stopped if (!WithSingularity) and H(F(Xi)) is not definite positive (if the smaller eigenvalue of H < Convexity) or IsConverged() returns True for 2 successives Iterations. Warning: This constructor does not perform computation.
 ") math_NewtonMinimum;
 		 math_NewtonMinimum(const math_MultipleVarFunctionWithHessian & theFunction, const Standard_Real theTolerance = Precision::Confusion(), const Standard_Integer theNbIterations = 40, const Standard_Real theConvexity = 1.0e-6, const Standard_Boolean theWithSingularity = Standard_True);
 
+		/****** math_NewtonMinimum::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** GetStatus ******************/
-		/**** md5 signature: f0121c820ebe3b5d3aba6ff3efc32974 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints on the stream o information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_NewtonMinimum::GetStatus ******/
+		/****** md5 signature: f0121c820ebe3b5d3aba6ff3efc32974 ******/
 		%feature("compactdefaultargs") GetStatus;
-		%feature("autodoc", "Returns the status of computation. the exception notdone is raised if an error has occured.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Status
+
+Description
+-----------
+Returns the Status of computation. The exception NotDone is raised if an error has occurred.
 ") GetStatus;
 		math_Status GetStatus();
 
-		/****************** Gradient ******************/
-		/**** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ****/
+		/****** math_NewtonMinimum::Gradient ******/
+		/****** md5 signature: 6c3691fb2b0bb6085965955bdcce0a12 ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Returns the gradient vector at the minimum. exception notdone is raised if an error has occured.the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the gradient vector at the minimum. Exception NotDone is raised if an error has occurred. The minimum was not found.
 ") Gradient;
 		const math_Vector & Gradient();
 
-		/****************** Gradient ******************/
-		/**** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ****/
+		/****** math_NewtonMinimum::Gradient ******/
+		/****** md5 signature: d04c1575bb29bb8c6afa62dba0106edc ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Outputs the gradient vector at the minimum in grad. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of grad is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Grad: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the gradient vector at the minimum in Grad. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Grad is not equal to the range of the StartingPoint.
 ") Gradient;
 		void Gradient(math_Vector & Grad);
 
-		/****************** IsConverged ******************/
-		/**** md5 signature: 8a5091a170ea2ddc20fb6c2c7be99ac2 ****/
+		/****** math_NewtonMinimum::IsConverged ******/
+		/****** md5 signature: 8a5091a170ea2ddc20fb6c2c7be99ac2 ******/
 		%feature("compactdefaultargs") IsConverged;
-		%feature("autodoc", "This method is called at the end of each iteration to check the convergence: || xi+1 - xi || < tolerance or || f(xi+1) - f(xi)|| < tolerance * || f(xi) || it can be redefined in a sub-class to implement a specific test.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+This method is called at the end of each iteration to check the convergence: || Xi+1 - Xi || < Tolerance or || F(Xi+1) - F(Xi)|| < Tolerance * || F(Xi) || It can be redefined in a sub-class to implement a specific test.
 ") IsConverged;
 		virtual Standard_Boolean IsConverged();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_NewtonMinimum::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Tests if an error has occured.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Tests if an error has occurred.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Location ******************/
-		/**** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ****/
+		/****** math_NewtonMinimum::Location ******/
+		/****** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Returns the location vector of the minimum. exception notdone is raised if an error has occured.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the location vector of the minimum. Exception NotDone is raised if an error has occurred.
 ") Location;
 		const math_Vector & Location();
 
-		/****************** Location ******************/
-		/**** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ****/
+		/****** math_NewtonMinimum::Location ******/
+		/****** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Outputs the location vector of the minimum in loc. exception notdone is raised if an error has occured. exception dimensionerror is raised if the range of loc is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Loc: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the location vector of the minimum in Loc. Exception NotDone is raised if an error has occurred. Exception DimensionError is raised if the range of Loc is not equal to the range of the StartingPoint.
 ") Location;
 		void Location(math_Vector & Loc);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: c6e52c305b40f67530895542ef579d78 ****/
+		/****** math_NewtonMinimum::Minimum ******/
+		/****** md5 signature: c6e52c305b40f67530895542ef579d78 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Returns the value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+returns the value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Minimum;
 		Standard_Real Minimum();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_NewtonMinimum::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done in the calculation of the minimum. the exception notdone is raised if an error has occured.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done in the calculation of the minimum. The exception NotDone is raised if an error has occurred.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 4deb554464317c5391e1d57f8d2daf73 ****/
+		/****** math_NewtonMinimum::Perform ******/
+		/****** md5 signature: 4deb554464317c5391e1d57f8d2daf73 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Search the solution.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunctionWithHessian
 theStartingPoint: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Search the solution.
 ") Perform;
 		void Perform(math_MultipleVarFunctionWithHessian & theFunction, const math_Vector & theStartingPoint);
 
-		/****************** SetBoundary ******************/
-		/**** md5 signature: 3dc06701c9c41177e0e859238df70613 ****/
+		/****** math_NewtonMinimum::SetBoundary ******/
+		/****** md5 signature: 3dc06701c9c41177e0e859238df70613 ******/
 		%feature("compactdefaultargs") SetBoundary;
-		%feature("autodoc", "Set boundaries.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLeftBorder: math_Vector
 theRightBorder: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set boundaries.
 ") SetBoundary;
 		void SetBoundary(const math_Vector & theLeftBorder, const math_Vector & theRightBorder);
 
@@ -5624,62 +5977,73 @@ None
 *****************/
 class math_PSO {
 	public:
-		/****************** math_PSO ******************/
-		/**** md5 signature: 50337c0ea7368dc9053e65f47cfd7161 ****/
+		/****** math_PSO::math_PSO ******/
+		/****** md5 signature: 50337c0ea7368dc9053e65f47cfd7161 ******/
 		%feature("compactdefaultargs") math_PSO;
-		%feature("autodoc", "/** * constructor. * * @param thefunc defines the objective function. it should exist during all lifetime of class instance. * @param thelowborder defines lower border of search space. * @param theuppborder defines upper border of search space. * @param thesteps defines steps of regular grid, used for particle generation. this parameter used to define stop condition (terminalvelocity). * @param thenbparticles defines number of particles. * @param thenbiter defines maximum number of iterations. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunc: math_MultipleVarFunction *
 theLowBorder: math_Vector
 theUppBorder: math_Vector
 theSteps: math_Vector
-theNbParticles: int,optional
-	default value is 32
-theNbIter: int,optional
-	default value is 100
+theNbParticles: int (optional, default to 32)
+theNbIter: int (optional, default to 100)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. * * 
+Parameter theFunc defines the objective function. It should exist during all lifetime of class instance. * 
+Parameter theLowBorder defines lower border of search space. * 
+Parameter theUppBorder defines upper border of search space. * 
+Parameter theSteps defines steps of regular grid, used for particle generation. This parameter used to define stop condition (TerminalVelocity). * 
+Parameter theNbParticles defines number of particles. * 
+Parameter theNbIter defines maximum number of iterations. */.
 ") math_PSO;
 		 math_PSO(math_MultipleVarFunction * theFunc, const math_Vector & theLowBorder, const math_Vector & theUppBorder, const math_Vector & theSteps, const Standard_Integer theNbParticles = 32, const Standard_Integer theNbIter = 100);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 2b0127c0c1b76a56baebd4478c0811b2 ****/
+		/****** math_PSO::Perform ******/
+		/****** md5 signature: 2b0127c0c1b76a56baebd4478c0811b2 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Perform computations, particles array is constructed inside of this function.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theSteps: math_Vector
 theOutPnt: math_Vector
-theNbIter: int,optional
-	default value is 100
+theNbIter: int (optional, default to 100)
 
-Returns
+Return
 -------
 theValue: float
+
+Description
+-----------
+Perform computations, particles array is constructed inside of this function.
 ") Perform;
 		void Perform(const math_Vector & theSteps, Standard_Real &OutValue, math_Vector & theOutPnt, const Standard_Integer theNbIter = 100);
 
-		/****************** Perform ******************/
-		/**** md5 signature: e0494583c5e220768a488ee80a1d2718 ****/
+		/****** math_PSO::Perform ******/
+		/****** md5 signature: e0494583c5e220768a488ee80a1d2718 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Perform computations with given particles array.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theParticles: math_PSOParticlesPool
 theNbParticles: int
 theOutPnt: math_Vector
-theNbIter: int,optional
-	default value is 100
+theNbIter: int (optional, default to 100)
 
-Returns
+Return
 -------
 theValue: float
+
+Description
+-----------
+Perform computations with given particles array.
 ") Perform;
 		void Perform(math_PSOParticlesPool & theParticles, Standard_Integer theNbParticles, Standard_Real &OutValue, math_Vector & theOutPnt, const Standard_Integer theNbIter = 100);
 
@@ -5697,56 +6061,66 @@ theValue: float
 ******************************/
 class math_PSOParticlesPool {
 	public:
-		/****************** math_PSOParticlesPool ******************/
-		/**** md5 signature: 6bdccc4659b6eeb09fcb2f7c33868cc9 ****/
+		/****** math_PSOParticlesPool::math_PSOParticlesPool ******/
+		/****** md5 signature: 6bdccc4659b6eeb09fcb2f7c33868cc9 ******/
 		%feature("compactdefaultargs") math_PSOParticlesPool;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theParticlesCount: int
 theDimensionCount: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_PSOParticlesPool;
 		 math_PSOParticlesPool(const Standard_Integer theParticlesCount, const Standard_Integer theDimensionCount);
 
-		/****************** GetBestParticle ******************/
-		/**** md5 signature: c1ad171b33359090f394624dee5690f1 ****/
+		/****** math_PSOParticlesPool::GetBestParticle ******/
+		/****** md5 signature: c1ad171b33359090f394624dee5690f1 ******/
 		%feature("compactdefaultargs") GetBestParticle;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 PSO_Particle *
+
+Description
+-----------
+No available documentation.
 ") GetBestParticle;
 		PSO_Particle * GetBestParticle();
 
-		/****************** GetParticle ******************/
-		/**** md5 signature: 2379a9e46b95b9c2895b7e30dc6ab8c1 ****/
+		/****** math_PSOParticlesPool::GetParticle ******/
+		/****** md5 signature: 2379a9e46b95b9c2895b7e30dc6ab8c1 ******/
 		%feature("compactdefaultargs") GetParticle;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theIdx: int
 
-Returns
+Return
 -------
 PSO_Particle *
+
+Description
+-----------
+No available documentation.
 ") GetParticle;
 		PSO_Particle * GetParticle(const Standard_Integer theIdx);
 
-		/****************** GetWorstParticle ******************/
-		/**** md5 signature: ab984308bec609f60880b6017559c01b ****/
+		/****** math_PSOParticlesPool::GetWorstParticle ******/
+		/****** md5 signature: ab984308bec609f60880b6017559c01b ******/
 		%feature("compactdefaultargs") GetWorstParticle;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 PSO_Particle *
+
+Description
+-----------
+No available documentation.
 ") GetWorstParticle;
 		PSO_Particle * GetWorstParticle();
 
@@ -5764,122 +6138,149 @@ PSO_Particle *
 ********************/
 class math_Powell {
 	public:
-		/****************** math_Powell ******************/
-		/**** md5 signature: a0dd15bd610dd1a4afa67a302c7a6f98 ****/
+		/****** math_Powell::math_Powell ******/
+		/****** md5 signature: a0dd15bd610dd1a4afa67a302c7a6f98 ******/
 		%feature("compactdefaultargs") math_Powell;
-		%feature("autodoc", "Constructor. initialize new entity.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunction
 theTolerance: float
-theNbIterations: int,optional
-	default value is 200
-theZEPS: float,optional
-	default value is 1.0e-12
+theNbIterations: int (optional, default to 200)
+theZEPS: float (optional, default to 1.0e-12)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor. Initialize new entity.
 ") math_Powell;
 		 math_Powell(const math_MultipleVarFunction & theFunction, const Standard_Real theTolerance, const Standard_Integer theNbIterations = 200, const Standard_Real theZEPS = 1.0e-12);
 
+		/****** math_Powell::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Powell::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** IsSolutionReached ******************/
-		/**** md5 signature: f1df7a4d688b6a042fa4101f95c896f6 ****/
+		/****** math_Powell::IsSolutionReached ******/
+		/****** md5 signature: f1df7a4d688b6a042fa4101f95c896f6 ******/
 		%feature("compactdefaultargs") IsSolutionReached;
-		%feature("autodoc", "Solution f = fi is found when: 2.0 * abs(fi - fi-1) <= tolerance * (abs(fi) + abs(fi-1)) + zeps. the maximum number of iterations allowed is given by nbiterations.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunction
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Solution F = Fi is found when: 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS. The maximum number of iterations allowed is given by NbIterations.
 ") IsSolutionReached;
 		virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunction & theFunction);
 
-		/****************** Location ******************/
-		/**** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ****/
+		/****** math_Powell::Location ******/
+		/****** md5 signature: 5a88ac2c95c5682bdeb613bd0a6c6d51 ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Returns the location vector of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+returns the location vector of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Location;
 		const math_Vector & Location();
 
-		/****************** Location ******************/
-		/**** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ****/
+		/****** math_Powell::Location ******/
+		/****** md5 signature: c2f6dc7227af27a93b49ddbc87dfbc1a ******/
 		%feature("compactdefaultargs") Location;
-		%feature("autodoc", "Outputs the location vector of the minimum in loc. exception notdone is raised if the minimum was not found. exception dimensionerror is raised if the range of loc is not equal to the range of the startingpoint.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Loc: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+outputs the location vector of the minimum in Loc. Exception NotDone is raised if the minimum was not found. Exception DimensionError is raised if the range of Loc is not equal to the range of the StartingPoint.
 ") Location;
 		void Location(math_Vector & Loc);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: c6e52c305b40f67530895542ef579d78 ****/
+		/****** math_Powell::Minimum ******/
+		/****** md5 signature: c6e52c305b40f67530895542ef579d78 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Returns the value of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the minimum. Exception NotDone is raised if the minimum was not found.
 ") Minimum;
 		Standard_Real Minimum();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_Powell::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done during the computation of the minimum. exception notdone is raised if the minimum was not found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of iterations really done during the computation of the minimum. Exception NotDone is raised if the minimum was not found.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 594513f2b2079305698a7173e88ec674 ****/
+		/****** math_Powell::Perform ******/
+		/****** md5 signature: 594513f2b2079305698a7173e88ec674 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Computes powell minimization on the function f given thestartingpoint, and an initial matrix thestartingdirection whose columns contain the initial set of directions. the solution f = fi is found when: 2.0 * abs(fi - fi-1) =< tolerance * (abs(fi) + abs(fi-1) + zeps).
-
+		%feature("autodoc", "
 Parameters
 ----------
 theFunction: math_MultipleVarFunction
 theStartingPoint: math_Vector
 theStartingDirections: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes Powell minimization on the function F given theStartingPoint, and an initial matrix theStartingDirection whose columns contain the initial set of directions. The solution F = Fi is found when: 2.0 * abs(Fi - Fi-1) =< Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
 ") Perform;
 		void Perform(math_MultipleVarFunction & theFunction, const math_Vector & theStartingPoint, const math_Matrix & theStartingDirections);
 
@@ -5897,72 +6298,90 @@ None
 *****************/
 class math_SVD {
 	public:
-		/****************** math_SVD ******************/
-		/**** md5 signature: 2abb6816df2a6f5ebaa98984acfa09ae ****/
+		/****** math_SVD::math_SVD ******/
+		/****** md5 signature: 2abb6816df2a6f5ebaa98984acfa09ae ******/
 		%feature("compactdefaultargs") math_SVD;
-		%feature("autodoc", "Given as input an n x m matrix a with n < m, n = m or n > m this constructor performs the singular value decomposition.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given as input an n X m matrix A with n < m, n = m or n > m this constructor performs the Singular Value Decomposition.
 ") math_SVD;
 		 math_SVD(const math_Matrix & A);
 
+		/****** math_SVD::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_SVD::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** PseudoInverse ******************/
-		/**** md5 signature: 8b61c132ab3d5c44d7d8d13a4ad9e96a ****/
+		/****** math_SVD::PseudoInverse ******/
+		/****** md5 signature: 8b61c132ab3d5c44d7d8d13a4ad9e96a ******/
 		%feature("compactdefaultargs") PseudoInverse;
-		%feature("autodoc", "Computes the inverse inv of matrix a such as a * inverse = identity. exceptions stdfail_notdone if the algorithm fails (and isdone returns false). standard_dimensionerror if the ranges of inv are compatible with the ranges of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Inv: math_Matrix
-Eps: float,optional
-	default value is 1.0e-6
+Eps: float (optional, default to 1.0e-6)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes the inverse Inv of matrix A such as A * Inverse = Identity. Exceptions StdFail_NotDone if the algorithm fails (and IsDone returns false). Standard_DimensionError if the ranges of Inv are compatible with the ranges of A.
 ") PseudoInverse;
 		void PseudoInverse(math_Matrix & Inv, const Standard_Real Eps = 1.0e-6);
 
-		/****************** Solve ******************/
-		/**** md5 signature: ae383619aac7a447c04f9f6dd08278c2 ****/
+		/****** math_SVD::Solve ******/
+		/****** md5 signature: ae383619aac7a447c04f9f6dd08278c2 ******/
 		%feature("compactdefaultargs") Solve;
-		%feature("autodoc", "Given the input vector b this routine solves the set of linear equations a . x = b. exception notdone is raised if the decomposition of a was not done successfully. exception dimensionerror is raised if the range of b is not equal to the rowrange of a. exception dimensionerror is raised if the range of x is not equal to the colrange of a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: math_Vector
 X: math_Vector
-Eps: float,optional
-	default value is 1.0e-6
+Eps: float (optional, default to 1.0e-6)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the input Vector B this routine solves the set of linear equations A . X = B. Exception NotDone is raised if the decomposition of A was not done successfully. Exception DimensionError is raised if the range of B is not equal to the rowrange of A. Exception DimensionError is raised if the range of X is not equal to the colrange of A.
 ") Solve;
 		void Solve(const math_Vector & B, math_Vector & X, const Standard_Real Eps = 1.0e-6);
 
@@ -5980,11 +6399,10 @@ None
 ****************************************/
 class math_TrigonometricFunctionRoots {
 	public:
-		/****************** math_TrigonometricFunctionRoots ******************/
-		/**** md5 signature: 8d69005b1ba6172420b1c41415105411 ****/
+		/****** math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots ******/
+		/****** md5 signature: 8d69005b1ba6172420b1c41415105411 ******/
 		%feature("compactdefaultargs") math_TrigonometricFunctionRoots;
-		%feature("autodoc", "Given coefficients a, b, c, d , e, this constructor performs the resolution of the equation above. the solutions must be contained in [infbound, supbound]. infbound and supbound can be set by default to 0 and 2*pi.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
@@ -5995,17 +6413,20 @@ E: float
 InfBound: float
 SupBound: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given coefficients a, b, c, d , e, this constructor performs the resolution of the equation above. The solutions must be contained in [InfBound, SupBound]. InfBound and SupBound can be set by default to 0 and 2*PI.
 ") math_TrigonometricFunctionRoots;
 		 math_TrigonometricFunctionRoots(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D, const Standard_Real E, const Standard_Real InfBound, const Standard_Real SupBound);
 
-		/****************** math_TrigonometricFunctionRoots ******************/
-		/**** md5 signature: aab49f4c137e8339a57610f302d5a8b6 ****/
+		/****** math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots ******/
+		/****** md5 signature: aab49f4c137e8339a57610f302d5a8b6 ******/
 		%feature("compactdefaultargs") math_TrigonometricFunctionRoots;
-		%feature("autodoc", "Given the two coefficients d and e, it performs the resolution of d*sin(x) + e = 0. the solutions must be contained in [infbound, supbound]. infbound and supbound can be set by default to 0 and 2*pi.
-
+		%feature("autodoc", "
 Parameters
 ----------
 D: float
@@ -6013,17 +6434,20 @@ E: float
 InfBound: float
 SupBound: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the two coefficients d and e, it performs the resolution of d*sin(x) + e = 0. The solutions must be contained in [InfBound, SupBound]. InfBound and SupBound can be set by default to 0 and 2*PI.
 ") math_TrigonometricFunctionRoots;
 		 math_TrigonometricFunctionRoots(const Standard_Real D, const Standard_Real E, const Standard_Real InfBound, const Standard_Real SupBound);
 
-		/****************** math_TrigonometricFunctionRoots ******************/
-		/**** md5 signature: d99b73ff2ce9f7321872801ce3213f8b ****/
+		/****** math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots ******/
+		/****** md5 signature: d99b73ff2ce9f7321872801ce3213f8b ******/
 		%feature("compactdefaultargs") math_TrigonometricFunctionRoots;
-		%feature("autodoc", "Given the three coefficients c, d and e, it performs the resolution of c*cos(x) + d*sin(x) + e = 0. the solutions must be contained in [infbound, supbound]. infbound and supbound can be set by default to 0 and 2*pi.
-
+		%feature("autodoc", "
 Parameters
 ----------
 C: float
@@ -6032,65 +6456,87 @@ E: float
 InfBound: float
 SupBound: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given the three coefficients c, d and e, it performs the resolution of c*Cos(x) + d*sin(x) + e = 0. The solutions must be contained in [InfBound, SupBound]. InfBound and SupBound can be set by default to 0 and 2*PI.
 ") math_TrigonometricFunctionRoots;
 		 math_TrigonometricFunctionRoots(const Standard_Real C, const Standard_Real D, const Standard_Real E, const Standard_Real InfBound, const Standard_Real SupBound);
 
+		/****** math_TrigonometricFunctionRoots::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** InfiniteRoots ******************/
-		/**** md5 signature: 6c844bee82586a7c3f4a33590d02fc3c ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_TrigonometricFunctionRoots::InfiniteRoots ******/
+		/****** md5 signature: 6c844bee82586a7c3f4a33590d02fc3c ******/
 		%feature("compactdefaultargs") InfiniteRoots;
-		%feature("autodoc", "Returns true if there is an infinity of roots, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if there is an infinity of roots, otherwise returns false.
 ") InfiniteRoots;
 		Standard_Boolean InfiniteRoots();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_TrigonometricFunctionRoots::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbSolutions ******************/
-		/**** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ****/
+		/****** math_TrigonometricFunctionRoots::NbSolutions ******/
+		/****** md5 signature: 02fdbddb1f7eff080419f602203d8f8b ******/
 		%feature("compactdefaultargs") NbSolutions;
-		%feature("autodoc", "Returns the number of solutions found. an exception is raised if notdone. an exception is raised if there is an infinity of solutions.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of solutions found. An exception is raised if NotDone. An exception is raised if there is an infinity of solutions.
 ") NbSolutions;
 		Standard_Integer NbSolutions();
 
-		/****************** Value ******************/
-		/**** md5 signature: 848ebada0b45fc838235de2b6b6e8d07 ****/
+		/****** math_TrigonometricFunctionRoots::Value ******/
+		/****** md5 signature: 848ebada0b45fc838235de2b6b6e8d07 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the solution of range index. an exception is raised if notdone. an exception is raised if index>nbsolutions. an exception is raised if there is an infinity of solutions.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the solution of range Index. An exception is raised if NotDone. An exception is raised if Index>NbSolutions. An exception is raised if there is an infinity of solutions.
 ") Value;
 		Standard_Real Value(const Standard_Integer Index);
 
@@ -6108,34 +6554,33 @@ float
 *******************/
 class math_Uzawa {
 	public:
-		/****************** math_Uzawa ******************/
-		/**** md5 signature: ce8a643cc052d25710c36d089c8860f4 ****/
+		/****** math_Uzawa::math_Uzawa ******/
+		/****** md5 signature: ce8a643cc052d25710c36d089c8860f4 ******/
 		%feature("compactdefaultargs") math_Uzawa;
-		%feature("autodoc", "Given an input matrix cont, two input vectors secont and startingpoint, it solves cont*x = secont (only = equations) with a minimization of norme(x-x0). the maximun iterations number allowed is fixed to nbiterations. the tolerance epslic is fixed for the dual variable convergence. the tolerance epslix is used for the convergence of x. exception constuctionerror is raised if the line number of cont is different from the length of secont.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Cont: math_Matrix
 Secont: math_Vector
 StartingPoint: math_Vector
-EpsLix: float,optional
-	default value is 1.0e-06
-EpsLic: float,optional
-	default value is 1.0e-06
-NbIterations: int,optional
-	default value is 500
+EpsLix: float (optional, default to 1.0e-06)
+EpsLic: float (optional, default to 1.0e-06)
+NbIterations: int (optional, default to 500)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix Cont, two input vectors Secont and StartingPoint, it solves Cont*X = Secont (only = equations) with a minimization of Norme(X-X0). The maximum iterations number allowed is fixed to NbIterations. The tolerance EpsLic is fixed for the dual variable convergence. The tolerance EpsLix is used for the convergence of X. Exception ConstructionError is raised if the line number of Cont is different from the length of Secont.
 ") math_Uzawa;
 		 math_Uzawa(const math_Matrix & Cont, const math_Vector & Secont, const math_Vector & StartingPoint, const Standard_Real EpsLix = 1.0e-06, const Standard_Real EpsLic = 1.0e-06, const Standard_Integer NbIterations = 500);
 
-		/****************** math_Uzawa ******************/
-		/**** md5 signature: fbff15989748ebd19e9916a271b6e5a5 ****/
+		/****** math_Uzawa::math_Uzawa ******/
+		/****** md5 signature: fbff15989748ebd19e9916a271b6e5a5 ******/
 		%feature("compactdefaultargs") math_Uzawa;
-		%feature("autodoc", "Given an input matrix cont, two input vectors secont and startingpoint, it solves cont*x = secont (the nce first equations are equal equations and the nci last equations are inequalities <) with a minimization of norme(x-x0). the maximun iterations number allowed is fixed to nbiterations. the tolerance epslic is fixed for the dual variable convergence. the tolerance epslix is used for the convergence of x. there are no conditions on nce and nci. exception constuctionerror is raised if the line number of cont is different from the length of secont and from nce + nci.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Cont: math_Matrix
@@ -6143,105 +6588,130 @@ Secont: math_Vector
 StartingPoint: math_Vector
 Nci: int
 Nce: int
-EpsLix: float,optional
-	default value is 1.0e-06
-EpsLic: float,optional
-	default value is 1.0e-06
-NbIterations: int,optional
-	default value is 500
+EpsLix: float (optional, default to 1.0e-06)
+EpsLic: float (optional, default to 1.0e-06)
+NbIterations: int (optional, default to 500)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Given an input matrix Cont, two input vectors Secont and StartingPoint, it solves Cont*X = Secont (the Nce first equations are equal equations and the Nci last equations are inequalities <) with a minimization of Norme(X-X0). The maximum iterations number allowed is fixed to NbIterations. The tolerance EpsLic is fixed for the dual variable convergence. The tolerance EpsLix is used for the convergence of X. There are no conditions on Nce and Nci. Exception ConstructionError is raised if the line number of Cont is different from the length of Secont and from Nce + Nci.
 ") math_Uzawa;
 		 math_Uzawa(const math_Matrix & Cont, const math_Vector & Secont, const math_Vector & StartingPoint, const Standard_Integer Nci, const Standard_Integer Nce, const Standard_Real EpsLix = 1.0e-06, const Standard_Real EpsLic = 1.0e-06, const Standard_Integer NbIterations = 500);
 
-		/****************** Duale ******************/
-		/**** md5 signature: 589ba6062fab0f7485d5c8c4ec2bb4d0 ****/
+		/****** math_Uzawa::Duale ******/
+		/****** md5 signature: 589ba6062fab0f7485d5c8c4ec2bb4d0 ******/
 		%feature("compactdefaultargs") Duale;
-		%feature("autodoc", "Returns the duale variables v of the systeme.
-
+		%feature("autodoc", "
 Parameters
 ----------
 V: math_Vector
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+returns the duale variables V of the systeme.
 ") Duale;
 		void Duale(math_Vector & V);
 
+		/****** math_Uzawa::Dump ******/
+		/****** md5 signature: d37b43e0b2386dc096d5d707876db157 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Error ******************/
-		/**** md5 signature: b1e838c6dcbfa6a1bf16d1bc7e40df88 ****/
+Return
+-------
+o: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_Uzawa::Error ******/
+		/****** md5 signature: b1e838c6dcbfa6a1bf16d1bc7e40df88 ******/
 		%feature("compactdefaultargs") Error;
-		%feature("autodoc", "Returns the difference between x solution and the startingpoint. an exception is raised if notdone.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the difference between X solution and the StartingPoint. An exception is raised if NotDone.
 ") Error;
 		const math_Vector & Error();
 
-		/****************** InitialError ******************/
-		/**** md5 signature: 19b0771443c6d4e606e07be01091d26b ****/
+		/****** math_Uzawa::InitialError ******/
+		/****** md5 signature: 19b0771443c6d4e606e07be01091d26b ******/
 		%feature("compactdefaultargs") InitialError;
-		%feature("autodoc", "Returns the initial error cont*startingpoint-secont. an exception is raised if notdone.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the initial error Cont*StartingPoint-Secont. An exception is raised if NotDone.
 ") InitialError;
 		const math_Vector & InitialError();
 
-		/****************** InverseCont ******************/
-		/**** md5 signature: 5332e8442d4899802d6f96b564a47a7e ****/
+		/****** math_Uzawa::InverseCont ******/
+		/****** md5 signature: 5332e8442d4899802d6f96b564a47a7e ******/
 		%feature("compactdefaultargs") InverseCont;
-		%feature("autodoc", "Returns the inverse matrix of (c * transposed(c)). this result is needed for the computation of the gradient when approximating a curve.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Matrix
+
+Description
+-----------
+returns the inverse matrix of (C * Transposed(C)). This result is needed for the computation of the gradient when approximating a curve.
 ") InverseCont;
 		const math_Matrix & InverseCont();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** math_Uzawa::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "Returns true if the computations are successful, otherwise returns false.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if the computations are successful, otherwise returns false.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbIterations ******************/
-		/**** md5 signature: 05334f1e34f7c858ac022754e906f2bf ****/
+		/****** math_Uzawa::NbIterations ******/
+		/****** md5 signature: 05334f1e34f7c858ac022754e906f2bf ******/
 		%feature("compactdefaultargs") NbIterations;
-		%feature("autodoc", "Returns the number of iterations really done. an exception is raised if notdone.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of iterations really done. An exception is raised if NotDone.
 ") NbIterations;
 		Standard_Integer NbIterations();
 
-		/****************** Value ******************/
-		/**** md5 signature: da451945ce62c2e97eedc01217c3028f ****/
+		/****** math_Uzawa::Value ******/
+		/****** md5 signature: da451945ce62c2e97eedc01217c3028f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Returns the vector solution of the system above. an exception is raised if notdone.
-
-Returns
+		%feature("autodoc", "Return
 -------
 math_Vector
+
+Description
+-----------
+Returns the vector solution of the system above. An exception is raised if NotDone.
 ") Value;
 		const math_Vector & Value();
 
@@ -6259,52 +6729,61 @@ math_Vector
 ****************************/
 class math_ValueAndWeight {
 	public:
-		/****************** math_ValueAndWeight ******************/
-		/**** md5 signature: c4cb905212fb4ef5bdeb4a4ab2ec90a9 ****/
+		/****** math_ValueAndWeight::math_ValueAndWeight ******/
+		/****** md5 signature: c4cb905212fb4ef5bdeb4a4ab2ec90a9 ******/
 		%feature("compactdefaultargs") math_ValueAndWeight;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_ValueAndWeight;
 		 math_ValueAndWeight();
 
-		/****************** math_ValueAndWeight ******************/
-		/**** md5 signature: 96e398fa5fd0fba94549e32703ffcb63 ****/
+		/****** math_ValueAndWeight::math_ValueAndWeight ******/
+		/****** md5 signature: 96e398fa5fd0fba94549e32703ffcb63 ******/
 		%feature("compactdefaultargs") math_ValueAndWeight;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theValue: float
 theWeight: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_ValueAndWeight;
 		 math_ValueAndWeight(Standard_Real theValue, Standard_Real theWeight);
 
-		/****************** Value ******************/
-		/**** md5 signature: 246826be964a300c707aadb5d0b62468 ****/
+		/****** math_ValueAndWeight::Value ******/
+		/****** md5 signature: 246826be964a300c707aadb5d0b62468 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Value;
 		Standard_Real Value();
 
-		/****************** Weight ******************/
-		/**** md5 signature: c95436d315e786d321996425ae21ef9e ****/
+		/****** math_ValueAndWeight::Weight ******/
+		/****** md5 signature: c95436d315e786d321996425ae21ef9e ******/
 		%feature("compactdefaultargs") Weight;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Weight;
 		Standard_Real Weight();
 
@@ -6317,763 +6796,908 @@ float
 	}
 };
 
-/********************
-* class math_Vector *
-********************/
-class math_Vector {
+/************************
+* class math_VectorBase *
+************************/
+class math_VectorBase {
 	public:
-		/****************** math_Vector ******************/
-		/**** md5 signature: 1a74438a487a14d6d15fe510ae695e42 ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Contructs a non-initialized vector in the range [thelower..theupper] 'thelower' and 'theupper' are the indexes of the lower and upper bounds of the constructed vector.
-
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: 7686b4feb365f437bc9a18125aa19da4 ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
 theLower: int
 theUpper: int
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const Standard_Integer theLower, const Standard_Integer theUpper);
 
-		/****************** math_Vector ******************/
-		/**** md5 signature: 0ea591b3860a4e3f376925614a2fe35e ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Contructs a vector in the range [thelower..theupper] whose values are all initialized with the value 'theinitialvalue'.
+Description
+-----------
+Constructs a non-initialized vector in the range [theLower..theUpper] 'theLower' and 'theUpper' are the indexes of the lower and upper bounds of the constructed vector.
+") math_VectorBase;
+		 math_VectorBase(const Standard_Integer theLower, const Standard_Integer theUpper);
 
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: 2d03fad9ab30b62c9dcd67c7637e8461 ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
 theLower: int
 theUpper: int
-theInitialValue: float
+theInitialValue: TheItemType
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const Standard_Integer theLower, const Standard_Integer theUpper, const Standard_Real theInitialValue);
 
-		/****************** math_Vector ******************/
-		/**** md5 signature: ffcccf7973d3d8d9d6621c4656921960 ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Constructs a vector in the range [thelower..theupper] with the 'c array' thetab.
+Description
+-----------
+Constructs a vector in the range [theLower..theUpper] whose values are all initialized with the value 'theInitialValue'.
+") math_VectorBase;
+		 math_VectorBase(const Standard_Integer theLower, const Standard_Integer theUpper, const TheItemType theInitialValue);
 
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: 0f2151b4c598679afa77d119814cb20a ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
-theTab: float *
+theTab: TheItemType *
 theLower: int
 theUpper: int
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const Standard_Real * theTab, const Standard_Integer theLower, const Standard_Integer theUpper);
 
-		/****************** math_Vector ******************/
-		/**** md5 signature: 783b16a2947c36192e1aceb3d9fb3d36 ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Constructor for converting gp_xy to math_vector.
+Description
+-----------
+Constructs a vector in the range [theLower..theUpper] whose values are all initialized with the value 'theInitialValue'.
+") math_VectorBase;
+		 math_VectorBase(const TheItemType * theTab, const Standard_Integer theLower, const Standard_Integer theUpper);
 
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: 1a770cae0421dedd586122ec2fab579a ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
 Other: gp_XY
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const gp_XY & Other);
 
-		/****************** math_Vector ******************/
-		/**** md5 signature: 89eb2933ca32035d5a1dad5049047a1e ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Constructor for converting gp_xyz to math_vector.
+Description
+-----------
+Constructor for converting gp_XY to math_VectorBase.
+") math_VectorBase;
+		 math_VectorBase(const gp_XY & Other);
 
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: 14142c413558f31e3a412a73f8d54dae ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
 Other: gp_XYZ
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const gp_XYZ & Other);
 
-		/****************** math_Vector ******************/
-		/**** md5 signature: 746f57a3645832238f786d93f69ef038 ****/
-		%feature("compactdefaultargs") math_Vector;
-		%feature("autodoc", "Constructs a copy for initialization. an exception is raised if the lengths of the vectors are different.
+Description
+-----------
+Constructor for converting gp_XYZ to math_VectorBase.
+") math_VectorBase;
+		 math_VectorBase(const gp_XYZ & Other);
 
+		/****** math_VectorBase::math_VectorBase ******/
+		/****** md5 signature: d18900ccf21bb37ad65886a18ac2d697 ******/
+		%feature("compactdefaultargs") math_VectorBase;
+		%feature("autodoc", "
 Parameters
 ----------
-theOther: math_Vector
+theOther: math_VectorBase
 
-Returns
+Return
 -------
 None
-") math_Vector;
-		 math_Vector(const math_Vector & theOther);
 
-		/****************** Add ******************/
-		/**** md5 signature: eebbb4d66749dd407fbf815989c45e63 ****/
+Description
+-----------
+Constructs a copy for initialization. An exception is raised if the lengths of the vectors are different.
+") math_VectorBase;
+		 math_VectorBase(const math_VectorBase & theOther);
+
+		/****** math_VectorBase::Add ******/
+		/****** md5 signature: 406ad6a980d99822c293c6e3a9d4cb70 ******/
 		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Adds the vector 'theright' to a vector. an exception is raised if the vectors have not the same length. warning in order to avoid time-consuming copying of vectors, it is preferable to use operator += or the function add whenever possible.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
-") Add;
-		void Add(const math_Vector & theRight);
 
-		/****************** Add ******************/
-		/**** md5 signature: a71b03734396fe22879699e51c8c7cde ****/
+Description
+-----------
+adds the vector 'theRight' to a vector. An exception is raised if the vectors have not the same length. Warning In order to avoid time-consuming copying of vectors, it is preferable to use operator += or the function Add whenever possible.
+") Add;
+		void Add(const math_VectorBase & theRight);
+
+		/****** math_VectorBase::Add ******/
+		/****** md5 signature: 640c27ff88206df2d3ad3ceea356dedc ******/
 		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "Sets a vector to the sum of the vector 'theleft' and the vector 'theright'. an exception is raised if the lengths are different.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theLeft: math_Vector
-theRight: math_Vector
+theLeft: math_VectorBase
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
-") Add;
-		void Add(const math_Vector & theLeft, const math_Vector & theRight);
 
-		/****************** Added ******************/
-		/**** md5 signature: ecd23b04cfbe9343812ca4ce04ef0d59 ****/
+Description
+-----------
+sets a vector to the sum of the vector 'theLeft' and the vector 'theRight'. An exception is raised if the lengths are different.
+") Add;
+		void Add(const math_VectorBase & theLeft, const math_VectorBase & theRight);
+
+		/****** math_VectorBase::Added ******/
+		/****** md5 signature: c3351e889dda3cb36cc692883cc3fb3c ******/
 		%feature("compactdefaultargs") Added;
-		%feature("autodoc", "Adds the vector theright to a vector. an exception is raised if the vectors have not the same length. an exception is raised if the lengths are not equal.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Returns new vector as adding current vector with the value 'theRight'. An exception is raised if the vectors do not have the same length. An exception is raised if the lengths are not equal.
 ") Added;
-		math_Vector Added(const math_Vector & theRight);
+		math_VectorBase Added(const math_VectorBase & theRight);
 
-		/****************** Divide ******************/
-		/**** md5 signature: 85c3521ca7f51beb326744a3511d642a ****/
+		/****** math_VectorBase::Divide ******/
+		/****** md5 signature: 4c38226132921225dc3efb92899de892 ******/
 		%feature("compactdefaultargs") Divide;
-		%feature("autodoc", "Divides a vector by the value 'theright'. an exception is raised if 'theright' = 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+divides a vector by the value 'theRight'. An exception is raised if 'theRight' = 0.
 ") Divide;
-		void Divide(const Standard_Real theRight);
+		void Divide(const TheItemType theRight);
 
-		/****************** Divided ******************/
-		/**** md5 signature: b5cb8453aaed6434d74bff48ef43a2d5 ****/
+		/****** math_VectorBase::Divided ******/
+		/****** md5 signature: 41a1c2fa8886e8bff755ba30a36c75d3 ******/
 		%feature("compactdefaultargs") Divided;
-		%feature("autodoc", "Divides a vector by the value 'theright'. an exception is raised if 'theright' = 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Returns new vector as dividing current vector with the value 'theRight'. An exception is raised if 'theRight' = 0.
 ") Divided;
-		math_Vector Divided(const Standard_Real theRight);
+		math_VectorBase Divided(const TheItemType theRight);
 
+		/****** math_VectorBase::Dump ******/
+		/****** md5 signature: 35eee087c3e3933aebbdeb4f86b6bc00 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** Init ******************/
-		/**** md5 signature: aa5adf884f0373c9b54359f444273ad5 ****/
+Return
+-------
+theO: Standard_OStream
+
+Description
+-----------
+Prints information on the current state of the object. Is used to redefine the operator <<.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** math_VectorBase::Init ******/
+		/****** md5 signature: a0223922650b6ede02b379a08b9c110b ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all the elements of a vector with 'theinitialvalue'.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theInitialValue: float
+theInitialValue: TheItemType
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all the elements of a vector with 'theInitialValue'.
 ") Init;
-		void Init(const Standard_Real theInitialValue);
+		void Init(const TheItemType theInitialValue);
 
-		/****************** Initialized ******************/
-		/**** md5 signature: 176526852f04bc77a737d191c0b99e41 ****/
+		/****** math_VectorBase::Initialized ******/
+		/****** md5 signature: f12410610a77ebebcfb2e36b8f1704d1 ******/
 		%feature("compactdefaultargs") Initialized;
-		%feature("autodoc", "Initialises a vector by copying 'theother'. an exception is raised if the lengths are differents.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theOther: math_Vector
+theOther: math_VectorBase
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Initialises a vector by copying 'theOther'. An exception is raised if the Lengths are different.
 ") Initialized;
-		math_Vector & Initialized(const math_Vector & theOther);
+		math_VectorBase & Initialized(const math_VectorBase & theOther);
 
-		/****************** Inverse ******************/
-		/**** md5 signature: 19aaab77c1e6950a13166132d06133b8 ****/
+		/****** math_VectorBase::Inverse ******/
+		/****** md5 signature: 2fb034194d4b55ea5739f844697023bc ******/
 		%feature("compactdefaultargs") Inverse;
-		%feature("autodoc", "Inverts this vector and creates a new vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Inverts this vector and creates a new vector.
 ") Inverse;
-		math_Vector Inverse();
+		math_VectorBase Inverse();
 
-		/****************** Invert ******************/
-		/**** md5 signature: 980f166f600d23a8c77565829af2eeff ****/
+		/****** math_VectorBase::Invert ******/
+		/****** md5 signature: 9a8aecae0e33749c0966f8f73d6470a3 ******/
 		%feature("compactdefaultargs") Invert;
-		%feature("autodoc", "Inverts this vector and assigns the result to this vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Inverts this vector and assigns the result to this vector.
 ") Invert;
 		void Invert();
 
-		/****************** Length ******************/
-		/**** md5 signature: 6b6369fdcfb9287d25c91be73ca43a4f ****/
+		/****** math_VectorBase::Length ******/
+		/****** md5 signature: 6b6369fdcfb9287d25c91be73ca43a4f ******/
 		%feature("compactdefaultargs") Length;
-		%feature("autodoc", "Returns the length of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the length of a vector.
 ") Length;
 		Standard_Integer Length();
 
-		/****************** Lower ******************/
-		/**** md5 signature: 6c38bb0c1489e359c874ded75054c1be ****/
+		/****** math_VectorBase::Lower ******/
+		/****** md5 signature: 6c38bb0c1489e359c874ded75054c1be ******/
 		%feature("compactdefaultargs") Lower;
-		%feature("autodoc", "Returns the value of the thelower index of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the lower index of the vector.
 ") Lower;
 		Standard_Integer Lower();
 
-		/****************** Max ******************/
-		/**** md5 signature: 470538a8afd0d98566fced0034decdc6 ****/
+		/****** math_VectorBase::Max ******/
+		/****** md5 signature: 47905521473c8d5ef278f16432367e67 ******/
 		%feature("compactdefaultargs") Max;
-		%feature("autodoc", "Returns the value of the 'index' of the maximum element of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the index of the maximum element of a vector. (first found).
 ") Max;
 		Standard_Integer Max();
 
-		/****************** Min ******************/
-		/**** md5 signature: 4a083fc951cd22097fbae8d3269aa1cb ****/
+		/****** math_VectorBase::Min ******/
+		/****** md5 signature: 9ee266bc01938069e46d023cc25e59f0 ******/
 		%feature("compactdefaultargs") Min;
-		%feature("autodoc", "Returns the value of the 'index' of the minimum element of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the index of the minimum element of a vector. (first found).
 ") Min;
 		Standard_Integer Min();
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: b4f731f3e86918d21a91f54e4372becc ****/
+		/****** math_VectorBase::Multiplied ******/
+		/****** md5 signature: 76e6ff92fc8b61378a2e9df99fc75405 ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the product of a vector and a real value.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+returns the product of a vector and a real value.
 ") Multiplied;
-		math_Vector Multiplied(const Standard_Real theRight);
+		math_VectorBase Multiplied(const TheItemType theRight);
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: 69b2fda6108b1155fed07715979fedfb ****/
+		/****** math_VectorBase::Multiplied ******/
+		/****** md5 signature: 75cb970c73bc29d38fb2f128bafec327 ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the inner product of 2 vectors. an exception is raised if the lengths are not equal.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
-float
+TheItemType
+
+Description
+-----------
+returns the inner product of 2 vectors. An exception is raised if the lengths are not equal.
 ") Multiplied;
-		Standard_Real Multiplied(const math_Vector & theRight);
+		TheItemType Multiplied(const math_VectorBase & theRight);
 
-		/****************** Multiplied ******************/
-		/**** md5 signature: 48c383d54aa533457945a2534a8a440e ****/
+		/****** math_VectorBase::Multiplied ******/
+		/****** md5 signature: 10ad2b0e6a89e08058ee0f39ff893d49 ******/
 		%feature("compactdefaultargs") Multiplied;
-		%feature("autodoc", "Returns the product of a vector by a matrix.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theRight: math_Matrix
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+returns the product of a vector by a matrix.
 ") Multiplied;
-		math_Vector Multiplied(const math_Matrix & theRight);
+		math_VectorBase Multiplied(const math_Matrix & theRight);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: 71e5ff1628aad85905443b0db3494a5c ****/
+		/****** math_VectorBase::Multiply ******/
+		/****** md5 signature: b9f27f49a3f6736805012129156c9d9d ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Returns the product of a vector and a real value.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Updates current vector by multiplying each element on current value.
 ") Multiply;
-		void Multiply(const Standard_Real theRight);
+		void Multiply(const TheItemType theRight);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: cd27b618ac7da789982b325dbe89def3 ****/
+		/****** math_VectorBase::Multiply ******/
+		/****** md5 signature: c2795ae734d8e01d57e2a78af486b449 ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Sets a vector to the product of the vector 'theleft' with the matrix 'theright'.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theLeft: math_Vector
+theLeft: math_VectorBase
 theRight: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector to the product of the vector 'theLeft' with the matrix 'theRight'.
 ") Multiply;
-		void Multiply(const math_Vector & theLeft, const math_Matrix & theRight);
+		void Multiply(const math_VectorBase & theLeft, const math_Matrix & theRight);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: ff587ee10e410c99f7fa38991414bf94 ****/
+		/****** math_VectorBase::Multiply ******/
+		/****** md5 signature: 31c76d87f171ace0160968d13426b791 ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "//!sets a vector to the product of the matrix 'theleft' with the vector 'theright'.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLeft: math_Matrix
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector to the product of the matrix 'theLeft' with the vector 'theRight'.
 ") Multiply;
-		void Multiply(const math_Matrix & theLeft, const math_Vector & theRight);
+		void Multiply(const math_Matrix & theLeft, const math_VectorBase & theRight);
 
-		/****************** Multiply ******************/
-		/**** md5 signature: b333dc90a92c0a05dabe71ae99d9bb19 ****/
+		/****** math_VectorBase::Multiply ******/
+		/****** md5 signature: 8cad65698ed17e73c4dea7fe27d379e3 ******/
 		%feature("compactdefaultargs") Multiply;
-		%feature("autodoc", "Returns the multiplication of a real by a vector. 'me' = 'theleft' * 'theright'.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theLeft: float
-theRight: math_Vector
+theLeft: TheItemType
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+returns the multiplication of a real by a vector. 'me' = 'theLeft' * 'theRight'.
 ") Multiply;
-		void Multiply(const Standard_Real theLeft, const math_Vector & theRight);
+		void Multiply(const TheItemType theLeft, const math_VectorBase & theRight);
 
-		/****************** Norm ******************/
-		/**** md5 signature: ef03a75c3e2c2e2728051dc33ad502de ****/
+		/****** math_VectorBase::Norm ******/
+		/****** md5 signature: 6dc5ad9590bf60f4194e824ee34dfd92 ******/
 		%feature("compactdefaultargs") Norm;
-		%feature("autodoc", "Returns the value or the square of the norm of this vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value or the square of the norm of this vector.
 ") Norm;
 		Standard_Real Norm();
 
-		/****************** Norm2 ******************/
-		/**** md5 signature: aa0fc8823225be6949f93bb2b3c831b7 ****/
+		/****** math_VectorBase::Norm2 ******/
+		/****** md5 signature: 015f3c35df9e248d3352ccc59186890c ******/
 		%feature("compactdefaultargs") Norm2;
-		%feature("autodoc", "Returns the value of the square of the norm of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the value of the square of the norm of a vector.
 ") Norm2;
 		Standard_Real Norm2();
 
-		/****************** Normalize ******************/
-		/**** md5 signature: 587346cf1e1c12fdf674aedc915ccd95 ****/
+		/****** math_VectorBase::Normalize ******/
+		/****** md5 signature: fb41beeacae8c73221eb233b282f51e2 ******/
 		%feature("compactdefaultargs") Normalize;
-		%feature("autodoc", "Normalizes this vector (the norm of the result is equal to 1.0) and assigns the result to this vector exceptions standard_nullvalue if this vector is null (i.e. if its norm is less than or equal to standard_real::realepsilon().
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Normalizes this vector (the norm of the result is equal to 1.0) and assigns the result to this vector Exceptions Standard_NullValue if this vector is null (i.e. if its norm is less than or equal to Standard_Real::RealEpsilon().
 ") Normalize;
 		void Normalize();
 
-		/****************** Normalized ******************/
-		/**** md5 signature: f20dec53671606b804477a8ed8c244c7 ****/
+		/****** math_VectorBase::Normalized ******/
+		/****** md5 signature: 2b064f64c103c167de66f0764377c508 ******/
 		%feature("compactdefaultargs") Normalized;
-		%feature("autodoc", "Normalizes this vector (the norm of the result is equal to 1.0) and creates a new vector exceptions standard_nullvalue if this vector is null (i.e. if its norm is less than or equal to standard_real::realepsilon().
-
-Returns
+		%feature("autodoc", "Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Normalizes this vector (the norm of the result is equal to 1.0) and creates a new vector Exceptions Standard_NullValue if this vector is null (i.e. if its norm is less than or equal to Standard_Real::RealEpsilon().
 ") Normalized;
-		math_Vector Normalized();
+		math_VectorBase Normalized();
 
-		/****************** Opposite ******************/
-		/**** md5 signature: fd960269a3567caabbca35db86851a1c ****/
+		/****** math_VectorBase::Opposite ******/
+		/****** md5 signature: d5552f58a791312c2d11b926119859a7 ******/
 		%feature("compactdefaultargs") Opposite;
-		%feature("autodoc", "Returns the opposite of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+returns the opposite of a vector.
 ") Opposite;
-		math_Vector Opposite();
+		math_VectorBase Opposite();
 
-		/****************** Set ******************/
-		/**** md5 signature: 966261a166d0c715305cef8102956fa3 ****/
+		/****** math_VectorBase::Set ******/
+		/****** md5 signature: 830a48b15d65db27497e146bf86f4516 ******/
 		%feature("compactdefaultargs") Set;
-		%feature("autodoc", "Sets a vector from 'thei1' to 'thei2' to the vector 'thev'; an exception is raised if 'thei1' is less than 'lowerindex' or 'thei2' is greater than 'upperindex' or 'thei1' is greater than 'thei2'. an exception is raised if 'thei2-thei1+1' is different from the 'length' of 'thev'.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theI1: int
 theI2: int
-theV: math_Vector
+theV: math_VectorBase
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector from 'theI1' to 'theI2' to the vector 'theV'; An exception is raised if 'theI1' is less than 'LowerIndex' or 'theI2' is greater than 'UpperIndex' or 'theI1' is greater than 'theI2'. An exception is raised if 'theI2-theI1+1' is different from the 'Length' of 'theV'.
 ") Set;
-		void Set(const Standard_Integer theI1, const Standard_Integer theI2, const math_Vector & theV);
+		void Set(const Standard_Integer theI1, const Standard_Integer theI2, const math_VectorBase & theV);
 
-		/****************** Slice ******************/
-		/**** md5 signature: 1acc2f70fc8c7c86b03909222d850231 ****/
+		/****** math_VectorBase::Slice ******/
+		/****** md5 signature: 8c4254c203c7c45e0b179a38d2dbc99e ******/
 		%feature("compactdefaultargs") Slice;
-		%feature("autodoc", "//!creates a new vector by inverting the values of this vector between indexes 'thei1' and 'thei2'. if the values of this vector were (1., 2., 3., 4.,5., 6.), by slicing it between indexes 2 and 5 the values of the resulting vector are (1., 5., 4., 3., 2., 6.).
-
+		%feature("autodoc", "
 Parameters
 ----------
 theI1: int
 theI2: int
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+Creates a new vector by inverting the values of this vector between indexes 'theI1' and 'theI2'. If the values of this vector were (1., 2., 3., 4.,5., 6.), by slicing it between indexes 2 and 5 the values of the resulting vector are (1., 5., 4., 3., 2., 6.).
 ") Slice;
-		math_Vector Slice(const Standard_Integer theI1, const Standard_Integer theI2);
+		math_VectorBase Slice(const Standard_Integer theI1, const Standard_Integer theI2);
 
-		/****************** Subtract ******************/
-		/**** md5 signature: 3e473d10fb921765beefd54b9c35fd5a ****/
+		/****** math_VectorBase::Subtract ******/
+		/****** md5 signature: b32c188ee5360b0cd12b1b6672df7e79 ******/
 		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Sets a vector to the subtraction of the vector theright from the vector theleft. an exception is raised if the vectors have not the same length. warning in order to avoid time-consuming copying of vectors, it is preferable to use operator -= or the function subtract whenever possible.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theLeft: math_Vector
-theRight: math_Vector
+theLeft: math_VectorBase
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector to the Subtraction of the vector theRight from the vector theLeft. An exception is raised if the vectors have not the same length. Warning In order to avoid time-consuming copying of vectors, it is preferable to use operator -= or the function Subtract whenever possible.
 ") Subtract;
-		void Subtract(const math_Vector & theLeft, const math_Vector & theRight);
+		void Subtract(const math_VectorBase & theLeft, const math_VectorBase & theRight);
 
-		/****************** Subtract ******************/
-		/**** md5 signature: b364cf184dd7ba24a7a03e7424ecf129 ****/
+		/****** math_VectorBase::Subtract ******/
+		/****** md5 signature: 4f0daa1e70b1e132b8c9b9a8d52ccd39 ******/
 		%feature("compactdefaultargs") Subtract;
-		%feature("autodoc", "Returns the subtraction of 'theright' from 'me'. an exception is raised if the vectors have not the same length.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
-") Subtract;
-		void Subtract(const math_Vector & theRight);
 
-		/****************** Subtracted ******************/
-		/**** md5 signature: 2b94f430c7926807d334a9760edde513 ****/
+Description
+-----------
+returns the subtraction of 'theRight' from 'me'. An exception is raised if the vectors have not the same length.
+") Subtract;
+		void Subtract(const math_VectorBase & theRight);
+
+		/****** math_VectorBase::Subtracted ******/
+		/****** md5 signature: a61fbab5df591d9b1e911c61d9a33a2a ******/
 		%feature("compactdefaultargs") Subtracted;
-		%feature("autodoc", "Returns the subtraction of 'theright' from 'me'. an exception is raised if the vectors have not the same length.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+returns the subtraction of 'theRight' from 'me'. An exception is raised if the vectors have not the same length.
 ") Subtracted;
-		math_Vector Subtracted(const math_Vector & theRight);
+		math_VectorBase Subtracted(const math_VectorBase & theRight);
 
-		/****************** TMultiplied ******************/
-		/**** md5 signature: 9a3310df1f91a712122711ba97c5d8ef ****/
+		/****** math_VectorBase::TMultiplied ******/
+		/****** md5 signature: 678f7a48be8d557310f69d186c1254f5 ******/
 		%feature("compactdefaultargs") TMultiplied;
-		%feature("autodoc", "Returns the product of a vector and a real value.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+returns the product of a vector and a real value.
 ") TMultiplied;
-		math_Vector TMultiplied(const Standard_Real theRight);
+		math_VectorBase TMultiplied(const TheItemType theRight);
 
-		/****************** TMultiply ******************/
-		/**** md5 signature: c5f15549c0f280585b475ffb50417c0b ****/
+		/****** math_VectorBase::TMultiply ******/
+		/****** md5 signature: 2805d50d59fefec5c37586eaba852930 ******/
 		%feature("compactdefaultargs") TMultiply;
-		%feature("autodoc", "Sets a vector to the product of the transpose of the matrix 'thetleft' by the vector 'theright'.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theTLeft: math_Matrix
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector to the product of the transpose of the matrix 'theTLeft' by the vector 'theRight'.
 ") TMultiply;
-		void TMultiply(const math_Matrix & theTLeft, const math_Vector & theRight);
+		void TMultiply(const math_Matrix & theTLeft, const math_VectorBase & theRight);
 
-		/****************** TMultiply ******************/
-		/**** md5 signature: 1d422a24e71400f9c77f9f50888a73c4 ****/
+		/****** math_VectorBase::TMultiply ******/
+		/****** md5 signature: f516d448889e1ae7326efd958a1dbd12 ******/
 		%feature("compactdefaultargs") TMultiply;
-		%feature("autodoc", "Sets a vector to the product of the vector 'theleft' by the transpose of the matrix 'thetright'.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theLeft: math_Vector
+theLeft: math_VectorBase
 theTRight: math_Matrix
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+sets a vector to the product of the vector 'theLeft' by the transpose of the matrix 'theTRight'.
 ") TMultiply;
-		void TMultiply(const math_Vector & theLeft, const math_Matrix & theTRight);
+		void TMultiply(const math_VectorBase & theLeft, const math_Matrix & theTRight);
 
-		/****************** Upper ******************/
-		/**** md5 signature: 049ea67a2fce112afef7cc7f87f4a43d ****/
+		/****** math_VectorBase::Upper ******/
+		/****** md5 signature: 049ea67a2fce112afef7cc7f87f4a43d ******/
 		%feature("compactdefaultargs") Upper;
-		%feature("autodoc", "Returns the value of the theupper index of a vector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the upper index of the vector.
 ") Upper;
 		Standard_Integer Upper();
 
-		/****************** Value ******************/
-		/**** md5 signature: 51ca32c5ce4b1bce383f158e12c2ed93 ****/
+		/****** math_VectorBase::Value ******/
+		/****** md5 signature: 6dee698cd6f46f729700853e54d6930f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Accesses the value of index 'thenum' of a vector.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theNum: int
 
-Returns
+Return
 -------
-float
+TheItemType
+
+Description
+-----------
+accesses the value of index 'theNum' of a vector.
 ") Value;
-		const Standard_Real & Value(const Standard_Integer theNum);
+		const TheItemType & Value(const Standard_Integer theNum);
 
-
-        %feature("autodoc","1");
-        %extend {
-            Standard_Real GetValue(const Standard_Integer theNum) {
-            return (Standard_Real) $self->Value(theNum);
-            }
-        };
-        %feature("autodoc","1");
-        %extend {
-            void SetValue(const Standard_Integer theNum,Standard_Real value) {
-            $self->Value(theNum)=value;
-            }
-        };
-		/****************** operator * ******************/
-		/**** md5 signature: 37cd52b96c4154ef3556979c35376966 ****/
-		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
+		/****** math_VectorBase::Value ******/
+		/****** md5 signature: f417184bccf4dce48f252e224d5df03e ******/
+		%feature("compactdefaultargs") Value;
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theNum: int
 
-Returns
+Return
 -------
-math_Vector
-") operator *;
-		math_Vector operator *(const Standard_Real theRight);
+TheItemType
 
-		/****************** operator * ******************/
-		/**** md5 signature: 90daa0f5a02ccd826ae0cf8841aa6310 ****/
+Description
+-----------
+accesses (in read or write mode) the value of index 'theNum' of a vector.
+") Value;
+		TheItemType & Value(const Standard_Integer theNum);
+
+		/****** math_VectorBase::operator * ******/
+		/****** md5 signature: 8dfcf1e91fc509d4a307b07a5bca2638 ******/
 		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: TheItemType
 
-Returns
+Return
 -------
-float
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator *;
-		Standard_Real operator *(const math_Vector & theRight);
+		math_VectorBase operator *(const TheItemType theRight);
 
-		/****************** operator * ******************/
-		/**** md5 signature: 3d35d4e4c72c9d281612a4fed14f4976 ****/
+		/****** math_VectorBase::operator * ******/
+		/****** md5 signature: fda9687607ed3a7eea56e85639fa4ce8 ******/
 		%feature("compactdefaultargs") operator *;
-		%feature("autodoc", "No available documentation.
+		%feature("autodoc", "
+Parameters
+----------
+theRight: math_VectorBase
 
+Return
+-------
+TheItemType
+
+Description
+-----------
+No available documentation.
+") operator *;
+		TheItemType operator *(const math_VectorBase & theRight);
+
+		/****** math_VectorBase::operator * ******/
+		/****** md5 signature: 138b8b1209dec3f877e1eb092ad470f7 ******/
+		%feature("compactdefaultargs") operator *;
+		%feature("autodoc", "
 Parameters
 ----------
 theRight: math_Matrix
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator *;
-		math_Vector operator *(const math_Matrix & theRight);
+		math_VectorBase operator *(const math_Matrix & theRight);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
-		/****************** operator + ******************/
-		/**** md5 signature: 61f1917d2835ee61d96a19d57b4aa9d1 ****/
+%extend{
+    void __imul_wrapper__(const TheItemType other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
+		/****** math_VectorBase::operator + ******/
+		/****** md5 signature: 95089290e7711a5bf90619699b701c2e ******/
 		%feature("compactdefaultargs") operator +;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator +;
-		math_Vector operator +(const math_Vector & theRight);
+		math_VectorBase operator +(const math_VectorBase & theRight);
 
 
-            %extend{
-                void __iadd_wrapper__(const math_Vector other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
-		/****************** operator - ******************/
-		/**** md5 signature: 2121a0f80a0d235e2e6ade07c0b70312 ****/
+%extend{
+    void __iadd_wrapper__(const math_VectorBase other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
+		/****** math_VectorBase::operator - ******/
+		/****** md5 signature: 57aafa6ca11843dd9f4862a50a2f234b ******/
 		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator -;
-		math_Vector operator -();
+		math_VectorBase operator -();
 
-		/****************** operator - ******************/
-		/**** md5 signature: b9b95202aba838046a1fb299c8a45458 ****/
+		/****** math_VectorBase::operator - ******/
+		/****** md5 signature: f36827c7b63741cabac85d1c6aaaee3f ******/
 		%feature("compactdefaultargs") operator -;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: math_Vector
+theRight: math_VectorBase
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator -;
-		math_Vector operator -(const math_Vector & theRight);
+		math_VectorBase operator -(const math_VectorBase & theRight);
 
 
-            %extend{
-                void __isub_wrapper__(const math_Vector other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
-		/****************** operator / ******************/
-		/**** md5 signature: 962acf898a7f3f4cabec802f523bba4a ****/
+%extend{
+    void __isub_wrapper__(const math_VectorBase other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
+		/****** math_VectorBase::operator / ******/
+		/****** md5 signature: c4cf88a6a3686a711cc3c45185eec507 ******/
 		%feature("compactdefaultargs") operator /;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-theRight: float
+theRight: TheItemType
 
-Returns
+Return
 -------
-math_Vector
+math_VectorBase
+
+Description
+-----------
+No available documentation.
 ") operator /;
-		math_Vector operator /(const Standard_Real theRight);
+		math_VectorBase operator /(const TheItemType theRight);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const TheItemType other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
-%extend math_Vector {
+%extend math_VectorBase {
 	%pythoncode {
 	__repr__ = _dumps_object
 	}
@@ -7085,74 +7709,87 @@ math_Vector
 %nodefaultctor math_FunctionSetWithDerivatives;
 class math_FunctionSetWithDerivatives : public math_FunctionSet {
 	public:
-		/****************** Derivatives ******************/
-		/**** md5 signature: 91510de453ada53b30c3a8ed85022935 ****/
+		/****** math_FunctionSetWithDerivatives::Derivatives ******/
+		/****** md5 signature: 91510de453ada53b30c3a8ed85022935 ******/
 		%feature("compactdefaultargs") Derivatives;
-		%feature("autodoc", "Returns the values <d> of the derivatives for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 D: math_Matrix
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Returns the values <D> of the derivatives for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Derivatives;
 		virtual Standard_Boolean Derivatives(const math_Vector & X, math_Matrix & D);
 
-		/****************** NbEquations ******************/
-		/**** md5 signature: ba4fd9483f383d968d2ec54d4ae3fbf1 ****/
+		/****** math_FunctionSetWithDerivatives::NbEquations ******/
+		/****** md5 signature: ba4fd9483f383d968d2ec54d4ae3fbf1 ******/
 		%feature("compactdefaultargs") NbEquations;
-		%feature("autodoc", "Returns the number of equations of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of equations of the function.
 ") NbEquations;
 		virtual Standard_Integer NbEquations();
 
-		/****************** NbVariables ******************/
-		/**** md5 signature: 9592108ebf305562827d51d05d64eecc ****/
+		/****** math_FunctionSetWithDerivatives::NbVariables ******/
+		/****** md5 signature: 9592108ebf305562827d51d05d64eecc ******/
 		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "Returns the number of variables of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of variables of the function.
 ") NbVariables;
 		virtual Standard_Integer NbVariables();
 
-		/****************** Value ******************/
-		/**** md5 signature: fbdd70146ff924dbae65883aeb76c6f7 ****/
+		/****** math_FunctionSetWithDerivatives::Value ******/
+		/****** md5 signature: fbdd70146ff924dbae65883aeb76c6f7 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the values <f> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 F: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Computes the values <F> of the Functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const math_Vector & X, math_Vector & F);
 
-		/****************** Values ******************/
-		/**** md5 signature: 4dca620a1b80d0862f0bc5ceb7679845 ****/
+		/****** math_FunctionSetWithDerivatives::Values ******/
+		/****** md5 signature: 4dca620a1b80d0862f0bc5ceb7679845 ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Returns the values <f> of the functions and the derivatives <d> for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 F: math_Vector
 D: math_Matrix
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+returns the values <F> of the functions and the derivatives <D> for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Values;
 		virtual Standard_Boolean Values(const math_Vector & X, math_Vector & F, math_Matrix & D);
 
@@ -7171,49 +7808,58 @@ bool
 %nodefaultctor math_FunctionWithDerivative;
 class math_FunctionWithDerivative : public math_Function {
 	public:
-		/****************** Derivative ******************/
-		/**** md5 signature: 40ab57db3219619aba9b35535ca68e03 ****/
+		/****** math_FunctionWithDerivative::Derivative ******/
+		/****** md5 signature: 40ab57db3219619aba9b35535ca68e03 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "Computes the derivative <d> of the function for the variable <x>. returns true if the calculation were successfully done, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 D: float
+
+Description
+-----------
+Computes the derivative <D> of the function for the variable <X>. Returns True if the calculation were successfully done, False otherwise.
 ") Derivative;
 		virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real &OutValue);
 
-		/****************** Value ******************/
-		/**** md5 signature: 4743230a1413804c068db1aa9417569d ****/
+		/****** math_FunctionWithDerivative::Value ******/
+		/****** md5 signature: 4743230a1413804c068db1aa9417569d ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the value <f>of the function for the variable <x>. returns true if the calculation were successfully done, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+Computes the value <F>of the function for the variable <X>. Returns True if the calculation were successfully done, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const Standard_Real X, Standard_Real &OutValue);
 
-		/****************** Values ******************/
-		/**** md5 signature: eaa75d14c72df373abc3e87e5a083867 ****/
+		/****** math_FunctionWithDerivative::Values ******/
+		/****** md5 signature: eaa75d14c72df373abc3e87e5a083867 ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Computes the value <f> and the derivative <d> of the function for the variable <x>. returns true if the calculation were successfully done, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 F: float
 D: float
+
+Description
+-----------
+Computes the value <F> and the derivative <D> of the function for the variable <X>. Returns True if the calculation were successfully done, False otherwise.
 ") Values;
 		virtual Standard_Boolean Values(const Standard_Real X, Standard_Real &OutValue, Standard_Real &OutValue);
 
@@ -7232,61 +7878,72 @@ D: float
 %nodefaultctor math_MultipleVarFunctionWithGradient;
 class math_MultipleVarFunctionWithGradient : public math_MultipleVarFunction {
 	public:
-		/****************** Gradient ******************/
-		/**** md5 signature: e0bc7ea3007ece37bf4721c0d5ae82b7 ****/
+		/****** math_MultipleVarFunctionWithGradient::Gradient ******/
+		/****** md5 signature: e0bc7ea3007ece37bf4721c0d5ae82b7 ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Computes the gradient <g> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 G: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Computes the gradient <G> of the functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Gradient;
 		virtual Standard_Boolean Gradient(const math_Vector & X, math_Vector & G);
 
-		/****************** NbVariables ******************/
-		/**** md5 signature: 9592108ebf305562827d51d05d64eecc ****/
+		/****** math_MultipleVarFunctionWithGradient::NbVariables ******/
+		/****** md5 signature: 9592108ebf305562827d51d05d64eecc ******/
 		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "Returns the number of variables of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the number of variables of the function.
 ") NbVariables;
 		virtual Standard_Integer NbVariables();
 
-		/****************** Value ******************/
-		/**** md5 signature: e09b772d60bf0c815be5e84388582a5f ****/
+		/****** math_MultipleVarFunctionWithGradient::Value ******/
+		/****** md5 signature: e09b772d60bf0c815be5e84388582a5f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the values of the functions <f> for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+Computes the values of the Functions <F> for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const math_Vector & X, Standard_Real &OutValue);
 
-		/****************** Values ******************/
-		/**** md5 signature: ef61fe0ba1a3ca66590ca01b8b3bae9a ****/
+		/****** math_MultipleVarFunctionWithGradient::Values ******/
+		/****** md5 signature: ef61fe0ba1a3ca66590ca01b8b3bae9a ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Computes the value <f> and the gradient <g> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 G: math_Vector
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+computes the value <F> and the gradient <G> of the functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Values;
 		virtual Standard_Boolean Values(const math_Vector & X, Standard_Real &OutValue, math_Vector & G);
 
@@ -7305,78 +7962,92 @@ F: float
 %nodefaultctor math_MultipleVarFunctionWithHessian;
 class math_MultipleVarFunctionWithHessian : public math_MultipleVarFunctionWithGradient {
 	public:
-		/****************** Gradient ******************/
-		/**** md5 signature: e0bc7ea3007ece37bf4721c0d5ae82b7 ****/
+		/****** math_MultipleVarFunctionWithHessian::Gradient ******/
+		/****** md5 signature: e0bc7ea3007ece37bf4721c0d5ae82b7 ******/
 		%feature("compactdefaultargs") Gradient;
-		%feature("autodoc", "Computes the gradient <g> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 G: math_Vector
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+computes the gradient <G> of the functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Gradient;
 		virtual Standard_Boolean Gradient(const math_Vector & X, math_Vector & G);
 
-		/****************** NbVariables ******************/
-		/**** md5 signature: 9592108ebf305562827d51d05d64eecc ****/
+		/****** math_MultipleVarFunctionWithHessian::NbVariables ******/
+		/****** md5 signature: 9592108ebf305562827d51d05d64eecc ******/
 		%feature("compactdefaultargs") NbVariables;
-		%feature("autodoc", "Returns the number of variables of the function.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the number of variables of the function.
 ") NbVariables;
 		virtual Standard_Integer NbVariables();
 
-		/****************** Value ******************/
-		/**** md5 signature: e09b772d60bf0c815be5e84388582a5f ****/
+		/****** math_MultipleVarFunctionWithHessian::Value ******/
+		/****** md5 signature: e09b772d60bf0c815be5e84388582a5f ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the values of the functions <f> for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+computes the values of the Functions <F> for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Value;
 		virtual Standard_Boolean Value(const math_Vector & X, Standard_Real &OutValue);
 
-		/****************** Values ******************/
-		/**** md5 signature: ef61fe0ba1a3ca66590ca01b8b3bae9a ****/
+		/****** math_MultipleVarFunctionWithHessian::Values ******/
+		/****** md5 signature: ef61fe0ba1a3ca66590ca01b8b3bae9a ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Computes the value <f> and the gradient <g> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 G: math_Vector
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+computes the value <F> and the gradient <G> of the functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Values;
 		virtual Standard_Boolean Values(const math_Vector & X, Standard_Real &OutValue, math_Vector & G);
 
-		/****************** Values ******************/
-		/**** md5 signature: b7ff4bd8ea7684f523e0627cf93c1752 ****/
+		/****** math_MultipleVarFunctionWithHessian::Values ******/
+		/****** md5 signature: b7ff4bd8ea7684f523e0627cf93c1752 ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "Computes the value <f>, the gradient <g> and the hessian <h> of the functions for the variable <x>. returns true if the computation was done successfully, false otherwise.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: math_Vector
 G: math_Vector
 H: math_Matrix
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+computes the value <F>, the gradient <G> and the hessian <H> of the functions for the variable <X>. Returns True if the computation was done successfully, False otherwise.
 ") Values;
 		virtual Standard_Boolean Values(const math_Vector & X, Standard_Real &OutValue, math_Vector & G, math_Matrix & H);
 
@@ -7394,11 +8065,10 @@ F: float
 *******************************************/
 class math_TrigonometricEquationFunction : public math_FunctionWithDerivative {
 	public:
-		/****************** math_TrigonometricEquationFunction ******************/
-		/**** md5 signature: 141c3811e3d80f125700d93b57169917 ****/
+		/****** math_TrigonometricEquationFunction::math_TrigonometricEquationFunction ******/
+		/****** md5 signature: 141c3811e3d80f125700d93b57169917 ******/
 		%feature("compactdefaultargs") math_TrigonometricEquationFunction;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: float
@@ -7407,55 +8077,68 @@ C: float
 D: float
 E: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") math_TrigonometricEquationFunction;
 		 math_TrigonometricEquationFunction(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D, const Standard_Real E);
 
-		/****************** Derivative ******************/
-		/**** md5 signature: fbad9244af593cced88564a1c61facc9 ****/
+		/****** math_TrigonometricEquationFunction::Derivative ******/
+		/****** md5 signature: fbad9244af593cced88564a1c61facc9 ******/
 		%feature("compactdefaultargs") Derivative;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 D: float
+
+Description
+-----------
+No available documentation.
 ") Derivative;
 		Standard_Boolean Derivative(const Standard_Real X, Standard_Real &OutValue);
 
-		/****************** Value ******************/
-		/**** md5 signature: f9554f9cb760d260e7457d0979cf74e6 ****/
+		/****** math_TrigonometricEquationFunction::Value ******/
+		/****** md5 signature: f9554f9cb760d260e7457d0979cf74e6 ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 F: float
+
+Description
+-----------
+No available documentation.
 ") Value;
 		Standard_Boolean Value(const Standard_Real X, Standard_Real &OutValue);
 
-		/****************** Values ******************/
-		/**** md5 signature: 6988fca4824de7b40b37d6540b751f8f ****/
+		/****** math_TrigonometricEquationFunction::Values ******/
+		/****** md5 signature: 6988fca4824de7b40b37d6540b751f8f ******/
 		%feature("compactdefaultargs") Values;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: float
 
-Returns
+Return
 -------
 F: float
 D: float
+
+Description
+-----------
+No available documentation.
 ") Values;
 		Standard_Boolean Values(const Standard_Real X, Standard_Real &OutValue, Standard_Real &OutValue);
 
@@ -7468,14 +8151,40 @@ D: float
 	}
 };
 
-/* python proxy for excluded classes */
-%pythoncode {
-@classnotwrapped
-class math_SingleTab:
-	pass
-
-}
-/* end python proxy for excluded classes */
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def math_GaussPoints(*args):
+	return math.GaussPoints(*args)
+
+@deprecated
+def math_GaussPointsMax(*args):
+	return math.GaussPointsMax(*args)
+
+@deprecated
+def math_GaussWeights(*args):
+	return math.GaussWeights(*args)
+
+@deprecated
+def math_KronrodPointsAndWeights(*args):
+	return math.KronrodPointsAndWeights(*args)
+
+@deprecated
+def math_KronrodPointsMax(*args):
+	return math.KronrodPointsMax(*args)
+
+@deprecated
+def math_OrderedGaussPointsAndWeights(*args):
+	return math.OrderedGaussPointsAndWeights(*args)
+
+@deprecated
+def math_KronrodSingleIntegration_GKRule(*args):
+	return math_KronrodSingleIntegration.GKRule(*args)
+
+}

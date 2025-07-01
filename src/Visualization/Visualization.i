@@ -32,6 +32,8 @@
 %wrap_handle(AIS_InteractiveContext)
 %wrap_handle(V3d_View)
 %wrap_handle(V3d_Viewer)
+%wrap_handle(Graphic3d_Camera)
+%wrap_handle(Graphic3d_StructureManager)
 
 class Display3d {
  public:
@@ -64,9 +66,15 @@ class Display3d {
     %feature("autodoc", "1");
     Handle_V3d_Viewer& GetViewer();
     %feature("autodoc", "1");
-    Handle_AIS_InteractiveContext GetContext();
+    Handle_Graphic3d_Camera& GetCamera();
+    %feature("autodoc", "1");
+    Handle_AIS_InteractiveContext& GetContext();
+    %feature("autodoc", "1");
+    Handle_Graphic3d_StructureManager& GetStructureManager();
     %feature("autodoc", "1");
     void Test();
+    %feature("autodoc", "1");
+    void GlInfo();
     %feature("autodoc", "1");
     bool InitOffscreen(int size_x, int size_y);
     %feature("autodoc", "1");
@@ -76,12 +84,12 @@ class Display3d {
 };
 
 %extend Display3d {
-    PyObject* GetImageData(int bufType = 0) {
+    PyObject* GetImageData(int width, int height, int bufType = 0) {
         const char * data;
         size_t size = 0;
         Graphic3d_BufferType theBufferType = (Graphic3d_BufferType)bufType;
 
-        if ($self->GetImageData(data, size, theBufferType)) {
+        if ($self->GetImageData(width, height, data, size, theBufferType)) {
             return PyBytes_FromStringAndSize(data, (Py_ssize_t)size);
         }
         Py_RETURN_NONE;

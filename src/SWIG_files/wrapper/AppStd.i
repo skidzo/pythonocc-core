@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define APPSTDDOCSTRING
 "AppStd module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_appstd.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_appstd.html"
 %enddef
 %module (package="OCC.Core", docstring=APPSTDDOCSTRING) AppStd
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_appstd.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -65,7 +68,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -85,16 +88,39 @@ from OCC.Core.Exception import *
 ***************************/
 class AppStd_Application : public TDocStd_Application {
 	public:
-		/****************** ResourcesName ******************/
-		/**** md5 signature: 93814b3160304ee63e9655e18518a289 ****/
-		%feature("compactdefaultargs") ResourcesName;
-		%feature("autodoc", "Returns the file name which contains application resources.
 
-Returns
+        /****************** DumpJson ******************/
+        %feature("autodoc", "
+Parameters
+----------
+depth: int, default=-1
+
+Return
 -------
-char *
+str
+
+Description
+-----------
+Dump the object to JSON string.
+") DumpJson;
+        %extend{
+            std::string DumpJson(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
+		/****** AppStd_Application::ResourcesName ******/
+		/****** md5 signature: 93814b3160304ee63e9655e18518a289 ******/
+		%feature("compactdefaultargs") ResourcesName;
+		%feature("autodoc", "Return
+-------
+str
+
+Description
+-----------
+returns the file name which contains application resources.
 ") ResourcesName;
-		const char * ResourcesName();
+		Standard_CString ResourcesName();
 
 };
 
@@ -110,3 +136,6 @@ char *
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}

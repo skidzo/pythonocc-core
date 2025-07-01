@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define BREPCLASS3DDOCSTRING
 "BRepClass3d module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_brepclass3d.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_brepclass3d.html"
 %enddef
 %module (package="OCC.Core", docstring=BREPCLASS3DDOCSTRING) BRepClass3d
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_brepclass3d.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -83,7 +86,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -108,18 +111,21 @@ typedef NCollection_DataMap<TopoDS_Shape, Standard_Address, TopTools_ShapeMapHas
 %rename(brepclass3d) BRepClass3d;
 class BRepClass3d {
 	public:
-		/****************** OuterShell ******************/
-		/**** md5 signature: f7b79b3e5e2fdf723525467fdb7a08ef ****/
+		/****** BRepClass3d::OuterShell ******/
+		/****** md5 signature: f7b79b3e5e2fdf723525467fdb7a08ef ******/
 		%feature("compactdefaultargs") OuterShell;
-		%feature("autodoc", "Returns the outer most shell of <s>. returns a null shell if <s> has no outer shell. if <s> has only one shell, then it will return, without checking orientation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Solid
 
-Returns
+Return
 -------
 TopoDS_Shell
+
+Description
+-----------
+Returns the outer most shell of <S>. Returns a Null shell if <S> has no outer shell. If <S> has only one shell, then it will return, without checking orientation.
 ") OuterShell;
 		static TopoDS_Shell OuterShell(const TopoDS_Solid & S);
 
@@ -137,55 +143,62 @@ TopoDS_Shell
 **********************************/
 class BRepClass3d_Intersector3d {
 	public:
-		/****************** BRepClass3d_Intersector3d ******************/
-		/**** md5 signature: 5313248e9a4d9e528b75267702000c25 ****/
+		/****** BRepClass3d_Intersector3d::BRepClass3d_Intersector3d ******/
+		/****** md5 signature: 5313248e9a4d9e528b75267702000c25 ******/
 		%feature("compactdefaultargs") BRepClass3d_Intersector3d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") BRepClass3d_Intersector3d;
 		 BRepClass3d_Intersector3d();
 
-		/****************** Face ******************/
-		/**** md5 signature: 91e216ebeb76e55c73eb9e179241a6ff ****/
+		/****** BRepClass3d_Intersector3d::Face ******/
+		/****** md5 signature: 91e216ebeb76e55c73eb9e179241a6ff ******/
 		%feature("compactdefaultargs") Face;
-		%feature("autodoc", "Returns the significant face used to determine the intersection.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Face
+
+Description
+-----------
+Returns the significant face used to determine the intersection.
 ") Face;
 		const TopoDS_Face Face();
 
-		/****************** HasAPoint ******************/
-		/**** md5 signature: 95bdb18305d0dc0e9acb6e3a09a77c66 ****/
+		/****** BRepClass3d_Intersector3d::HasAPoint ******/
+		/****** md5 signature: 95bdb18305d0dc0e9acb6e3a09a77c66 ******/
 		%feature("compactdefaultargs") HasAPoint;
-		%feature("autodoc", "True is returned if a point has been found.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+True is returned if a point has been found.
 ") HasAPoint;
 		Standard_Boolean HasAPoint();
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** BRepClass3d_Intersector3d::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "True is returned when the intersection have been computed.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+True is returned when the intersection have been computed.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** Perform ******************/
-		/**** md5 signature: fbf207842cdabc9dffc461de3afdbc7f ****/
+		/****** BRepClass3d_Intersector3d::Perform ******/
+		/****** md5 signature: fbf207842cdabc9dffc461de3afdbc7f ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Perform the intersection between the segment l(0) ... l(prm) and the shape <sh>. //! only the point with the smallest parameter on the line is returned. //! the tolerance <tol> is used to determine if the first point of the segment is near the face. in that case, the parameter of the intersection point on the line can be a negative value (greater than -tol).
-
+		%feature("autodoc", "
 Parameters
 ----------
 L: gp_Lin
@@ -193,75 +206,91 @@ Prm: float
 Tol: float
 F: TopoDS_Face
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Perform the intersection between the segment L(0) ... L(Prm) and the Shape <Sh>. //! Only the point with the smallest parameter on the line is returned. //! The Tolerance <Tol> is used to determine if the first point of the segment is near the face. In that case, the parameter of the intersection point on the line can be a negative value (greater than -Tol).
 ") Perform;
 		void Perform(const gp_Lin & L, const Standard_Real Prm, const Standard_Real Tol, const TopoDS_Face & F);
 
-		/****************** Pnt ******************/
-		/**** md5 signature: c0bafeed50f4eebb5964e2bf8520bf90 ****/
+		/****** BRepClass3d_Intersector3d::Pnt ******/
+		/****** md5 signature: c0bafeed50f4eebb5964e2bf8520bf90 ******/
 		%feature("compactdefaultargs") Pnt;
-		%feature("autodoc", "Returns the geometric point of the intersection between the line and the surface.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Pnt
+
+Description
+-----------
+Returns the geometric point of the intersection between the line and the surface.
 ") Pnt;
 		const gp_Pnt Pnt();
 
-		/****************** State ******************/
-		/**** md5 signature: 927c83b1efdec797adb47eb058eddaa0 ****/
+		/****** BRepClass3d_Intersector3d::State ******/
+		/****** md5 signature: 927c83b1efdec797adb47eb058eddaa0 ******/
 		%feature("compactdefaultargs") State;
-		%feature("autodoc", "Returns the state of the point on the face. the values can be either topabs_in ( the point is in the face) or topabs_on ( the point is on a boudary of the face).
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopAbs_State
+
+Description
+-----------
+Returns the state of the point on the face. The values can be either TopAbs_IN ( the point is in the face) or TopAbs_ON ( the point is on a boundary of the face).
 ") State;
 		TopAbs_State State();
 
-		/****************** Transition ******************/
-		/**** md5 signature: bd528dc9c78a60a5b26409b8cf4f3afe ****/
+		/****** BRepClass3d_Intersector3d::Transition ******/
+		/****** md5 signature: bd528dc9c78a60a5b26409b8cf4f3afe ******/
 		%feature("compactdefaultargs") Transition;
-		%feature("autodoc", "Returns the transition of the line on the surface.
-
-Returns
+		%feature("autodoc", "Return
 -------
 IntCurveSurface_TransitionOnCurve
+
+Description
+-----------
+Returns the transition of the line on the surface.
 ") Transition;
 		IntCurveSurface_TransitionOnCurve Transition();
 
-		/****************** UParameter ******************/
-		/**** md5 signature: 5a3c6fef4fc1a6f599cc725a940f8581 ****/
+		/****** BRepClass3d_Intersector3d::UParameter ******/
+		/****** md5 signature: 5a3c6fef4fc1a6f599cc725a940f8581 ******/
 		%feature("compactdefaultargs") UParameter;
-		%feature("autodoc", "Returns the u parameter of the intersection point on the surface.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the U parameter of the intersection point on the surface.
 ") UParameter;
 		Standard_Real UParameter();
 
-		/****************** VParameter ******************/
-		/**** md5 signature: 5b56cd11dcb65aaedb7fac8351dbfbc8 ****/
+		/****** BRepClass3d_Intersector3d::VParameter ******/
+		/****** md5 signature: 5b56cd11dcb65aaedb7fac8351dbfbc8 ******/
 		%feature("compactdefaultargs") VParameter;
-		%feature("autodoc", "Returns the v parameter of the intersection point on the surface.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the V parameter of the intersection point on the surface.
 ") VParameter;
 		Standard_Real VParameter();
 
-		/****************** WParameter ******************/
-		/**** md5 signature: a33035afb8654e081d0823499e659e46 ****/
+		/****** BRepClass3d_Intersector3d::WParameter ******/
+		/****** md5 signature: a33035afb8654e081d0823499e659e46 ******/
 		%feature("compactdefaultargs") WParameter;
-		%feature("autodoc", "Returns the parameter of the intersection point on the line.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the parameter of the intersection point on the line.
 ") WParameter;
 		Standard_Real WParameter();
 
@@ -279,108 +308,127 @@ float
 ********************************/
 class BRepClass3d_SClassifier {
 	public:
-		/****************** BRepClass3d_SClassifier ******************/
-		/**** md5 signature: 0e43e1bcc9eb18eda4d1709f9787e45f ****/
+		/****** BRepClass3d_SClassifier::BRepClass3d_SClassifier ******/
+		/****** md5 signature: 0e43e1bcc9eb18eda4d1709f9787e45f ******/
 		%feature("compactdefaultargs") BRepClass3d_SClassifier;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") BRepClass3d_SClassifier;
 		 BRepClass3d_SClassifier();
 
-		/****************** BRepClass3d_SClassifier ******************/
-		/**** md5 signature: 0e7fbee80d781c22f36939e8cf1adb7e ****/
+		/****** BRepClass3d_SClassifier::BRepClass3d_SClassifier ******/
+		/****** md5 signature: 0e7fbee80d781c22f36939e8cf1adb7e ******/
 		%feature("compactdefaultargs") BRepClass3d_SClassifier;
-		%feature("autodoc", "Constructor to classify the point p with the tolerance tol on the solid s.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: BRepClass3d_SolidExplorer
 P: gp_Pnt
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor to classify the point P with the tolerance Tol on the solid S.
 ") BRepClass3d_SClassifier;
 		 BRepClass3d_SClassifier(BRepClass3d_SolidExplorer & S, const gp_Pnt & P, const Standard_Real Tol);
 
-		/****************** Face ******************/
-		/**** md5 signature: 64c75db1e9c1285068e9dd474618f74f ****/
+		/****** BRepClass3d_SClassifier::Face ******/
+		/****** md5 signature: 64c75db1e9c1285068e9dd474618f74f ******/
 		%feature("compactdefaultargs") Face;
-		%feature("autodoc", "Returns the face used to determine the classification. when the state is on, this is the face containing the point. //! when rejected() returns true, face() has no signification.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Face
+
+Description
+-----------
+Returns the face used to determine the classification. When the state is ON, this is the face containing the point. //! When Rejected() returns True, Face() has no signification.
 ") Face;
 		TopoDS_Face Face();
 
-		/****************** IsOnAFace ******************/
-		/**** md5 signature: e7c1af4ae72eee2a9b46452df227e5ed ****/
+		/****** BRepClass3d_SClassifier::IsOnAFace ******/
+		/****** md5 signature: e7c1af4ae72eee2a9b46452df227e5ed ******/
 		%feature("compactdefaultargs") IsOnAFace;
-		%feature("autodoc", "Returns true when the point is a point of a face.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True when the point is a point of a face.
 ") IsOnAFace;
 		Standard_Boolean IsOnAFace();
 
-		/****************** Perform ******************/
-		/**** md5 signature: 9c6284684be6a59e66779a905c370b7a ****/
+		/****** BRepClass3d_SClassifier::Perform ******/
+		/****** md5 signature: 9c6284684be6a59e66779a905c370b7a ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Classify the point p with the tolerance tol on the solid s.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: BRepClass3d_SolidExplorer
 P: gp_Pnt
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Classify the point P with the tolerance Tol on the solid S.
 ") Perform;
 		void Perform(BRepClass3d_SolidExplorer & S, const gp_Pnt & P, const Standard_Real Tol);
 
-		/****************** PerformInfinitePoint ******************/
-		/**** md5 signature: b38a28b443037933c522597a4245e901 ****/
+		/****** BRepClass3d_SClassifier::PerformInfinitePoint ******/
+		/****** md5 signature: b38a28b443037933c522597a4245e901 ******/
 		%feature("compactdefaultargs") PerformInfinitePoint;
-		%feature("autodoc", "Classify an infinite point with the tolerance tol on the solid s.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: BRepClass3d_SolidExplorer
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Classify an infinite point with the tolerance Tol on the solid S.
 ") PerformInfinitePoint;
 		void PerformInfinitePoint(BRepClass3d_SolidExplorer & S, const Standard_Real Tol);
 
-		/****************** Rejected ******************/
-		/**** md5 signature: 56d604911041dd9f442bde612c88e4cd ****/
+		/****** BRepClass3d_SClassifier::Rejected ******/
+		/****** md5 signature: 56d604911041dd9f442bde612c88e4cd ******/
 		%feature("compactdefaultargs") Rejected;
-		%feature("autodoc", "Returns true if the classification has been computed by rejection. the state is then out.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if the classification has been computed by rejection. The State is then OUT.
 ") Rejected;
 		Standard_Boolean Rejected();
 
-		/****************** State ******************/
-		/**** md5 signature: 927c83b1efdec797adb47eb058eddaa0 ****/
+		/****** BRepClass3d_SClassifier::State ******/
+		/****** md5 signature: 927c83b1efdec797adb47eb058eddaa0 ******/
 		%feature("compactdefaultargs") State;
-		%feature("autodoc", "Returns the result of the classification.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopAbs_State
+
+Description
+-----------
+Returns the result of the classification.
 ") State;
 		TopAbs_State State();
 
@@ -398,81 +446,93 @@ TopAbs_State
 **********************************/
 class BRepClass3d_SolidExplorer {
 	public:
-		/****************** BRepClass3d_SolidExplorer ******************/
-		/**** md5 signature: 2cb6e9ade85fff9fe417a5fe5c1853ef ****/
+		/****** BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer ******/
+		/****** md5 signature: 2cb6e9ade85fff9fe417a5fe5c1853ef ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidExplorer;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepClass3d_SolidExplorer;
 		 BRepClass3d_SolidExplorer();
 
-		/****************** BRepClass3d_SolidExplorer ******************/
-		/**** md5 signature: 4fbcac149406b40fbabba612a552e1fd ****/
+		/****** BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer ******/
+		/****** md5 signature: 4fbcac149406b40fbabba612a552e1fd ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidExplorer;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepClass3d_SolidExplorer;
 		 BRepClass3d_SolidExplorer(const TopoDS_Shape & S);
 
-		/****************** Box ******************/
-		/**** md5 signature: 7c4ea237507e51916495e768089f878e ****/
+		/****** BRepClass3d_SolidExplorer::Box ******/
+		/****** md5 signature: 7c4ea237507e51916495e768089f878e ******/
 		%feature("compactdefaultargs") Box;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Bnd_Box
+
+Description
+-----------
+No available documentation.
 ") Box;
 		const Bnd_Box & Box();
 
-		/****************** CurrentFace ******************/
-		/**** md5 signature: 88a3d5d94862043bde89d78000693450 ****/
+		/****** BRepClass3d_SolidExplorer::CurrentFace ******/
+		/****** md5 signature: 88a3d5d94862043bde89d78000693450 ******/
 		%feature("compactdefaultargs") CurrentFace;
-		%feature("autodoc", "Returns the current face.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Face
+
+Description
+-----------
+Returns the current face.
 ") CurrentFace;
 		TopoDS_Face CurrentFace();
 
-		/****************** CurrentShell ******************/
-		/**** md5 signature: 16e51d9904504dd5dccd12b1a05b6190 ****/
+		/****** BRepClass3d_SolidExplorer::CurrentShell ******/
+		/****** md5 signature: 16e51d9904504dd5dccd12b1a05b6190 ******/
 		%feature("compactdefaultargs") CurrentShell;
-		%feature("autodoc", "Returns the current shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Shell
+
+Description
+-----------
+Returns the current shell.
 ") CurrentShell;
 		TopoDS_Shell CurrentShell();
 
-		/****************** Destroy ******************/
-		/**** md5 signature: 73111f72f4ab0474eb2cfbd7e4af4e1a ****/
+		/****** BRepClass3d_SolidExplorer::Destroy ******/
+		/****** md5 signature: 73111f72f4ab0474eb2cfbd7e4af4e1a ******/
 		%feature("compactdefaultargs") Destroy;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Destroy;
 		void Destroy();
 
-		/****************** DumpSegment ******************/
-		/**** md5 signature: 956e65b65651fa5abd6d4e99a756a224 ****/
+		/****** BRepClass3d_SolidExplorer::DumpSegment ******/
+		/****** md5 signature: 956e65b65651fa5abd6d4e99a756a224 ******/
 		%feature("compactdefaultargs") DumpSegment;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt
@@ -480,51 +540,60 @@ L: gp_Lin
 Par: float
 S: TopAbs_State
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") DumpSegment;
 		virtual void DumpSegment(const gp_Pnt & P, const gp_Lin & L, const Standard_Real Par, const TopAbs_State S);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: 017b38099efc4045694c9c0eec7a0305 ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: 017b38099efc4045694c9c0eec7a0305 ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "Compute a point p in the face f. param is a real in ]0,1[ and is used to initialise the algorithm. for different values , different points are returned.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
 
-Returns
+Return
 -------
 Param: float
+
+Description
+-----------
+compute a point P in the face F. Param is a Real in ]0,1[ and is used to initialise the algorithm. For different values , different points are returned.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: cfa5d85e3e48ef9c6fa4b8a92d14a8e3 ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: cfa5d85e3e48ef9c6fa4b8a92d14a8e3 ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
 
-Returns
+Return
 -------
 u: float
 v: float
 Param: float
+
+Description
+-----------
+No available documentation.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: c28fe2e7cc35377cd66ce9290933d0a3 ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: c28fe2e7cc35377cd66ce9290933d0a3 ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
@@ -532,272 +601,319 @@ P: gp_Pnt
 theVecD1U: gp_Vec
 theVecD1V: gp_Vec
 
-Returns
+Return
 -------
 u: float
 v: float
 Param: float
+
+Description
+-----------
+No available documentation.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, gp_Vec & theVecD1U, gp_Vec & theVecD1V);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: 6c69107d08aa717df4761c1ae3a12191 ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: 6c69107d08aa717df4761c1ae3a12191 ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
 
-Returns
+Return
 -------
 u: float
 v: float
+
+Description
+-----------
+No available documentation.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: 947dd7c60afdf4e19b5af7c8c915c5a4 ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: 947dd7c60afdf4e19b5af7c8c915c5a4 ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, gp_Pnt & P);
 
-		/****************** FindAPointInTheFace ******************/
-		/**** md5 signature: 1a53cc75214db16eaf466520aec6f0cf ****/
+		/****** BRepClass3d_SolidExplorer::FindAPointInTheFace ******/
+		/****** md5 signature: 1a53cc75214db16eaf466520aec6f0cf ******/
 		%feature("compactdefaultargs") FindAPointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 
-Returns
+Return
 -------
 u: float
 v: float
+
+Description
+-----------
+No available documentation.
 ") FindAPointInTheFace;
 		static Standard_Boolean FindAPointInTheFace(const TopoDS_Face & F, Standard_Real &OutValue, Standard_Real &OutValue);
 
-		/****************** GetFaceSegmentIndex ******************/
-		/**** md5 signature: 83baeb3358902c7f4be1cb4a7cc78576 ****/
+		/****** BRepClass3d_SolidExplorer::GetFaceSegmentIndex ******/
+		/****** md5 signature: 83baeb3358902c7f4be1cb4a7cc78576 ******/
 		%feature("compactdefaultargs") GetFaceSegmentIndex;
-		%feature("autodoc", "Returns the index of face for which last segment is calculated.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns the index of face for which last segment is calculated.
 ") GetFaceSegmentIndex;
 		Standard_Integer GetFaceSegmentIndex();
 
-		/****************** GetMapEV ******************/
-		/**** md5 signature: 9321b6d327f7742e505f8eef3f9d8710 ****/
+		/****** BRepClass3d_SolidExplorer::GetMapEV ******/
+		/****** md5 signature: 9321b6d327f7742e505f8eef3f9d8710 ******/
 		%feature("compactdefaultargs") GetMapEV;
-		%feature("autodoc", "Return edge/vertices map for current shape.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopTools_IndexedMapOfShape
+
+Description
+-----------
+Return edge/vertices map for current shape.
 ") GetMapEV;
 		const TopTools_IndexedMapOfShape & GetMapEV();
 
-		/****************** GetShape ******************/
-		/**** md5 signature: 68adf76e3cbb4c2e8340f398e62eb4da ****/
+		/****** BRepClass3d_SolidExplorer::GetShape ******/
+		/****** md5 signature: 68adf76e3cbb4c2e8340f398e62eb4da ******/
 		%feature("compactdefaultargs") GetShape;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+No available documentation.
 ") GetShape;
 		const TopoDS_Shape GetShape();
 
-		/****************** GetTree ******************/
-		/**** md5 signature: 8b49ac1118352d12ae778510be4c79fc ****/
+		/****** BRepClass3d_SolidExplorer::GetTree ******/
+		/****** md5 signature: 8b49ac1118352d12ae778510be4c79fc ******/
 		%feature("compactdefaultargs") GetTree;
-		%feature("autodoc", "Return ub-tree instance which is used for edge / vertex checks.
-
-Returns
+		%feature("autodoc", "Return
 -------
 BRepClass3d_BndBoxTree
+
+Description
+-----------
+Return UB-tree instance which is used for edge / vertex checks.
 ") GetTree;
 		const BRepClass3d_BndBoxTree & GetTree();
 
-		/****************** InitFace ******************/
-		/**** md5 signature: 0e969d0225b2576ac55e2fb0e7a91460 ****/
+		/****** BRepClass3d_SolidExplorer::InitFace ******/
+		/****** md5 signature: 0e969d0225b2576ac55e2fb0e7a91460 ******/
 		%feature("compactdefaultargs") InitFace;
-		%feature("autodoc", "Starts an exploration of the faces of the current shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Starts an exploration of the faces of the current shell.
 ") InitFace;
 		void InitFace();
 
-		/****************** InitShape ******************/
-		/**** md5 signature: d9bc37c7ee2a5ff0f8819cf45d1e822f ****/
+		/****** BRepClass3d_SolidExplorer::InitShape ******/
+		/****** md5 signature: d9bc37c7ee2a5ff0f8819cf45d1e822f ******/
 		%feature("compactdefaultargs") InitShape;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InitShape;
 		void InitShape(const TopoDS_Shape & S);
 
-		/****************** InitShell ******************/
-		/**** md5 signature: da47ddbaca584bd5639e7c69797b28f8 ****/
+		/****** BRepClass3d_SolidExplorer::InitShell ******/
+		/****** md5 signature: da47ddbaca584bd5639e7c69797b28f8 ******/
 		%feature("compactdefaultargs") InitShell;
-		%feature("autodoc", "Starts an exploration of the shells.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Starts an exploration of the shells.
 ") InitShell;
 		void InitShell();
 
-		/****************** Intersector ******************/
-		/**** md5 signature: 4031f4a71f4a73a8fa5ed1228f085e89 ****/
+		/****** BRepClass3d_SolidExplorer::Intersector ******/
+		/****** md5 signature: 4031f4a71f4a73a8fa5ed1228f085e89 ******/
 		%feature("compactdefaultargs") Intersector;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 
-Returns
+Return
 -------
 IntCurvesFace_Intersector
+
+Description
+-----------
+No available documentation.
 ") Intersector;
 		IntCurvesFace_Intersector & Intersector(const TopoDS_Face & F);
 
-		/****************** MoreFace ******************/
-		/**** md5 signature: 9ce280b3ff0f94e82bd4ccb635ad91a7 ****/
+		/****** BRepClass3d_SolidExplorer::MoreFace ******/
+		/****** md5 signature: 9ce280b3ff0f94e82bd4ccb635ad91a7 ******/
 		%feature("compactdefaultargs") MoreFace;
-		%feature("autodoc", "Returns true if current face in current shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if current face in current shell.
 ") MoreFace;
 		Standard_Boolean MoreFace();
 
-		/****************** MoreShell ******************/
-		/**** md5 signature: 9123faff7480a9cd91e7d3a7625f4cdb ****/
+		/****** BRepClass3d_SolidExplorer::MoreShell ******/
+		/****** md5 signature: 9123faff7480a9cd91e7d3a7625f4cdb ******/
 		%feature("compactdefaultargs") MoreShell;
-		%feature("autodoc", "Returns true if there is a current shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if there is a current shell.
 ") MoreShell;
 		Standard_Boolean MoreShell();
 
-		/****************** NextFace ******************/
-		/**** md5 signature: 33ae62d7d15ec80966f0219be1a267db ****/
+		/****** BRepClass3d_SolidExplorer::NextFace ******/
+		/****** md5 signature: 33ae62d7d15ec80966f0219be1a267db ******/
 		%feature("compactdefaultargs") NextFace;
-		%feature("autodoc", "Sets the explorer to the next face of the current shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Sets the explorer to the next Face of the current shell.
 ") NextFace;
 		void NextFace();
 
-		/****************** NextShell ******************/
-		/**** md5 signature: acf25ab192bbd1382fada471f35632f3 ****/
+		/****** BRepClass3d_SolidExplorer::NextShell ******/
+		/****** md5 signature: acf25ab192bbd1382fada471f35632f3 ******/
 		%feature("compactdefaultargs") NextShell;
-		%feature("autodoc", "Sets the explorer to the next shell.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Sets the explorer to the next shell.
 ") NextShell;
 		void NextShell();
 
-		/****************** OtherSegment ******************/
-		/**** md5 signature: 8a68c80fe5592baef8f2dc32aae030e8 ****/
+		/****** BRepClass3d_SolidExplorer::OtherSegment ******/
+		/****** md5 signature: 8a68c80fe5592baef8f2dc32aae030e8 ******/
 		%feature("compactdefaultargs") OtherSegment;
-		%feature("autodoc", "Returns in <l>, <par> a segment having at least one intersection with the shape boundary to compute intersections. //! the first call to this method returns a line which point to a point of the first face of the shape. the second call provide a line to the second face and so on.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt
 L: gp_Lin
 
-Returns
+Return
 -------
 Par: float
+
+Description
+-----------
+Returns in <L>, <Par> a segment having at least one intersection with the shape boundary to compute intersections. //! The First Call to this method returns a line which point to a point of the first face of the shape. The Second Call provide a line to the second face and so on.
 ") OtherSegment;
 		Standard_Integer OtherSegment(const gp_Pnt & P, gp_Lin & L, Standard_Real &OutValue);
 
-		/****************** PointInTheFace ******************/
-		/**** md5 signature: 02e05914677a68ed8d75572f3a199575 ****/
+		/****** BRepClass3d_SolidExplorer::PointInTheFace ******/
+		/****** md5 signature: 02e05914677a68ed8d75572f3a199575 ******/
 		%feature("compactdefaultargs") PointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
 
-Returns
+Return
 -------
 u: float
 v: float
 Param: float
 Index: int
+
+Description
+-----------
+No available documentation.
 ") PointInTheFace;
 		Standard_Boolean PointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Integer &OutValue);
 
-		/****************** PointInTheFace ******************/
-		/**** md5 signature: 2409cfffa35ee7af69816ed64caca69e ****/
+		/****** BRepClass3d_SolidExplorer::PointInTheFace ******/
+		/****** md5 signature: 986766809c3fdf601631ad22531992f8 ******/
 		%feature("compactdefaultargs") PointInTheFace;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
-surf: BRepAdaptor_HSurface
+surf: BRepAdaptor_Surface
 u1: float
 v1: float
 u2: float
 v2: float
 
-Returns
+Return
 -------
 u: float
 v: float
 Param: float
 Index: int
+
+Description
+-----------
+No available documentation.
 ") PointInTheFace;
-		Standard_Boolean PointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Integer &OutValue, const opencascade::handle<BRepAdaptor_HSurface> & surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2);
+		Standard_Boolean PointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Integer &OutValue, const opencascade::handle<BRepAdaptor_Surface> & surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2);
 
-		/****************** PointInTheFace ******************/
-		/**** md5 signature: ab70975c9887205d9944a58eab4d39a9 ****/
+		/****** BRepClass3d_SolidExplorer::PointInTheFace ******/
+		/****** md5 signature: 69801e47f45d76167828452cfb2f933a ******/
 		%feature("compactdefaultargs") PointInTheFace;
-		%feature("autodoc", "<index> gives point index to search from and returns point index of succeseful search.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 P: gp_Pnt
-surf: BRepAdaptor_HSurface
+surf: BRepAdaptor_Surface
 u1: float
 v1: float
 u2: float
@@ -805,73 +921,89 @@ v2: float
 theVecD1U: gp_Vec
 theVecD1V: gp_Vec
 
-Returns
+Return
 -------
 u: float
 v: float
 Param: float
 Index: int
+
+Description
+-----------
+<Index> gives point index to search from and returns point index of succeseful search.
 ") PointInTheFace;
-		Standard_Boolean PointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Integer &OutValue, const opencascade::handle<BRepAdaptor_HSurface> & surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec & theVecD1U, gp_Vec & theVecD1V);
+		Standard_Boolean PointInTheFace(const TopoDS_Face & F, gp_Pnt & P, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, Standard_Integer &OutValue, const opencascade::handle<BRepAdaptor_Surface> & surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec & theVecD1U, gp_Vec & theVecD1V);
 
-		/****************** Reject ******************/
-		/**** md5 signature: 51de68ac10b383926f08d5ff11ad46ef ****/
+		/****** BRepClass3d_SolidExplorer::Reject ******/
+		/****** md5 signature: 51de68ac10b383926f08d5ff11ad46ef ******/
 		%feature("compactdefaultargs") Reject;
-		%feature("autodoc", "Should return true if p outside of bounding vol. of the shape.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Should return True if P outside of bounding vol. of the shape.
 ") Reject;
 		virtual Standard_Boolean Reject(const gp_Pnt & P);
 
-		/****************** RejectFace ******************/
-		/**** md5 signature: ac0d5a52c1e8c11624a4126529ce95a1 ****/
+		/****** BRepClass3d_SolidExplorer::RejectFace ******/
+		/****** md5 signature: ac0d5a52c1e8c11624a4126529ce95a1 ******/
 		%feature("compactdefaultargs") RejectFace;
-		%feature("autodoc", "Returns true if the face is rejected.
-
+		%feature("autodoc", "
 Parameters
 ----------
 L: gp_Lin
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+returns True if the face is rejected.
 ") RejectFace;
 		virtual Standard_Boolean RejectFace(const gp_Lin & L);
 
-		/****************** RejectShell ******************/
-		/**** md5 signature: 2e32cb4f65a91d1adc50db91830d6b88 ****/
+		/****** BRepClass3d_SolidExplorer::RejectShell ******/
+		/****** md5 signature: 2e32cb4f65a91d1adc50db91830d6b88 ******/
 		%feature("compactdefaultargs") RejectShell;
-		%feature("autodoc", "Returns true if the shell is rejected.
-
+		%feature("autodoc", "
 Parameters
 ----------
 L: gp_Lin
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Returns True if the Shell is rejected.
 ") RejectShell;
 		virtual Standard_Boolean RejectShell(const gp_Lin & L);
 
-		/****************** Segment ******************/
-		/**** md5 signature: 65c1df49fa25b2d5c8218cf933983a20 ****/
+		/****** BRepClass3d_SolidExplorer::Segment ******/
+		/****** md5 signature: 65c1df49fa25b2d5c8218cf933983a20 ******/
 		%feature("compactdefaultargs") Segment;
-		%feature("autodoc", "Returns in <l>, <par> a segment having at least one intersection with the shape boundary to compute intersections.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt
 L: gp_Lin
 
-Returns
+Return
 -------
 Par: float
+
+Description
+-----------
+Returns in <L>, <Par> a segment having at least one intersection with the shape boundary to compute intersections.
 ") Segment;
 		Standard_Integer Segment(const gp_Pnt & P, gp_Lin & L, Standard_Real &OutValue);
 
@@ -889,91 +1021,107 @@ Par: float
 *******************************************/
 class BRepClass3d_SolidPassiveClassifier {
 	public:
-		/****************** BRepClass3d_SolidPassiveClassifier ******************/
-		/**** md5 signature: 753c34115a953d0d1d184f6dbce546d6 ****/
+		/****** BRepClass3d_SolidPassiveClassifier::BRepClass3d_SolidPassiveClassifier ******/
+		/****** md5 signature: 753c34115a953d0d1d184f6dbce546d6 ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidPassiveClassifier;
-		%feature("autodoc", "Creates an undefined classifier.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Creates an undefined classifier.
 ") BRepClass3d_SolidPassiveClassifier;
 		 BRepClass3d_SolidPassiveClassifier();
 
-		/****************** Compare ******************/
-		/**** md5 signature: b56f046d5b1a7e24fd1a5f6c7f16401a ****/
+		/****** BRepClass3d_SolidPassiveClassifier::Compare ******/
+		/****** md5 signature: b56f046d5b1a7e24fd1a5f6c7f16401a ******/
 		%feature("compactdefaultargs") Compare;
-		%feature("autodoc", "Updates the classification process with the face <f> from the boundary.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 Or: TopAbs_Orientation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Updates the classification process with the face <F> from the boundary.
 ") Compare;
 		void Compare(const TopoDS_Face & F, const TopAbs_Orientation Or);
 
-		/****************** HasIntersection ******************/
-		/**** md5 signature: 94c3b976d93201cedbd7868f3cc308ec ****/
+		/****** BRepClass3d_SolidPassiveClassifier::HasIntersection ******/
+		/****** md5 signature: 55f070fe51c559b5db20d742c7f46730 ******/
 		%feature("compactdefaultargs") HasIntersection;
-		%feature("autodoc", "Returns true if an intersection is computed.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if an intersection is computed.
 ") HasIntersection;
 		Standard_Boolean HasIntersection();
 
-		/****************** Intersector ******************/
-		/**** md5 signature: 89ae7485d04a83ad1143250d9364ad9b ****/
+		/****** BRepClass3d_SolidPassiveClassifier::Intersector ******/
+		/****** md5 signature: b339e86a1f3b2bdef697aa467bca345d ******/
 		%feature("compactdefaultargs") Intersector;
-		%feature("autodoc", "Returns the intersecting algorithm.
-
-Returns
+		%feature("autodoc", "Return
 -------
 BRepClass3d_Intersector3d
+
+Description
+-----------
+Returns the intersecting algorithm.
 ") Intersector;
 		BRepClass3d_Intersector3d & Intersector();
 
-		/****************** Parameter ******************/
-		/**** md5 signature: ecccdeaeaa0deed24f47e61ad75d24f1 ****/
+		/****** BRepClass3d_SolidPassiveClassifier::Parameter ******/
+		/****** md5 signature: a1c30d1196ee452cd8e422f1e25a0fbc ******/
 		%feature("compactdefaultargs") Parameter;
-		%feature("autodoc", "Returns the current value of the parameter.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns the current value of the parameter.
 ") Parameter;
 		Standard_Real Parameter();
 
-		/****************** Reset ******************/
-		/**** md5 signature: e6b050ae118cd9e842409d971e4257e9 ****/
+		/****** BRepClass3d_SolidPassiveClassifier::Reset ******/
+		/****** md5 signature: e6b050ae118cd9e842409d971e4257e9 ******/
 		%feature("compactdefaultargs") Reset;
-		%feature("autodoc", "Starts a classification process. the point to classify is the origin of the line <l>. <p> is the original length of the segment on <l> used to compute intersections. <tol> is the tolerance attached to the intersections.
-
+		%feature("autodoc", "
 Parameters
 ----------
 L: gp_Lin
 P: float
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Starts a classification process. The point to classify is the origin of the line <L>. <P> is the original length of the segment on <L> used to compute intersections. <Tol> is the tolerance attached to the intersections.
 ") Reset;
 		void Reset(const gp_Lin & L, const Standard_Real P, const Standard_Real Tol);
 
-		/****************** State ******************/
-		/**** md5 signature: 927c83b1efdec797adb47eb058eddaa0 ****/
+		/****** BRepClass3d_SolidPassiveClassifier::State ******/
+		/****** md5 signature: f060e49862ba79cdeda588bb3f787fae ******/
 		%feature("compactdefaultargs") State;
-		%feature("autodoc", "Returns the current state of the point.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopAbs_State
+
+Description
+-----------
+Returns the current state of the point.
 ") State;
 		TopAbs_State State();
 
@@ -997,103 +1145,122 @@ TopAbs_State
 ************************************/
 class BRepClass3d_SolidClassifier : public BRepClass3d_SClassifier {
 	public:
-		/****************** BRepClass3d_SolidClassifier ******************/
-		/**** md5 signature: 8dbf40d196a6056c1a2b07197983a030 ****/
+		/****** BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier ******/
+		/****** md5 signature: 8dbf40d196a6056c1a2b07197983a030 ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidClassifier;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+empty constructor.
 ") BRepClass3d_SolidClassifier;
 		 BRepClass3d_SolidClassifier();
 
-		/****************** BRepClass3d_SolidClassifier ******************/
-		/**** md5 signature: af852678708e27ec7563b8a0e065a3cf ****/
+		/****** BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier ******/
+		/****** md5 signature: af852678708e27ec7563b8a0e065a3cf ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidClassifier;
-		%feature("autodoc", "Constructor from a shape.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor from a Shape.
 ") BRepClass3d_SolidClassifier;
 		 BRepClass3d_SolidClassifier(const TopoDS_Shape & S);
 
-		/****************** BRepClass3d_SolidClassifier ******************/
-		/**** md5 signature: 1931c86413bceb6f0e5cc65c93485f4e ****/
+		/****** BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier ******/
+		/****** md5 signature: 1931c86413bceb6f0e5cc65c93485f4e ******/
 		%feature("compactdefaultargs") BRepClass3d_SolidClassifier;
-		%feature("autodoc", "Constructor to classify the point p with the tolerance tol on the solid s.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 P: gp_Pnt
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor to classify the point P with the tolerance Tol on the solid S.
 ") BRepClass3d_SolidClassifier;
 		 BRepClass3d_SolidClassifier(const TopoDS_Shape & S, const gp_Pnt & P, const Standard_Real Tol);
 
-		/****************** Destroy ******************/
-		/**** md5 signature: 73111f72f4ab0474eb2cfbd7e4af4e1a ****/
+		/****** BRepClass3d_SolidClassifier::Destroy ******/
+		/****** md5 signature: 73111f72f4ab0474eb2cfbd7e4af4e1a ******/
 		%feature("compactdefaultargs") Destroy;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Destroy;
 		void Destroy();
 
-		/****************** Load ******************/
-		/**** md5 signature: e8cac8ea20706569fcef43af3e2c23ea ****/
+		/****** BRepClass3d_SolidClassifier::Load ******/
+		/****** md5 signature: e8cac8ea20706569fcef43af3e2c23ea ******/
 		%feature("compactdefaultargs") Load;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Load;
 		void Load(const TopoDS_Shape & S);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 8c78cd2f3c59b3c38b2c86a830e5298b ****/
+		/****** BRepClass3d_SolidClassifier::Perform ******/
+		/****** md5 signature: 8c78cd2f3c59b3c38b2c86a830e5298b ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Classify the point p with the tolerance tol on the solid s.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Classify the point P with the tolerance Tol on the solid S.
 ") Perform;
 		void Perform(const gp_Pnt & P, const Standard_Real Tol);
 
-		/****************** PerformInfinitePoint ******************/
-		/**** md5 signature: 8af7800b756e0bb955df7574967e9884 ****/
+		/****** BRepClass3d_SolidClassifier::PerformInfinitePoint ******/
+		/****** md5 signature: 8af7800b756e0bb955df7574967e9884 ******/
 		%feature("compactdefaultargs") PerformInfinitePoint;
-		%feature("autodoc", "Classify an infinite point with the tolerance tol on the solid s. useful for compute the orientation of a solid.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Tol: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Classify an infinite point with the tolerance Tol on the solid S. Useful for compute the orientation of a solid.
 ") PerformInfinitePoint;
 		void PerformInfinitePoint(const Standard_Real Tol);
 
@@ -1121,3 +1288,37 @@ class BRepClass3d_BndBoxTreeSelectorPoint:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def brepclass3d_OuterShell(*args):
+	return brepclass3d.OuterShell(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+@deprecated
+def BRepClass3d_SolidExplorer_FindAPointInTheFace(*args):
+	return BRepClass3d_SolidExplorer.FindAPointInTheFace(*args)
+
+}

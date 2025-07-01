@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define STEPFEADOCSTRING
 "StepFEA module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_stepfea.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_stepfea.html"
 %enddef
 %module (package="OCC.Core", docstring=STEPFEADOCSTRING) StepFEA
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_stepfea.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -54,6 +57,7 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_stepfea.html"
 #include<StepShape_module.hxx>
 #include<MoniTool_module.hxx>
 #include<TopoDS_module.hxx>
+#include<Resource_module.hxx>
 #include<TColgp_module.hxx>
 #include<TColStd_module.hxx>
 #include<TCollection_module.hxx>
@@ -75,14 +79,18 @@ from OCC.Core.Exception import *
 };
 
 /* public enums */
-enum StepFEA_ElementVolume {
-	StepFEA_Volume = 0,
-};
-
 enum StepFEA_CoordinateSystemType {
 	StepFEA_Cartesian = 0,
 	StepFEA_Cylindrical = 1,
 	StepFEA_Spherical = 2,
+};
+
+enum StepFEA_CurveEdge {
+	StepFEA_ElementEdge = 0,
+};
+
+enum StepFEA_ElementVolume {
+	StepFEA_Volume = 0,
 };
 
 enum StepFEA_EnumeratedDegreeOfFreedom {
@@ -95,22 +103,14 @@ enum StepFEA_EnumeratedDegreeOfFreedom {
 	StepFEA_Warp = 6,
 };
 
-enum StepFEA_CurveEdge {
-	StepFEA_ElementEdge = 0,
-};
-
 enum StepFEA_UnspecifiedValue {
 	StepFEA_Unspecified = 0,
 };
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
-
-class StepFEA_ElementVolume(IntEnum):
-	StepFEA_Volume = 0
-StepFEA_Volume = StepFEA_ElementVolume.StepFEA_Volume
 
 class StepFEA_CoordinateSystemType(IntEnum):
 	StepFEA_Cartesian = 0
@@ -119,6 +119,14 @@ class StepFEA_CoordinateSystemType(IntEnum):
 StepFEA_Cartesian = StepFEA_CoordinateSystemType.StepFEA_Cartesian
 StepFEA_Cylindrical = StepFEA_CoordinateSystemType.StepFEA_Cylindrical
 StepFEA_Spherical = StepFEA_CoordinateSystemType.StepFEA_Spherical
+
+class StepFEA_CurveEdge(IntEnum):
+	StepFEA_ElementEdge = 0
+StepFEA_ElementEdge = StepFEA_CurveEdge.StepFEA_ElementEdge
+
+class StepFEA_ElementVolume(IntEnum):
+	StepFEA_Volume = 0
+StepFEA_Volume = StepFEA_ElementVolume.StepFEA_Volume
 
 class StepFEA_EnumeratedDegreeOfFreedom(IntEnum):
 	StepFEA_XTranslation = 0
@@ -135,10 +143,6 @@ StepFEA_XRotation = StepFEA_EnumeratedDegreeOfFreedom.StepFEA_XRotation
 StepFEA_YRotation = StepFEA_EnumeratedDegreeOfFreedom.StepFEA_YRotation
 StepFEA_ZRotation = StepFEA_EnumeratedDegreeOfFreedom.StepFEA_ZRotation
 StepFEA_Warp = StepFEA_EnumeratedDegreeOfFreedom.StepFEA_Warp
-
-class StepFEA_CurveEdge(IntEnum):
-	StepFEA_ElementEdge = 0
-StepFEA_ElementEdge = StepFEA_CurveEdge.StepFEA_ElementEdge
 
 class StepFEA_UnspecifiedValue(IntEnum):
 	StepFEA_Unspecified = 0
@@ -202,229 +206,37 @@ StepFEA_Unspecified = StepFEA_UnspecifiedValue.StepFEA_Unspecified
 %wrap_handle(StepFEA_Volume3dElementRepresentation)
 %wrap_handle(StepFEA_NodeWithSolutionCoordinateSystem)
 %wrap_handle(StepFEA_NodeWithVector)
-%wrap_handle(StepFEA_HArray1OfCurveElementInterval)
 %wrap_handle(StepFEA_HArray1OfCurveElementEndOffset)
-%wrap_handle(StepFEA_HArray1OfElementRepresentation)
 %wrap_handle(StepFEA_HArray1OfCurveElementEndRelease)
+%wrap_handle(StepFEA_HArray1OfCurveElementInterval)
 %wrap_handle(StepFEA_HArray1OfDegreeOfFreedom)
+%wrap_handle(StepFEA_HArray1OfElementRepresentation)
 %wrap_handle(StepFEA_HArray1OfNodeRepresentation)
-%wrap_handle(StepFEA_HSequenceOfElementRepresentation)
-%wrap_handle(StepFEA_HSequenceOfElementGeometricRelationship)
-%wrap_handle(StepFEA_HSequenceOfNodeRepresentation)
 %wrap_handle(StepFEA_HSequenceOfCurve3dElementProperty)
+%wrap_handle(StepFEA_HSequenceOfElementGeometricRelationship)
+%wrap_handle(StepFEA_HSequenceOfElementRepresentation)
+%wrap_handle(StepFEA_HSequenceOfNodeRepresentation)
 /* end handles declaration */
 
 /* templates */
 %template(StepFEA_Array1OfCurveElementEndOffset) NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>>;
+Array1ExtendIter(opencascade::handle<StepFEA_CurveElementEndOffset>)
 
-%extend NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_Array1OfCurveElementEndRelease) NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndRelease>>;
+Array1ExtendIter(opencascade::handle<StepFEA_CurveElementEndRelease>)
 
-%extend NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndRelease>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_Array1OfCurveElementInterval) NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>>;
+Array1ExtendIter(opencascade::handle<StepFEA_CurveElementInterval>)
 
-%extend NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_Array1OfDegreeOfFreedom) NCollection_Array1<StepFEA_DegreeOfFreedom>;
+Array1ExtendIter(StepFEA_DegreeOfFreedom)
 
-%extend NCollection_Array1<StepFEA_DegreeOfFreedom> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_Array1OfElementRepresentation) NCollection_Array1<opencascade::handle<StepFEA_ElementRepresentation>>;
+Array1ExtendIter(opencascade::handle<StepFEA_ElementRepresentation>)
 
-%extend NCollection_Array1<opencascade::handle<StepFEA_ElementRepresentation>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_Array1OfNodeRepresentation) NCollection_Array1<opencascade::handle<StepFEA_NodeRepresentation>>;
+Array1ExtendIter(opencascade::handle<StepFEA_NodeRepresentation>)
 
-%extend NCollection_Array1<opencascade::handle<StepFEA_NodeRepresentation>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(StepFEA_SequenceOfCurve3dElementProperty) NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>>;
 
 %extend NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>> {
@@ -477,55 +289,62 @@ typedef NCollection_Sequence<opencascade::handle<StepFEA_NodeRepresentation>> St
 ***************************************/
 class StepFEA_Curve3dElementProperty : public Standard_Transient {
 	public:
-		/****************** StepFEA_Curve3dElementProperty ******************/
-		/**** md5 signature: 90572017ba33525e59409ffa290b93b2 ****/
+		/****** StepFEA_Curve3dElementProperty::StepFEA_Curve3dElementProperty ******/
+		/****** md5 signature: 90572017ba33525e59409ffa290b93b2 ******/
 		%feature("compactdefaultargs") StepFEA_Curve3dElementProperty;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_Curve3dElementProperty;
 		 StepFEA_Curve3dElementProperty();
 
-		/****************** Description ******************/
-		/**** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ****/
+		/****** StepFEA_Curve3dElementProperty::Description ******/
+		/****** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ******/
 		%feature("compactdefaultargs") Description;
-		%feature("autodoc", "Returns field description.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field Description.
 ") Description;
 		opencascade::handle<TCollection_HAsciiString> Description();
 
-		/****************** EndOffsets ******************/
-		/**** md5 signature: 3226dcfd4d3241f393fefbc1624456d0 ****/
+		/****** StepFEA_Curve3dElementProperty::EndOffsets ******/
+		/****** md5 signature: 3226dcfd4d3241f393fefbc1624456d0 ******/
 		%feature("compactdefaultargs") EndOffsets;
-		%feature("autodoc", "Returns field endoffsets.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfCurveElementEndOffset>
+
+Description
+-----------
+Returns field EndOffsets.
 ") EndOffsets;
 		opencascade::handle<StepFEA_HArray1OfCurveElementEndOffset> EndOffsets();
 
-		/****************** EndReleases ******************/
-		/**** md5 signature: 0f0b5fbc787e3529df4dda93f270d0ac ****/
+		/****** StepFEA_Curve3dElementProperty::EndReleases ******/
+		/****** md5 signature: 0f0b5fbc787e3529df4dda93f270d0ac ******/
 		%feature("compactdefaultargs") EndReleases;
-		%feature("autodoc", "Returns field endreleases.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfCurveElementEndRelease>
+
+Description
+-----------
+Returns field EndReleases.
 ") EndReleases;
 		opencascade::handle<StepFEA_HArray1OfCurveElementEndRelease> EndReleases();
 
-		/****************** Init ******************/
-		/**** md5 signature: e9ef3a6e6bc03c04a8b18ceb93a5b677 ****/
+		/****** StepFEA_Curve3dElementProperty::Init ******/
+		/****** md5 signature: e9ef3a6e6bc03c04a8b18ceb93a5b677 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aPropertyId: TCollection_HAsciiString
@@ -534,106 +353,129 @@ aIntervalDefinitions: StepFEA_HArray1OfCurveElementInterval
 aEndOffsets: StepFEA_HArray1OfCurveElementEndOffset
 aEndReleases: StepFEA_HArray1OfCurveElementEndRelease
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aPropertyId, const opencascade::handle<TCollection_HAsciiString> & aDescription, const opencascade::handle<StepFEA_HArray1OfCurveElementInterval> & aIntervalDefinitions, const opencascade::handle<StepFEA_HArray1OfCurveElementEndOffset> & aEndOffsets, const opencascade::handle<StepFEA_HArray1OfCurveElementEndRelease> & aEndReleases);
 
-		/****************** IntervalDefinitions ******************/
-		/**** md5 signature: 0deffb82fb53a1571eb9b90c5a87dc31 ****/
+		/****** StepFEA_Curve3dElementProperty::IntervalDefinitions ******/
+		/****** md5 signature: 0deffb82fb53a1571eb9b90c5a87dc31 ******/
 		%feature("compactdefaultargs") IntervalDefinitions;
-		%feature("autodoc", "Returns field intervaldefinitions.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfCurveElementInterval>
+
+Description
+-----------
+Returns field IntervalDefinitions.
 ") IntervalDefinitions;
 		opencascade::handle<StepFEA_HArray1OfCurveElementInterval> IntervalDefinitions();
 
-		/****************** PropertyId ******************/
-		/**** md5 signature: 4864667399554fed4d5fa9ae9070d731 ****/
+		/****** StepFEA_Curve3dElementProperty::PropertyId ******/
+		/****** md5 signature: 4864667399554fed4d5fa9ae9070d731 ******/
 		%feature("compactdefaultargs") PropertyId;
-		%feature("autodoc", "Returns field propertyid.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field PropertyId.
 ") PropertyId;
 		opencascade::handle<TCollection_HAsciiString> PropertyId();
 
-		/****************** SetDescription ******************/
-		/**** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ****/
+		/****** StepFEA_Curve3dElementProperty::SetDescription ******/
+		/****** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ******/
 		%feature("compactdefaultargs") SetDescription;
-		%feature("autodoc", "Set field description.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Description: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Description.
 ") SetDescription;
 		void SetDescription(const opencascade::handle<TCollection_HAsciiString> & Description);
 
-		/****************** SetEndOffsets ******************/
-		/**** md5 signature: 6f7bca5774121244d6f5a3b2d732b562 ****/
+		/****** StepFEA_Curve3dElementProperty::SetEndOffsets ******/
+		/****** md5 signature: 6f7bca5774121244d6f5a3b2d732b562 ******/
 		%feature("compactdefaultargs") SetEndOffsets;
-		%feature("autodoc", "Set field endoffsets.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EndOffsets: StepFEA_HArray1OfCurveElementEndOffset
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field EndOffsets.
 ") SetEndOffsets;
 		void SetEndOffsets(const opencascade::handle<StepFEA_HArray1OfCurveElementEndOffset> & EndOffsets);
 
-		/****************** SetEndReleases ******************/
-		/**** md5 signature: aea5b6ef6fca869efc35df2577210011 ****/
+		/****** StepFEA_Curve3dElementProperty::SetEndReleases ******/
+		/****** md5 signature: aea5b6ef6fca869efc35df2577210011 ******/
 		%feature("compactdefaultargs") SetEndReleases;
-		%feature("autodoc", "Set field endreleases.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EndReleases: StepFEA_HArray1OfCurveElementEndRelease
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field EndReleases.
 ") SetEndReleases;
 		void SetEndReleases(const opencascade::handle<StepFEA_HArray1OfCurveElementEndRelease> & EndReleases);
 
-		/****************** SetIntervalDefinitions ******************/
-		/**** md5 signature: b3c6e2bbc25898e60711854129223e91 ****/
+		/****** StepFEA_Curve3dElementProperty::SetIntervalDefinitions ******/
+		/****** md5 signature: b3c6e2bbc25898e60711854129223e91 ******/
 		%feature("compactdefaultargs") SetIntervalDefinitions;
-		%feature("autodoc", "Set field intervaldefinitions.
-
+		%feature("autodoc", "
 Parameters
 ----------
 IntervalDefinitions: StepFEA_HArray1OfCurveElementInterval
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field IntervalDefinitions.
 ") SetIntervalDefinitions;
 		void SetIntervalDefinitions(const opencascade::handle<StepFEA_HArray1OfCurveElementInterval> & IntervalDefinitions);
 
-		/****************** SetPropertyId ******************/
-		/**** md5 signature: 24eb0454213ca7d7517eb5464cb641c2 ****/
+		/****** StepFEA_Curve3dElementProperty::SetPropertyId ******/
+		/****** md5 signature: 24eb0454213ca7d7517eb5464cb641c2 ******/
 		%feature("compactdefaultargs") SetPropertyId;
-		%feature("autodoc", "Set field propertyid.
-
+		%feature("autodoc", "
 Parameters
 ----------
 PropertyId: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field PropertyId.
 ") SetPropertyId;
 		void SetPropertyId(const opencascade::handle<TCollection_HAsciiString> & PropertyId);
 
@@ -653,62 +495,73 @@ None
 ************************************************/
 class StepFEA_CurveElementEndCoordinateSystem : public StepData_SelectType {
 	public:
-		/****************** StepFEA_CurveElementEndCoordinateSystem ******************/
-		/**** md5 signature: f411567545fa1a1e00c34c9751406c60 ****/
+		/****** StepFEA_CurveElementEndCoordinateSystem::StepFEA_CurveElementEndCoordinateSystem ******/
+		/****** md5 signature: f411567545fa1a1e00c34c9751406c60 ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementEndCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementEndCoordinateSystem;
 		 StepFEA_CurveElementEndCoordinateSystem();
 
-		/****************** AlignedCurve3dElementCoordinateSystem ******************/
-		/**** md5 signature: 3b877d0cb4093d63d6d3db8f7641fbed ****/
+		/****** StepFEA_CurveElementEndCoordinateSystem::AlignedCurve3dElementCoordinateSystem ******/
+		/****** md5 signature: 3b877d0cb4093d63d6d3db8f7641fbed ******/
 		%feature("compactdefaultargs") AlignedCurve3dElementCoordinateSystem;
-		%feature("autodoc", "Returns value as alignedcurve3delementcoordinatesystem (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>
+
+Description
+-----------
+Returns Value as AlignedCurve3dElementCoordinateSystem (or Null if another type).
 ") AlignedCurve3dElementCoordinateSystem;
 		opencascade::handle<StepFEA_AlignedCurve3dElementCoordinateSystem> AlignedCurve3dElementCoordinateSystem();
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: f0e39118a9846e44ccd59de148215261 ****/
+		/****** StepFEA_CurveElementEndCoordinateSystem::CaseNum ******/
+		/****** md5 signature: f0e39118a9846e44ccd59de148215261 ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of curveelementendcoordinatesystem select type 1 -> feaaxis2placement3d from stepfea 2 -> alignedcurve3delementcoordinatesystem from stepfea 3 -> parametriccurve3delementcoordinatesystem from stepfea 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of CurveElementEndCoordinateSystem select type 1 -> FeaAxis2Placement3d from StepFEA 2 -> AlignedCurve3dElementCoordinateSystem from StepFEA 3 -> ParametricCurve3dElementCoordinateSystem from StepFEA 0 else.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
-		/****************** FeaAxis2Placement3d ******************/
-		/**** md5 signature: 6e20b07cd00a56527509acdf7a7dc4bc ****/
+		/****** StepFEA_CurveElementEndCoordinateSystem::FeaAxis2Placement3d ******/
+		/****** md5 signature: 6e20b07cd00a56527509acdf7a7dc4bc ******/
 		%feature("compactdefaultargs") FeaAxis2Placement3d;
-		%feature("autodoc", "Returns value as feaaxis2placement3d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaAxis2Placement3d>
+
+Description
+-----------
+Returns Value as FeaAxis2Placement3d (or Null if another type).
 ") FeaAxis2Placement3d;
 		opencascade::handle<StepFEA_FeaAxis2Placement3d> FeaAxis2Placement3d();
 
-		/****************** ParametricCurve3dElementCoordinateSystem ******************/
-		/**** md5 signature: b2d59ead99a542c0eed8783cf7fee854 ****/
+		/****** StepFEA_CurveElementEndCoordinateSystem::ParametricCurve3dElementCoordinateSystem ******/
+		/****** md5 signature: b2d59ead99a542c0eed8783cf7fee854 ******/
 		%feature("compactdefaultargs") ParametricCurve3dElementCoordinateSystem;
-		%feature("autodoc", "Returns value as parametriccurve3delementcoordinatesystem (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>
+
+Description
+-----------
+Returns Value as ParametricCurve3dElementCoordinateSystem (or Null if another type).
 ") ParametricCurve3dElementCoordinateSystem;
 		opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateSystem> ParametricCurve3dElementCoordinateSystem();
 
@@ -726,82 +579,97 @@ opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>
 **************************************/
 class StepFEA_CurveElementEndOffset : public Standard_Transient {
 	public:
-		/****************** StepFEA_CurveElementEndOffset ******************/
-		/**** md5 signature: bfceac778c37dbab0afff85dd5566a57 ****/
+		/****** StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset ******/
+		/****** md5 signature: bfceac778c37dbab0afff85dd5566a57 ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementEndOffset;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementEndOffset;
 		 StepFEA_CurveElementEndOffset();
 
-		/****************** CoordinateSystem ******************/
-		/**** md5 signature: eabfdac8b70c91f887f5db6da4c898f0 ****/
+		/****** StepFEA_CurveElementEndOffset::CoordinateSystem ******/
+		/****** md5 signature: eabfdac8b70c91f887f5db6da4c898f0 ******/
 		%feature("compactdefaultargs") CoordinateSystem;
-		%feature("autodoc", "Returns field coordinatesystem.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_CurveElementEndCoordinateSystem
+
+Description
+-----------
+Returns field CoordinateSystem.
 ") CoordinateSystem;
 		StepFEA_CurveElementEndCoordinateSystem CoordinateSystem();
 
-		/****************** Init ******************/
-		/**** md5 signature: fc25bb179247e1de1d0fe7eae3fc3264 ****/
+		/****** StepFEA_CurveElementEndOffset::Init ******/
+		/****** md5 signature: fc25bb179247e1de1d0fe7eae3fc3264 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aCoordinateSystem: StepFEA_CurveElementEndCoordinateSystem
 aOffsetVector: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const StepFEA_CurveElementEndCoordinateSystem & aCoordinateSystem, const opencascade::handle<TColStd_HArray1OfReal> & aOffsetVector);
 
-		/****************** OffsetVector ******************/
-		/**** md5 signature: 410675bd8edab75f21d0f3e8156c2d47 ****/
+		/****** StepFEA_CurveElementEndOffset::OffsetVector ******/
+		/****** md5 signature: 410675bd8edab75f21d0f3e8156c2d47 ******/
 		%feature("compactdefaultargs") OffsetVector;
-		%feature("autodoc", "Returns field offsetvector.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns field OffsetVector.
 ") OffsetVector;
 		opencascade::handle<TColStd_HArray1OfReal> OffsetVector();
 
-		/****************** SetCoordinateSystem ******************/
-		/**** md5 signature: 0721bc23fb691d653426546c5cb5ef5f ****/
+		/****** StepFEA_CurveElementEndOffset::SetCoordinateSystem ******/
+		/****** md5 signature: 0721bc23fb691d653426546c5cb5ef5f ******/
 		%feature("compactdefaultargs") SetCoordinateSystem;
-		%feature("autodoc", "Set field coordinatesystem.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CoordinateSystem: StepFEA_CurveElementEndCoordinateSystem
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CoordinateSystem.
 ") SetCoordinateSystem;
 		void SetCoordinateSystem(const StepFEA_CurveElementEndCoordinateSystem & CoordinateSystem);
 
-		/****************** SetOffsetVector ******************/
-		/**** md5 signature: 4cef76644e28345238f5db748f083351 ****/
+		/****** StepFEA_CurveElementEndOffset::SetOffsetVector ******/
+		/****** md5 signature: 4cef76644e28345238f5db748f083351 ******/
 		%feature("compactdefaultargs") SetOffsetVector;
-		%feature("autodoc", "Set field offsetvector.
-
+		%feature("autodoc", "
 Parameters
 ----------
 OffsetVector: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field OffsetVector.
 ") SetOffsetVector;
 		void SetOffsetVector(const opencascade::handle<TColStd_HArray1OfReal> & OffsetVector);
 
@@ -821,82 +689,97 @@ None
 ***************************************/
 class StepFEA_CurveElementEndRelease : public Standard_Transient {
 	public:
-		/****************** StepFEA_CurveElementEndRelease ******************/
-		/**** md5 signature: c85241dd2d3de2d7affdaac8b804978a ****/
+		/****** StepFEA_CurveElementEndRelease::StepFEA_CurveElementEndRelease ******/
+		/****** md5 signature: c85241dd2d3de2d7affdaac8b804978a ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementEndRelease;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementEndRelease;
 		 StepFEA_CurveElementEndRelease();
 
-		/****************** CoordinateSystem ******************/
-		/**** md5 signature: eabfdac8b70c91f887f5db6da4c898f0 ****/
+		/****** StepFEA_CurveElementEndRelease::CoordinateSystem ******/
+		/****** md5 signature: eabfdac8b70c91f887f5db6da4c898f0 ******/
 		%feature("compactdefaultargs") CoordinateSystem;
-		%feature("autodoc", "Returns field coordinatesystem.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_CurveElementEndCoordinateSystem
+
+Description
+-----------
+Returns field CoordinateSystem.
 ") CoordinateSystem;
 		StepFEA_CurveElementEndCoordinateSystem CoordinateSystem();
 
-		/****************** Init ******************/
-		/**** md5 signature: fd61e127fca190868a6abd9e8d9bb2a2 ****/
+		/****** StepFEA_CurveElementEndRelease::Init ******/
+		/****** md5 signature: fd61e127fca190868a6abd9e8d9bb2a2 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aCoordinateSystem: StepFEA_CurveElementEndCoordinateSystem
 aReleases: StepElement_HArray1OfCurveElementEndReleasePacket
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const StepFEA_CurveElementEndCoordinateSystem & aCoordinateSystem, const opencascade::handle<StepElement_HArray1OfCurveElementEndReleasePacket> & aReleases);
 
-		/****************** Releases ******************/
-		/**** md5 signature: a9a60f66fcbdd62028fb36d6af2c5a73 ****/
+		/****** StepFEA_CurveElementEndRelease::Releases ******/
+		/****** md5 signature: a9a60f66fcbdd62028fb36d6af2c5a73 ******/
 		%feature("compactdefaultargs") Releases;
-		%feature("autodoc", "Returns field releases.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_HArray1OfCurveElementEndReleasePacket>
+
+Description
+-----------
+Returns field Releases.
 ") Releases;
 		opencascade::handle<StepElement_HArray1OfCurveElementEndReleasePacket> Releases();
 
-		/****************** SetCoordinateSystem ******************/
-		/**** md5 signature: 0721bc23fb691d653426546c5cb5ef5f ****/
+		/****** StepFEA_CurveElementEndRelease::SetCoordinateSystem ******/
+		/****** md5 signature: 0721bc23fb691d653426546c5cb5ef5f ******/
 		%feature("compactdefaultargs") SetCoordinateSystem;
-		%feature("autodoc", "Set field coordinatesystem.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CoordinateSystem: StepFEA_CurveElementEndCoordinateSystem
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CoordinateSystem.
 ") SetCoordinateSystem;
 		void SetCoordinateSystem(const StepFEA_CurveElementEndCoordinateSystem & CoordinateSystem);
 
-		/****************** SetReleases ******************/
-		/**** md5 signature: eb22d52d963d0d2763f4ce0f4deae0c2 ****/
+		/****** StepFEA_CurveElementEndRelease::SetReleases ******/
+		/****** md5 signature: eb22d52d963d0d2763f4ce0f4deae0c2 ******/
 		%feature("compactdefaultargs") SetReleases;
-		%feature("autodoc", "Set field releases.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Releases: StepElement_HArray1OfCurveElementEndReleasePacket
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Releases.
 ") SetReleases;
 		void SetReleases(const opencascade::handle<StepElement_HArray1OfCurveElementEndReleasePacket> & Releases);
 
@@ -916,82 +799,97 @@ None
 *************************************/
 class StepFEA_CurveElementInterval : public Standard_Transient {
 	public:
-		/****************** StepFEA_CurveElementInterval ******************/
-		/**** md5 signature: 9247b8f07e076d3c53faa7d53284adac ****/
+		/****** StepFEA_CurveElementInterval::StepFEA_CurveElementInterval ******/
+		/****** md5 signature: 9247b8f07e076d3c53faa7d53284adac ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementInterval;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementInterval;
 		 StepFEA_CurveElementInterval();
 
-		/****************** EuAngles ******************/
-		/**** md5 signature: fa684295eeb39327448fea81820a890f ****/
+		/****** StepFEA_CurveElementInterval::EuAngles ******/
+		/****** md5 signature: fa684295eeb39327448fea81820a890f ******/
 		%feature("compactdefaultargs") EuAngles;
-		%feature("autodoc", "Returns field euangles.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepBasic_EulerAngles>
+
+Description
+-----------
+Returns field EuAngles.
 ") EuAngles;
 		opencascade::handle<StepBasic_EulerAngles> EuAngles();
 
-		/****************** FinishPosition ******************/
-		/**** md5 signature: c0922e857ca72dd22e5dbadee98add80 ****/
+		/****** StepFEA_CurveElementInterval::FinishPosition ******/
+		/****** md5 signature: c0922e857ca72dd22e5dbadee98add80 ******/
 		%feature("compactdefaultargs") FinishPosition;
-		%feature("autodoc", "Returns field finishposition.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_CurveElementLocation>
+
+Description
+-----------
+Returns field FinishPosition.
 ") FinishPosition;
 		opencascade::handle<StepFEA_CurveElementLocation> FinishPosition();
 
-		/****************** Init ******************/
-		/**** md5 signature: 7273c27d192818e17c41f1930d56be24 ****/
+		/****** StepFEA_CurveElementInterval::Init ******/
+		/****** md5 signature: 7273c27d192818e17c41f1930d56be24 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aFinishPosition: StepFEA_CurveElementLocation
 aEuAngles: StepBasic_EulerAngles
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepFEA_CurveElementLocation> & aFinishPosition, const opencascade::handle<StepBasic_EulerAngles> & aEuAngles);
 
-		/****************** SetEuAngles ******************/
-		/**** md5 signature: 7f4299e2b79c3300e338ed0a55dd6a58 ****/
+		/****** StepFEA_CurveElementInterval::SetEuAngles ******/
+		/****** md5 signature: 7f4299e2b79c3300e338ed0a55dd6a58 ******/
 		%feature("compactdefaultargs") SetEuAngles;
-		%feature("autodoc", "Set field euangles.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EuAngles: StepBasic_EulerAngles
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field EuAngles.
 ") SetEuAngles;
 		void SetEuAngles(const opencascade::handle<StepBasic_EulerAngles> & EuAngles);
 
-		/****************** SetFinishPosition ******************/
-		/**** md5 signature: 83deefdb74f149b8563f67b214a2c5fb ****/
+		/****** StepFEA_CurveElementInterval::SetFinishPosition ******/
+		/****** md5 signature: 83deefdb74f149b8563f67b214a2c5fb ******/
 		%feature("compactdefaultargs") SetFinishPosition;
-		%feature("autodoc", "Set field finishposition.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FinishPosition: StepFEA_CurveElementLocation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FinishPosition.
 ") SetFinishPosition;
 		void SetFinishPosition(const opencascade::handle<StepFEA_CurveElementLocation> & FinishPosition);
 
@@ -1011,55 +909,65 @@ None
 *************************************/
 class StepFEA_CurveElementLocation : public Standard_Transient {
 	public:
-		/****************** StepFEA_CurveElementLocation ******************/
-		/**** md5 signature: c49f93c26a483bef8fb0094ba335fdea ****/
+		/****** StepFEA_CurveElementLocation::StepFEA_CurveElementLocation ******/
+		/****** md5 signature: c49f93c26a483bef8fb0094ba335fdea ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementLocation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementLocation;
 		 StepFEA_CurveElementLocation();
 
-		/****************** Coordinate ******************/
-		/**** md5 signature: 3d842e9fa8cb18ac85b202067dd6972e ****/
+		/****** StepFEA_CurveElementLocation::Coordinate ******/
+		/****** md5 signature: 3d842e9fa8cb18ac85b202067dd6972e ******/
 		%feature("compactdefaultargs") Coordinate;
-		%feature("autodoc", "Returns field coordinate.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaParametricPoint>
+
+Description
+-----------
+Returns field Coordinate.
 ") Coordinate;
 		opencascade::handle<StepFEA_FeaParametricPoint> Coordinate();
 
-		/****************** Init ******************/
-		/**** md5 signature: 26efa3880387d227aeedf9f761658ab2 ****/
+		/****** StepFEA_CurveElementLocation::Init ******/
+		/****** md5 signature: 26efa3880387d227aeedf9f761658ab2 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aCoordinate: StepFEA_FeaParametricPoint
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepFEA_FeaParametricPoint> & aCoordinate);
 
-		/****************** SetCoordinate ******************/
-		/**** md5 signature: ba17f772d36fd3d356b798b33f02c2cb ****/
+		/****** StepFEA_CurveElementLocation::SetCoordinate ******/
+		/****** md5 signature: ba17f772d36fd3d356b798b33f02c2cb ******/
 		%feature("compactdefaultargs") SetCoordinate;
-		%feature("autodoc", "Set field coordinate.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Coordinate: StepFEA_FeaParametricPoint
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Coordinate.
 ") SetCoordinate;
 		void SetCoordinate(const opencascade::handle<StepFEA_FeaParametricPoint> & Coordinate);
 
@@ -1079,107 +987,127 @@ None
 ********************************/
 class StepFEA_DegreeOfFreedom : public StepData_SelectType {
 	public:
-		/****************** StepFEA_DegreeOfFreedom ******************/
-		/**** md5 signature: ddfea4e57eb0a530ebf6e0a179a88394 ****/
+		/****** StepFEA_DegreeOfFreedom::StepFEA_DegreeOfFreedom ******/
+		/****** md5 signature: ddfea4e57eb0a530ebf6e0a179a88394 ******/
 		%feature("compactdefaultargs") StepFEA_DegreeOfFreedom;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_DegreeOfFreedom;
 		 StepFEA_DegreeOfFreedom();
 
-		/****************** ApplicationDefinedDegreeOfFreedom ******************/
-		/**** md5 signature: 0fd0c542a18b9422fd76d5c703619d4c ****/
+		/****** StepFEA_DegreeOfFreedom::ApplicationDefinedDegreeOfFreedom ******/
+		/****** md5 signature: 0fd0c542a18b9422fd76d5c703619d4c ******/
 		%feature("compactdefaultargs") ApplicationDefinedDegreeOfFreedom;
-		%feature("autodoc", "Returns value as applicationdefineddegreeoffreedom (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns Value as ApplicationDefinedDegreeOfFreedom (or Null if another type).
 ") ApplicationDefinedDegreeOfFreedom;
 		opencascade::handle<TCollection_HAsciiString> ApplicationDefinedDegreeOfFreedom();
 
-		/****************** CaseMem ******************/
-		/**** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ****/
+		/****** StepFEA_DegreeOfFreedom::CaseMem ******/
+		/****** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ******/
 		%feature("compactdefaultargs") CaseMem;
-		%feature("autodoc", "Recognizes a items of select member curveelementfreedommember 1 -> enumeratedcurveelementfreedom 2 -> applicationdefineddegreeoffreedom 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: StepData_SelectMember
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a items of select member CurveElementFreedomMember 1 -> EnumeratedCurveElementFreedom 2 -> ApplicationDefinedDegreeOfFreedom 0 else.
 ") CaseMem;
 		virtual Standard_Integer CaseMem(const opencascade::handle<StepData_SelectMember> & ent);
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ****/
+		/****** StepFEA_DegreeOfFreedom::CaseNum ******/
+		/****** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of curveelementfreedom select type return 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of CurveElementFreedom select type return 0.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
-		/****************** EnumeratedDegreeOfFreedom ******************/
-		/**** md5 signature: dd1de6166d7f0663deb4fc2ceda36c56 ****/
+		/****** StepFEA_DegreeOfFreedom::EnumeratedDegreeOfFreedom ******/
+		/****** md5 signature: dd1de6166d7f0663deb4fc2ceda36c56 ******/
 		%feature("compactdefaultargs") EnumeratedDegreeOfFreedom;
-		%feature("autodoc", "Returns value as enumerateddegreeoffreedom (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_EnumeratedDegreeOfFreedom
+
+Description
+-----------
+Returns Value as EnumeratedDegreeOfFreedom (or Null if another type).
 ") EnumeratedDegreeOfFreedom;
 		StepFEA_EnumeratedDegreeOfFreedom EnumeratedDegreeOfFreedom();
 
-		/****************** NewMember ******************/
-		/**** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ****/
+		/****** StepFEA_DegreeOfFreedom::NewMember ******/
+		/****** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ******/
 		%feature("compactdefaultargs") NewMember;
-		%feature("autodoc", "Returns a new select member the type curveelementfreedommember.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepData_SelectMember>
+
+Description
+-----------
+Returns a new select member the type CurveElementFreedomMember.
 ") NewMember;
 		virtual opencascade::handle<StepData_SelectMember> NewMember();
 
-		/****************** SetApplicationDefinedDegreeOfFreedom ******************/
-		/**** md5 signature: 5befbf4bc7a536042078023a85fb19e3 ****/
+		/****** StepFEA_DegreeOfFreedom::SetApplicationDefinedDegreeOfFreedom ******/
+		/****** md5 signature: 5befbf4bc7a536042078023a85fb19e3 ******/
 		%feature("compactdefaultargs") SetApplicationDefinedDegreeOfFreedom;
-		%feature("autodoc", "Set value for applicationdefineddegreeoffreedom.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aVal: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set Value for ApplicationDefinedDegreeOfFreedom.
 ") SetApplicationDefinedDegreeOfFreedom;
 		void SetApplicationDefinedDegreeOfFreedom(const opencascade::handle<TCollection_HAsciiString> & aVal);
 
-		/****************** SetEnumeratedDegreeOfFreedom ******************/
-		/**** md5 signature: 24d2ac73d6e41b399748bc004588f0a5 ****/
+		/****** StepFEA_DegreeOfFreedom::SetEnumeratedDegreeOfFreedom ******/
+		/****** md5 signature: 24d2ac73d6e41b399748bc004588f0a5 ******/
 		%feature("compactdefaultargs") SetEnumeratedDegreeOfFreedom;
-		%feature("autodoc", "Returns value as enumerateddegreeoffreedom (or null if another type).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aVal: StepFEA_EnumeratedDegreeOfFreedom
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns Value as EnumeratedDegreeOfFreedom (or Null if another type).
 ") SetEnumeratedDegreeOfFreedom;
 		void SetEnumeratedDegreeOfFreedom(const StepFEA_EnumeratedDegreeOfFreedom aVal);
 
@@ -1197,68 +1125,80 @@ None
 **************************************/
 class StepFEA_DegreeOfFreedomMember : public StepData_SelectNamed {
 	public:
-		/****************** StepFEA_DegreeOfFreedomMember ******************/
-		/**** md5 signature: 2c62083a2b5a0b9bc8c089a6dcf11600 ****/
+		/****** StepFEA_DegreeOfFreedomMember::StepFEA_DegreeOfFreedomMember ******/
+		/****** md5 signature: 2c62083a2b5a0b9bc8c089a6dcf11600 ******/
 		%feature("compactdefaultargs") StepFEA_DegreeOfFreedomMember;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_DegreeOfFreedomMember;
 		 StepFEA_DegreeOfFreedomMember();
 
-		/****************** HasName ******************/
-		/**** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ****/
+		/****** StepFEA_DegreeOfFreedomMember::HasName ******/
+		/****** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ******/
 		%feature("compactdefaultargs") HasName;
-		%feature("autodoc", "Returns true if has name.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if has name.
 ") HasName;
 		virtual Standard_Boolean HasName();
 
-		/****************** Matches ******************/
-		/**** md5 signature: 926675035b73f94f6faae7b81ca23022 ****/
+		/****** StepFEA_DegreeOfFreedomMember::Matches ******/
+		/****** md5 signature: 926675035b73f94f6faae7b81ca23022 ******/
 		%feature("compactdefaultargs") Matches;
-		%feature("autodoc", "Tells if the name of a selectmember matches a given one;.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Tells if the name of a SelectMember matches a given one;.
 ") Matches;
-		virtual Standard_Boolean Matches(const char * name);
+		virtual Standard_Boolean Matches(Standard_CString name);
 
-		/****************** Name ******************/
-		/**** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ****/
+		/****** StepFEA_DegreeOfFreedomMember::Name ******/
+		/****** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ******/
 		%feature("compactdefaultargs") Name;
-		%feature("autodoc", "Returns set name.
-
-Returns
+		%feature("autodoc", "Return
 -------
-char *
+str
+
+Description
+-----------
+Returns set name.
 ") Name;
-		virtual const char * Name();
+		virtual Standard_CString Name();
 
-		/****************** SetName ******************/
-		/**** md5 signature: cb088c8a5caf9447945830483c3112e7 ****/
+		/****** StepFEA_DegreeOfFreedomMember::SetName ******/
+		/****** md5 signature: cb088c8a5caf9447945830483c3112e7 ******/
 		%feature("compactdefaultargs") SetName;
-		%feature("autodoc", "Set name.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Set name.
 ") SetName;
-		virtual Standard_Boolean SetName(const char * name);
+		virtual Standard_Boolean SetName(Standard_CString name);
 
 };
 
@@ -1276,109 +1216,129 @@ bool
 *********************************************/
 class StepFEA_ElementGeometricRelationship : public Standard_Transient {
 	public:
-		/****************** StepFEA_ElementGeometricRelationship ******************/
-		/**** md5 signature: 04560cd1acbf35e7f9d1558af13571e5 ****/
+		/****** StepFEA_ElementGeometricRelationship::StepFEA_ElementGeometricRelationship ******/
+		/****** md5 signature: 04560cd1acbf35e7f9d1558af13571e5 ******/
 		%feature("compactdefaultargs") StepFEA_ElementGeometricRelationship;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ElementGeometricRelationship;
 		 StepFEA_ElementGeometricRelationship();
 
-		/****************** Aspect ******************/
-		/**** md5 signature: 7024ff668165525f5bf2b29258ab458f ****/
+		/****** StepFEA_ElementGeometricRelationship::Aspect ******/
+		/****** md5 signature: 7024ff668165525f5bf2b29258ab458f ******/
 		%feature("compactdefaultargs") Aspect;
-		%feature("autodoc", "Returns field aspect.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepElement_ElementAspect
+
+Description
+-----------
+Returns field Aspect.
 ") Aspect;
 		StepElement_ElementAspect Aspect();
 
-		/****************** ElementRef ******************/
-		/**** md5 signature: 5164b105a6fe0095bbafb9dea07ea22a ****/
+		/****** StepFEA_ElementGeometricRelationship::ElementRef ******/
+		/****** md5 signature: 5164b105a6fe0095bbafb9dea07ea22a ******/
 		%feature("compactdefaultargs") ElementRef;
-		%feature("autodoc", "Returns field elementref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_ElementOrElementGroup
+
+Description
+-----------
+Returns field ElementRef.
 ") ElementRef;
 		StepFEA_ElementOrElementGroup ElementRef();
 
-		/****************** Init ******************/
-		/**** md5 signature: 66dc0cb38bcc7a8ee38565c7cbd5a94b ****/
+		/****** StepFEA_ElementGeometricRelationship::Init ******/
+		/****** md5 signature: 66dc0cb38bcc7a8ee38565c7cbd5a94b ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aElementRef: StepFEA_ElementOrElementGroup
 aItem: StepElement_AnalysisItemWithinRepresentation
 aAspect: StepElement_ElementAspect
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const StepFEA_ElementOrElementGroup & aElementRef, const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & aItem, const StepElement_ElementAspect & aAspect);
 
-		/****************** Item ******************/
-		/**** md5 signature: b253a19c4ee018e419eb42364512210b ****/
+		/****** StepFEA_ElementGeometricRelationship::Item ******/
+		/****** md5 signature: b253a19c4ee018e419eb42364512210b ******/
 		%feature("compactdefaultargs") Item;
-		%feature("autodoc", "Returns field item.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_AnalysisItemWithinRepresentation>
+
+Description
+-----------
+Returns field Item.
 ") Item;
 		opencascade::handle<StepElement_AnalysisItemWithinRepresentation> Item();
 
-		/****************** SetAspect ******************/
-		/**** md5 signature: d8356ade2de44db1b3d893df957261ce ****/
+		/****** StepFEA_ElementGeometricRelationship::SetAspect ******/
+		/****** md5 signature: d8356ade2de44db1b3d893df957261ce ******/
 		%feature("compactdefaultargs") SetAspect;
-		%feature("autodoc", "Set field aspect.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Aspect: StepElement_ElementAspect
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Aspect.
 ") SetAspect;
 		void SetAspect(const StepElement_ElementAspect & Aspect);
 
-		/****************** SetElementRef ******************/
-		/**** md5 signature: e646e17804fbc19b4c87fe234d1f9954 ****/
+		/****** StepFEA_ElementGeometricRelationship::SetElementRef ******/
+		/****** md5 signature: e646e17804fbc19b4c87fe234d1f9954 ******/
 		%feature("compactdefaultargs") SetElementRef;
-		%feature("autodoc", "Set field elementref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ElementRef: StepFEA_ElementOrElementGroup
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ElementRef.
 ") SetElementRef;
 		void SetElementRef(const StepFEA_ElementOrElementGroup & ElementRef);
 
-		/****************** SetItem ******************/
-		/**** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ****/
+		/****** StepFEA_ElementGeometricRelationship::SetItem ******/
+		/****** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ******/
 		%feature("compactdefaultargs") SetItem;
-		%feature("autodoc", "Set field item.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Item: StepElement_AnalysisItemWithinRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Item.
 ") SetItem;
 		void SetItem(const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & Item);
 
@@ -1398,51 +1358,60 @@ None
 **************************************/
 class StepFEA_ElementOrElementGroup : public StepData_SelectType {
 	public:
-		/****************** StepFEA_ElementOrElementGroup ******************/
-		/**** md5 signature: 9586e24c3c7fa84ea805f2dbaf6f9966 ****/
+		/****** StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup ******/
+		/****** md5 signature: 9586e24c3c7fa84ea805f2dbaf6f9966 ******/
 		%feature("compactdefaultargs") StepFEA_ElementOrElementGroup;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ElementOrElementGroup;
 		 StepFEA_ElementOrElementGroup();
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: f0e39118a9846e44ccd59de148215261 ****/
+		/****** StepFEA_ElementOrElementGroup::CaseNum ******/
+		/****** md5 signature: f0e39118a9846e44ccd59de148215261 ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of elementorelementgroup select type 1 -> elementrepresentation from stepfea 2 -> elementgroup from stepfea 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of ElementOrElementGroup select type 1 -> ElementRepresentation from StepFEA 2 -> ElementGroup from StepFEA 0 else.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
-		/****************** ElementGroup ******************/
-		/**** md5 signature: 6b09d9597476edf1d012ade9e92323c7 ****/
+		/****** StepFEA_ElementOrElementGroup::ElementGroup ******/
+		/****** md5 signature: 6b09d9597476edf1d012ade9e92323c7 ******/
 		%feature("compactdefaultargs") ElementGroup;
-		%feature("autodoc", "Returns value as elementgroup (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_ElementGroup>
+
+Description
+-----------
+Returns Value as ElementGroup (or Null if another type).
 ") ElementGroup;
 		opencascade::handle<StepFEA_ElementGroup> ElementGroup();
 
-		/****************** ElementRepresentation ******************/
-		/**** md5 signature: 0da58ba3ca7299c0f04764fbf627470b ****/
+		/****** StepFEA_ElementOrElementGroup::ElementRepresentation ******/
+		/****** md5 signature: 0da58ba3ca7299c0f04764fbf627470b ******/
 		%feature("compactdefaultargs") ElementRepresentation;
-		%feature("autodoc", "Returns value as elementrepresentation (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_ElementRepresentation>
+
+Description
+-----------
+Returns Value as ElementRepresentation (or Null if another type).
 ") ElementRepresentation;
 		opencascade::handle<StepFEA_ElementRepresentation> ElementRepresentation();
 
@@ -1460,22 +1429,23 @@ opencascade::handle<StepFEA_ElementRepresentation>
 **************************************/
 class StepFEA_ElementRepresentation : public StepRepr_Representation {
 	public:
-		/****************** StepFEA_ElementRepresentation ******************/
-		/**** md5 signature: 968b9c82f95c1712f015725197cefbdf ****/
+		/****** StepFEA_ElementRepresentation::StepFEA_ElementRepresentation ******/
+		/****** md5 signature: 968b9c82f95c1712f015725197cefbdf ******/
 		%feature("compactdefaultargs") StepFEA_ElementRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ElementRepresentation;
 		 StepFEA_ElementRepresentation();
 
-		/****************** Init ******************/
-		/**** md5 signature: 9765af58765f7a43fd4b2bc06c74d6b8 ****/
+		/****** StepFEA_ElementRepresentation::Init ******/
+		/****** md5 signature: 9765af58765f7a43fd4b2bc06c74d6b8 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -1483,35 +1453,44 @@ aRepresentation_Items: StepRepr_HArray1OfRepresentationItem
 aRepresentation_ContextOfItems: StepRepr_RepresentationContext
 aNodeList: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aNodeList);
 
-		/****************** NodeList ******************/
-		/**** md5 signature: aebc33584d3f41632eee431f0d8ce136 ****/
+		/****** StepFEA_ElementRepresentation::NodeList ******/
+		/****** md5 signature: aebc33584d3f41632eee431f0d8ce136 ******/
 		%feature("compactdefaultargs") NodeList;
-		%feature("autodoc", "Returns field nodelist.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfNodeRepresentation>
+
+Description
+-----------
+Returns field NodeList.
 ") NodeList;
 		opencascade::handle<StepFEA_HArray1OfNodeRepresentation> NodeList();
 
-		/****************** SetNodeList ******************/
-		/**** md5 signature: b31399b855585cbb87b624ee9e33c1ca ****/
+		/****** StepFEA_ElementRepresentation::SetNodeList ******/
+		/****** md5 signature: b31399b855585cbb87b624ee9e33c1ca ******/
 		%feature("compactdefaultargs") SetNodeList;
-		%feature("autodoc", "Set field nodelist.
-
+		%feature("autodoc", "
 Parameters
 ----------
 NodeList: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field NodeList.
 ") SetNodeList;
 		void SetNodeList(const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & NodeList);
 
@@ -1531,33 +1510,36 @@ None
 ************************************/
 class StepFEA_FeaAxis2Placement3d : public StepGeom_Axis2Placement3d {
 	public:
-		/****************** StepFEA_FeaAxis2Placement3d ******************/
-		/**** md5 signature: 4da29ea3c5dc0e6e993b4efc94818cee ****/
+		/****** StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d ******/
+		/****** md5 signature: 4da29ea3c5dc0e6e993b4efc94818cee ******/
 		%feature("compactdefaultargs") StepFEA_FeaAxis2Placement3d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaAxis2Placement3d;
 		 StepFEA_FeaAxis2Placement3d();
 
-		/****************** Description ******************/
-		/**** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ****/
+		/****** StepFEA_FeaAxis2Placement3d::Description ******/
+		/****** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ******/
 		%feature("compactdefaultargs") Description;
-		%feature("autodoc", "Returns field description.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field Description.
 ") Description;
 		opencascade::handle<TCollection_HAsciiString> Description();
 
-		/****************** Init ******************/
-		/**** md5 signature: f36188d95da622532853fd8f84ce5d3f ****/
+		/****** StepFEA_FeaAxis2Placement3d::Init ******/
+		/****** md5 signature: f36188d95da622532853fd8f84ce5d3f ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
@@ -1569,50 +1551,62 @@ aAxis2Placement3d_RefDirection: StepGeom_Direction
 aSystemType: StepFEA_CoordinateSystemType
 aDescription: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepGeom_CartesianPoint> & aPlacement_Location, const Standard_Boolean hasAxis2Placement3d_Axis, const opencascade::handle<StepGeom_Direction> & aAxis2Placement3d_Axis, const Standard_Boolean hasAxis2Placement3d_RefDirection, const opencascade::handle<StepGeom_Direction> & aAxis2Placement3d_RefDirection, const StepFEA_CoordinateSystemType aSystemType, const opencascade::handle<TCollection_HAsciiString> & aDescription);
 
-		/****************** SetDescription ******************/
-		/**** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ****/
+		/****** StepFEA_FeaAxis2Placement3d::SetDescription ******/
+		/****** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ******/
 		%feature("compactdefaultargs") SetDescription;
-		%feature("autodoc", "Set field description.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Description: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Description.
 ") SetDescription;
 		void SetDescription(const opencascade::handle<TCollection_HAsciiString> & Description);
 
-		/****************** SetSystemType ******************/
-		/**** md5 signature: ab5d460236ff8ff8ce4d4bfaa34bd105 ****/
+		/****** StepFEA_FeaAxis2Placement3d::SetSystemType ******/
+		/****** md5 signature: ab5d460236ff8ff8ce4d4bfaa34bd105 ******/
 		%feature("compactdefaultargs") SetSystemType;
-		%feature("autodoc", "Set field systemtype.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SystemType: StepFEA_CoordinateSystemType
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field SystemType.
 ") SetSystemType;
 		void SetSystemType(const StepFEA_CoordinateSystemType SystemType);
 
-		/****************** SystemType ******************/
-		/**** md5 signature: a0fdd372be70f95f1f45abb888b01173 ****/
+		/****** StepFEA_FeaAxis2Placement3d::SystemType ******/
+		/****** md5 signature: a0fdd372be70f95f1f45abb888b01173 ******/
 		%feature("compactdefaultargs") SystemType;
-		%feature("autodoc", "Returns field systemtype.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_CoordinateSystemType
+
+Description
+-----------
+Returns field SystemType.
 ") SystemType;
 		StepFEA_CoordinateSystemType SystemType();
 
@@ -1632,82 +1626,97 @@ StepFEA_CoordinateSystemType
 *****************************************************/
 class StepFEA_FeaCurveSectionGeometricRelationship : public Standard_Transient {
 	public:
-		/****************** StepFEA_FeaCurveSectionGeometricRelationship ******************/
-		/**** md5 signature: 10a8ee96abcea0b4b2b164b98a1a3d69 ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship ******/
+		/****** md5 signature: 10a8ee96abcea0b4b2b164b98a1a3d69 ******/
 		%feature("compactdefaultargs") StepFEA_FeaCurveSectionGeometricRelationship;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaCurveSectionGeometricRelationship;
 		 StepFEA_FeaCurveSectionGeometricRelationship();
 
-		/****************** Init ******************/
-		/**** md5 signature: 0d05ce43469ca55d0db041f743c9d0dc ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::Init ******/
+		/****** md5 signature: 0d05ce43469ca55d0db041f743c9d0dc ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aSectionRef: StepElement_CurveElementSectionDefinition
 aItem: StepElement_AnalysisItemWithinRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepElement_CurveElementSectionDefinition> & aSectionRef, const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & aItem);
 
-		/****************** Item ******************/
-		/**** md5 signature: b253a19c4ee018e419eb42364512210b ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::Item ******/
+		/****** md5 signature: b253a19c4ee018e419eb42364512210b ******/
 		%feature("compactdefaultargs") Item;
-		%feature("autodoc", "Returns field item.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_AnalysisItemWithinRepresentation>
+
+Description
+-----------
+Returns field Item.
 ") Item;
 		opencascade::handle<StepElement_AnalysisItemWithinRepresentation> Item();
 
-		/****************** SectionRef ******************/
-		/**** md5 signature: bbe8069937198086ce8172afaf3e6095 ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::SectionRef ******/
+		/****** md5 signature: bbe8069937198086ce8172afaf3e6095 ******/
 		%feature("compactdefaultargs") SectionRef;
-		%feature("autodoc", "Returns field sectionref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_CurveElementSectionDefinition>
+
+Description
+-----------
+Returns field SectionRef.
 ") SectionRef;
 		opencascade::handle<StepElement_CurveElementSectionDefinition> SectionRef();
 
-		/****************** SetItem ******************/
-		/**** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::SetItem ******/
+		/****** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ******/
 		%feature("compactdefaultargs") SetItem;
-		%feature("autodoc", "Set field item.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Item: StepElement_AnalysisItemWithinRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Item.
 ") SetItem;
 		void SetItem(const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & Item);
 
-		/****************** SetSectionRef ******************/
-		/**** md5 signature: a6c88937032a57d271df2b846104bb1f ****/
+		/****** StepFEA_FeaCurveSectionGeometricRelationship::SetSectionRef ******/
+		/****** md5 signature: a6c88937032a57d271df2b846104bb1f ******/
 		%feature("compactdefaultargs") SetSectionRef;
-		%feature("autodoc", "Set field sectionref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SectionRef: StepElement_CurveElementSectionDefinition
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field SectionRef.
 ") SetSectionRef;
 		void SetSectionRef(const opencascade::handle<StepElement_CurveElementSectionDefinition> & SectionRef);
 
@@ -1727,57 +1736,67 @@ None
 *************************/
 class StepFEA_FeaGroup : public StepBasic_Group {
 	public:
-		/****************** StepFEA_FeaGroup ******************/
-		/**** md5 signature: 1804a01d9fa95670d2109330b83097ca ****/
+		/****** StepFEA_FeaGroup::StepFEA_FeaGroup ******/
+		/****** md5 signature: 1804a01d9fa95670d2109330b83097ca ******/
 		%feature("compactdefaultargs") StepFEA_FeaGroup;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaGroup;
 		 StepFEA_FeaGroup();
 
-		/****************** Init ******************/
-		/**** md5 signature: 0102004c939eb79fc6c9d99d54b286df ****/
+		/****** StepFEA_FeaGroup::Init ******/
+		/****** md5 signature: 0102004c939eb79fc6c9d99d54b286df ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aGroup_Name: TCollection_HAsciiString
 aGroup_Description: TCollection_HAsciiString
 aModelRef: StepFEA_FeaModel
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aGroup_Name, const opencascade::handle<TCollection_HAsciiString> & aGroup_Description, const opencascade::handle<StepFEA_FeaModel> & aModelRef);
 
-		/****************** ModelRef ******************/
-		/**** md5 signature: 7c456eca97f01da8f37fdaf738a476d8 ****/
+		/****** StepFEA_FeaGroup::ModelRef ******/
+		/****** md5 signature: 7c456eca97f01da8f37fdaf738a476d8 ******/
 		%feature("compactdefaultargs") ModelRef;
-		%feature("autodoc", "Returns field modelref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaModel>
+
+Description
+-----------
+Returns field ModelRef.
 ") ModelRef;
 		opencascade::handle<StepFEA_FeaModel> ModelRef();
 
-		/****************** SetModelRef ******************/
-		/**** md5 signature: a4b9fcc357b0e079d1e7cb8ecfdce31c ****/
+		/****** StepFEA_FeaGroup::SetModelRef ******/
+		/****** md5 signature: a4b9fcc357b0e079d1e7cb8ecfdce31c ******/
 		%feature("compactdefaultargs") SetModelRef;
-		%feature("autodoc", "Set field modelref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ModelRef: StepFEA_FeaModel
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ModelRef.
 ") SetModelRef;
 		void SetModelRef(const opencascade::handle<StepFEA_FeaModel> & ModelRef);
 
@@ -1797,14 +1816,16 @@ None
 **************************************************/
 class StepFEA_FeaMaterialPropertyRepresentation : public StepRepr_MaterialPropertyRepresentation {
 	public:
-		/****************** StepFEA_FeaMaterialPropertyRepresentation ******************/
-		/**** md5 signature: c7c4abb70bce472c98c88e9a59086d05 ****/
+		/****** StepFEA_FeaMaterialPropertyRepresentation::StepFEA_FeaMaterialPropertyRepresentation ******/
+		/****** md5 signature: c7c4abb70bce472c98c88e9a59086d05 ******/
 		%feature("compactdefaultargs") StepFEA_FeaMaterialPropertyRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaMaterialPropertyRepresentation;
 		 StepFEA_FeaMaterialPropertyRepresentation();
 
@@ -1824,14 +1845,16 @@ None
 ******************************************************/
 class StepFEA_FeaMaterialPropertyRepresentationItem : public StepRepr_RepresentationItem {
 	public:
-		/****************** StepFEA_FeaMaterialPropertyRepresentationItem ******************/
-		/**** md5 signature: 961a7f1cc1027091c6f75301f32965c7 ****/
+		/****** StepFEA_FeaMaterialPropertyRepresentationItem::StepFEA_FeaMaterialPropertyRepresentationItem ******/
+		/****** md5 signature: 961a7f1cc1027091c6f75301f32965c7 ******/
 		%feature("compactdefaultargs") StepFEA_FeaMaterialPropertyRepresentationItem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaMaterialPropertyRepresentationItem;
 		 StepFEA_FeaMaterialPropertyRepresentationItem();
 
@@ -1851,55 +1874,62 @@ None
 *************************/
 class StepFEA_FeaModel : public StepRepr_Representation {
 	public:
-		/****************** StepFEA_FeaModel ******************/
-		/**** md5 signature: 1bd2e604db4e7c7634a856459f379c08 ****/
+		/****** StepFEA_FeaModel::StepFEA_FeaModel ******/
+		/****** md5 signature: 1bd2e604db4e7c7634a856459f379c08 ******/
 		%feature("compactdefaultargs") StepFEA_FeaModel;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaModel;
 		 StepFEA_FeaModel();
 
-		/****************** AnalysisType ******************/
-		/**** md5 signature: 18c15b2c216183629c5ea9f5a1fed6b6 ****/
+		/****** StepFEA_FeaModel::AnalysisType ******/
+		/****** md5 signature: 18c15b2c216183629c5ea9f5a1fed6b6 ******/
 		%feature("compactdefaultargs") AnalysisType;
-		%feature("autodoc", "Returns field analysistype.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field AnalysisType.
 ") AnalysisType;
 		opencascade::handle<TCollection_HAsciiString> AnalysisType();
 
-		/****************** CreatingSoftware ******************/
-		/**** md5 signature: 480e6e39500c87494f7f1103e2e4e855 ****/
+		/****** StepFEA_FeaModel::CreatingSoftware ******/
+		/****** md5 signature: 480e6e39500c87494f7f1103e2e4e855 ******/
 		%feature("compactdefaultargs") CreatingSoftware;
-		%feature("autodoc", "Returns field creatingsoftware.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field CreatingSoftware.
 ") CreatingSoftware;
 		opencascade::handle<TCollection_HAsciiString> CreatingSoftware();
 
-		/****************** Description ******************/
-		/**** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ****/
+		/****** StepFEA_FeaModel::Description ******/
+		/****** md5 signature: 68309bdf9d57a000073490b39f8e7a41 ******/
 		%feature("compactdefaultargs") Description;
-		%feature("autodoc", "Returns field description.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TCollection_HAsciiString>
+
+Description
+-----------
+Returns field Description.
 ") Description;
 		opencascade::handle<TCollection_HAsciiString> Description();
 
-		/****************** Init ******************/
-		/**** md5 signature: 40354018c2242768e4382f13f47fdd85 ****/
+		/****** StepFEA_FeaModel::Init ******/
+		/****** md5 signature: 40354018c2242768e4382f13f47fdd85 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -1910,80 +1940,98 @@ aIntendedAnalysisCode: TColStd_HArray1OfAsciiString
 aDescription: TCollection_HAsciiString
 aAnalysisType: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<TCollection_HAsciiString> & aCreatingSoftware, const opencascade::handle<TColStd_HArray1OfAsciiString> & aIntendedAnalysisCode, const opencascade::handle<TCollection_HAsciiString> & aDescription, const opencascade::handle<TCollection_HAsciiString> & aAnalysisType);
 
-		/****************** IntendedAnalysisCode ******************/
-		/**** md5 signature: b876deca4ff3144dff91b7c160dfb700 ****/
+		/****** StepFEA_FeaModel::IntendedAnalysisCode ******/
+		/****** md5 signature: b876deca4ff3144dff91b7c160dfb700 ******/
 		%feature("compactdefaultargs") IntendedAnalysisCode;
-		%feature("autodoc", "Returns field intendedanalysiscode.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfAsciiString>
+
+Description
+-----------
+Returns field IntendedAnalysisCode.
 ") IntendedAnalysisCode;
 		opencascade::handle<TColStd_HArray1OfAsciiString> IntendedAnalysisCode();
 
-		/****************** SetAnalysisType ******************/
-		/**** md5 signature: 282ac51345b486c6089e9b3028e07375 ****/
+		/****** StepFEA_FeaModel::SetAnalysisType ******/
+		/****** md5 signature: 282ac51345b486c6089e9b3028e07375 ******/
 		%feature("compactdefaultargs") SetAnalysisType;
-		%feature("autodoc", "Set field analysistype.
-
+		%feature("autodoc", "
 Parameters
 ----------
 AnalysisType: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field AnalysisType.
 ") SetAnalysisType;
 		void SetAnalysisType(const opencascade::handle<TCollection_HAsciiString> & AnalysisType);
 
-		/****************** SetCreatingSoftware ******************/
-		/**** md5 signature: e37360f58e85a1556de01677f3500503 ****/
+		/****** StepFEA_FeaModel::SetCreatingSoftware ******/
+		/****** md5 signature: e37360f58e85a1556de01677f3500503 ******/
 		%feature("compactdefaultargs") SetCreatingSoftware;
-		%feature("autodoc", "Set field creatingsoftware.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CreatingSoftware: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CreatingSoftware.
 ") SetCreatingSoftware;
 		void SetCreatingSoftware(const opencascade::handle<TCollection_HAsciiString> & CreatingSoftware);
 
-		/****************** SetDescription ******************/
-		/**** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ****/
+		/****** StepFEA_FeaModel::SetDescription ******/
+		/****** md5 signature: 11ff45bab13c9c85c44619d6c4501da8 ******/
 		%feature("compactdefaultargs") SetDescription;
-		%feature("autodoc", "Set field description.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Description: TCollection_HAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Description.
 ") SetDescription;
 		void SetDescription(const opencascade::handle<TCollection_HAsciiString> & Description);
 
-		/****************** SetIntendedAnalysisCode ******************/
-		/**** md5 signature: 2adf9c4c5d9dbf7b11b374d648e86a15 ****/
+		/****** StepFEA_FeaModel::SetIntendedAnalysisCode ******/
+		/****** md5 signature: 2adf9c4c5d9dbf7b11b374d648e86a15 ******/
 		%feature("compactdefaultargs") SetIntendedAnalysisCode;
-		%feature("autodoc", "Set field intendedanalysiscode.
-
+		%feature("autodoc", "
 Parameters
 ----------
 IntendedAnalysisCode: TColStd_HArray1OfAsciiString
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field IntendedAnalysisCode.
 ") SetIntendedAnalysisCode;
 		void SetIntendedAnalysisCode(const opencascade::handle<TColStd_HArray1OfAsciiString> & IntendedAnalysisCode);
 
@@ -2003,14 +2051,16 @@ None
 ***********************************/
 class StepFEA_FeaModelDefinition : public StepRepr_ShapeAspect {
 	public:
-		/****************** StepFEA_FeaModelDefinition ******************/
-		/**** md5 signature: 474fe4a09c092a58314ebd5a4ac68e1d ****/
+		/****** StepFEA_FeaModelDefinition::StepFEA_FeaModelDefinition ******/
+		/****** md5 signature: 474fe4a09c092a58314ebd5a4ac68e1d ******/
 		%feature("compactdefaultargs") StepFEA_FeaModelDefinition;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaModelDefinition;
 		 StepFEA_FeaModelDefinition();
 
@@ -2030,56 +2080,66 @@ None
 ***********************************/
 class StepFEA_FeaParametricPoint : public StepGeom_Point {
 	public:
-		/****************** StepFEA_FeaParametricPoint ******************/
-		/**** md5 signature: e3ee57b3d860e9f54bd7e67fa33b7ce1 ****/
+		/****** StepFEA_FeaParametricPoint::StepFEA_FeaParametricPoint ******/
+		/****** md5 signature: e3ee57b3d860e9f54bd7e67fa33b7ce1 ******/
 		%feature("compactdefaultargs") StepFEA_FeaParametricPoint;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaParametricPoint;
 		 StepFEA_FeaParametricPoint();
 
-		/****************** Coordinates ******************/
-		/**** md5 signature: 44a2ea0d78b9f0cc257a20935c1d21b3 ****/
+		/****** StepFEA_FeaParametricPoint::Coordinates ******/
+		/****** md5 signature: 44a2ea0d78b9f0cc257a20935c1d21b3 ******/
 		%feature("compactdefaultargs") Coordinates;
-		%feature("autodoc", "Returns field coordinates.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns field Coordinates.
 ") Coordinates;
 		opencascade::handle<TColStd_HArray1OfReal> Coordinates();
 
-		/****************** Init ******************/
-		/**** md5 signature: b4d1c72b254cb89d39e73ab4a2c2794a ****/
+		/****** StepFEA_FeaParametricPoint::Init ******/
+		/****** md5 signature: b4d1c72b254cb89d39e73ab4a2c2794a ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aCoordinates: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<TColStd_HArray1OfReal> & aCoordinates);
 
-		/****************** SetCoordinates ******************/
-		/**** md5 signature: 373ea7300545bce672f1d1c1c267e182 ****/
+		/****** StepFEA_FeaParametricPoint::SetCoordinates ******/
+		/****** md5 signature: 373ea7300545bce672f1d1c1c267e182 ******/
 		%feature("compactdefaultargs") SetCoordinates;
-		%feature("autodoc", "Set field coordinates.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Coordinates: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Coordinates.
 ") SetCoordinates;
 		void SetCoordinates(const opencascade::handle<TColStd_HArray1OfReal> & Coordinates);
 
@@ -2099,14 +2159,16 @@ None
 **************************************/
 class StepFEA_FeaRepresentationItem : public StepRepr_RepresentationItem {
 	public:
-		/****************** StepFEA_FeaRepresentationItem ******************/
-		/**** md5 signature: 58bb155f4fbb708798ca2e5a53c1dc36 ****/
+		/****** StepFEA_FeaRepresentationItem::StepFEA_FeaRepresentationItem ******/
+		/****** md5 signature: 58bb155f4fbb708798ca2e5a53c1dc36 ******/
 		%feature("compactdefaultargs") StepFEA_FeaRepresentationItem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaRepresentationItem;
 		 StepFEA_FeaRepresentationItem();
 
@@ -2126,82 +2188,97 @@ None
 *******************************************************/
 class StepFEA_FeaSurfaceSectionGeometricRelationship : public Standard_Transient {
 	public:
-		/****************** StepFEA_FeaSurfaceSectionGeometricRelationship ******************/
-		/**** md5 signature: e1330e2909261dc99467b893f425ae1c ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::StepFEA_FeaSurfaceSectionGeometricRelationship ******/
+		/****** md5 signature: e1330e2909261dc99467b893f425ae1c ******/
 		%feature("compactdefaultargs") StepFEA_FeaSurfaceSectionGeometricRelationship;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaSurfaceSectionGeometricRelationship;
 		 StepFEA_FeaSurfaceSectionGeometricRelationship();
 
-		/****************** Init ******************/
-		/**** md5 signature: f02f12da51b5f2eb32b49b0b4b06ab5c ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::Init ******/
+		/****** md5 signature: f02f12da51b5f2eb32b49b0b4b06ab5c ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aSectionRef: StepElement_SurfaceSection
 aItem: StepElement_AnalysisItemWithinRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepElement_SurfaceSection> & aSectionRef, const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & aItem);
 
-		/****************** Item ******************/
-		/**** md5 signature: b253a19c4ee018e419eb42364512210b ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::Item ******/
+		/****** md5 signature: b253a19c4ee018e419eb42364512210b ******/
 		%feature("compactdefaultargs") Item;
-		%feature("autodoc", "Returns field item.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_AnalysisItemWithinRepresentation>
+
+Description
+-----------
+Returns field Item.
 ") Item;
 		opencascade::handle<StepElement_AnalysisItemWithinRepresentation> Item();
 
-		/****************** SectionRef ******************/
-		/**** md5 signature: 493894676b93c08fa0f0e8ac16f82d19 ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::SectionRef ******/
+		/****** md5 signature: 493894676b93c08fa0f0e8ac16f82d19 ******/
 		%feature("compactdefaultargs") SectionRef;
-		%feature("autodoc", "Returns field sectionref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_SurfaceSection>
+
+Description
+-----------
+Returns field SectionRef.
 ") SectionRef;
 		opencascade::handle<StepElement_SurfaceSection> SectionRef();
 
-		/****************** SetItem ******************/
-		/**** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::SetItem ******/
+		/****** md5 signature: 6c8dcc5a597631cd78ea60f9829f8e90 ******/
 		%feature("compactdefaultargs") SetItem;
-		%feature("autodoc", "Set field item.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Item: StepElement_AnalysisItemWithinRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Item.
 ") SetItem;
 		void SetItem(const opencascade::handle<StepElement_AnalysisItemWithinRepresentation> & Item);
 
-		/****************** SetSectionRef ******************/
-		/**** md5 signature: 40f843f7ef7c4b0ef5df735112bd322c ****/
+		/****** StepFEA_FeaSurfaceSectionGeometricRelationship::SetSectionRef ******/
+		/****** md5 signature: 40f843f7ef7c4b0ef5df735112bd322c ******/
 		%feature("compactdefaultargs") SetSectionRef;
-		%feature("autodoc", "Set field sectionref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 SectionRef: StepElement_SurfaceSection
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field SectionRef.
 ") SetSectionRef;
 		void SetSectionRef(const opencascade::handle<StepElement_SurfaceSection> & SectionRef);
 
@@ -2221,82 +2298,97 @@ None
 **************************************/
 class StepFEA_FreedomAndCoefficient : public Standard_Transient {
 	public:
-		/****************** StepFEA_FreedomAndCoefficient ******************/
-		/**** md5 signature: 4d208a269d8774a99d2fa369d1e5c504 ****/
+		/****** StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient ******/
+		/****** md5 signature: 4d208a269d8774a99d2fa369d1e5c504 ******/
 		%feature("compactdefaultargs") StepFEA_FreedomAndCoefficient;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FreedomAndCoefficient;
 		 StepFEA_FreedomAndCoefficient();
 
-		/****************** A ******************/
-		/**** md5 signature: c14b1e99ce51954d33425673672b2a3c ****/
+		/****** StepFEA_FreedomAndCoefficient::A ******/
+		/****** md5 signature: c14b1e99ce51954d33425673672b2a3c ******/
 		%feature("compactdefaultargs") A;
-		%feature("autodoc", "Returns field a.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepElement_MeasureOrUnspecifiedValue
+
+Description
+-----------
+Returns field A.
 ") A;
 		StepElement_MeasureOrUnspecifiedValue A();
 
-		/****************** Freedom ******************/
-		/**** md5 signature: 3e3fddeb6522c80dce5598d1c72630a8 ****/
+		/****** StepFEA_FreedomAndCoefficient::Freedom ******/
+		/****** md5 signature: 3e3fddeb6522c80dce5598d1c72630a8 ******/
 		%feature("compactdefaultargs") Freedom;
-		%feature("autodoc", "Returns field freedom.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_DegreeOfFreedom
+
+Description
+-----------
+Returns field Freedom.
 ") Freedom;
 		StepFEA_DegreeOfFreedom Freedom();
 
-		/****************** Init ******************/
-		/**** md5 signature: e7c9c0078f6255345e1c662e05c5a0cc ****/
+		/****** StepFEA_FreedomAndCoefficient::Init ******/
+		/****** md5 signature: e7c9c0078f6255345e1c662e05c5a0cc ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aFreedom: StepFEA_DegreeOfFreedom
 aA: StepElement_MeasureOrUnspecifiedValue
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const StepFEA_DegreeOfFreedom & aFreedom, const StepElement_MeasureOrUnspecifiedValue & aA);
 
-		/****************** SetA ******************/
-		/**** md5 signature: c2918ddc101b25eba5cd625ed80dc647 ****/
+		/****** StepFEA_FreedomAndCoefficient::SetA ******/
+		/****** md5 signature: c2918ddc101b25eba5cd625ed80dc647 ******/
 		%feature("compactdefaultargs") SetA;
-		%feature("autodoc", "Set field a.
-
+		%feature("autodoc", "
 Parameters
 ----------
 A: StepElement_MeasureOrUnspecifiedValue
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field A.
 ") SetA;
 		void SetA(const StepElement_MeasureOrUnspecifiedValue & A);
 
-		/****************** SetFreedom ******************/
-		/**** md5 signature: 061a4f841cb23b6b89d08962b1710f4a ****/
+		/****** StepFEA_FreedomAndCoefficient::SetFreedom ******/
+		/****** md5 signature: 061a4f841cb23b6b89d08962b1710f4a ******/
 		%feature("compactdefaultargs") SetFreedom;
-		%feature("autodoc", "Set field freedom.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Freedom: StepFEA_DegreeOfFreedom
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Freedom.
 ") SetFreedom;
 		void SetFreedom(const StepFEA_DegreeOfFreedom & Freedom);
 
@@ -2316,55 +2408,65 @@ None
 *****************************/
 class StepFEA_FreedomsList : public Standard_Transient {
 	public:
-		/****************** StepFEA_FreedomsList ******************/
-		/**** md5 signature: 4befaf30492dd7191f32a9f774b1b2b9 ****/
+		/****** StepFEA_FreedomsList::StepFEA_FreedomsList ******/
+		/****** md5 signature: 4befaf30492dd7191f32a9f774b1b2b9 ******/
 		%feature("compactdefaultargs") StepFEA_FreedomsList;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FreedomsList;
 		 StepFEA_FreedomsList();
 
-		/****************** Freedoms ******************/
-		/**** md5 signature: 49a0990ebe57f8fc5be6eb57fd3d4787 ****/
+		/****** StepFEA_FreedomsList::Freedoms ******/
+		/****** md5 signature: 49a0990ebe57f8fc5be6eb57fd3d4787 ******/
 		%feature("compactdefaultargs") Freedoms;
-		%feature("autodoc", "Returns field freedoms.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfDegreeOfFreedom>
+
+Description
+-----------
+Returns field Freedoms.
 ") Freedoms;
 		opencascade::handle<StepFEA_HArray1OfDegreeOfFreedom> Freedoms();
 
-		/****************** Init ******************/
-		/**** md5 signature: 4fc3faa229b7f5d307c6077cd00f6acd ****/
+		/****** StepFEA_FreedomsList::Init ******/
+		/****** md5 signature: 4fc3faa229b7f5d307c6077cd00f6acd ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aFreedoms: StepFEA_HArray1OfDegreeOfFreedom
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepFEA_HArray1OfDegreeOfFreedom> & aFreedoms);
 
-		/****************** SetFreedoms ******************/
-		/**** md5 signature: 14b443dec11baaa6e729ae1aea8a900b ****/
+		/****** StepFEA_FreedomsList::SetFreedoms ******/
+		/****** md5 signature: 14b443dec11baaa6e729ae1aea8a900b ******/
 		%feature("compactdefaultargs") SetFreedoms;
-		%feature("autodoc", "Set field freedoms.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Freedoms: StepFEA_HArray1OfDegreeOfFreedom
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Freedoms.
 ") SetFreedoms;
 		void SetFreedoms(const opencascade::handle<StepFEA_HArray1OfDegreeOfFreedom> & Freedoms);
 
@@ -2384,14 +2486,16 @@ None
 *******************************/
 class StepFEA_NodeDefinition : public StepRepr_ShapeAspect {
 	public:
-		/****************** StepFEA_NodeDefinition ******************/
-		/**** md5 signature: 0c8067a6dde12299e7ba82a83583e24c ****/
+		/****** StepFEA_NodeDefinition::StepFEA_NodeDefinition ******/
+		/****** md5 signature: 0c8067a6dde12299e7ba82a83583e24c ******/
 		%feature("compactdefaultargs") StepFEA_NodeDefinition;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeDefinition;
 		 StepFEA_NodeDefinition();
 
@@ -2411,22 +2515,23 @@ None
 ***********************************/
 class StepFEA_NodeRepresentation : public StepRepr_Representation {
 	public:
-		/****************** StepFEA_NodeRepresentation ******************/
-		/**** md5 signature: e06ef9a1c02f08b9912002ae3ca73f9a ****/
+		/****** StepFEA_NodeRepresentation::StepFEA_NodeRepresentation ******/
+		/****** md5 signature: e06ef9a1c02f08b9912002ae3ca73f9a ******/
 		%feature("compactdefaultargs") StepFEA_NodeRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeRepresentation;
 		 StepFEA_NodeRepresentation();
 
-		/****************** Init ******************/
-		/**** md5 signature: 80a74a084367634bb8be5e3eb9a159d3 ****/
+		/****** StepFEA_NodeRepresentation::Init ******/
+		/****** md5 signature: 80a74a084367634bb8be5e3eb9a159d3 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -2434,35 +2539,44 @@ aRepresentation_Items: StepRepr_HArray1OfRepresentationItem
 aRepresentation_ContextOfItems: StepRepr_RepresentationContext
 aModelRef: StepFEA_FeaModel
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<StepFEA_FeaModel> & aModelRef);
 
-		/****************** ModelRef ******************/
-		/**** md5 signature: 7c456eca97f01da8f37fdaf738a476d8 ****/
+		/****** StepFEA_NodeRepresentation::ModelRef ******/
+		/****** md5 signature: 7c456eca97f01da8f37fdaf738a476d8 ******/
 		%feature("compactdefaultargs") ModelRef;
-		%feature("autodoc", "Returns field modelref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaModel>
+
+Description
+-----------
+Returns field ModelRef.
 ") ModelRef;
 		opencascade::handle<StepFEA_FeaModel> ModelRef();
 
-		/****************** SetModelRef ******************/
-		/**** md5 signature: a4b9fcc357b0e079d1e7cb8ecfdce31c ****/
+		/****** StepFEA_NodeRepresentation::SetModelRef ******/
+		/****** md5 signature: a4b9fcc357b0e079d1e7cb8ecfdce31c ******/
 		%feature("compactdefaultargs") SetModelRef;
-		%feature("autodoc", "Set field modelref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ModelRef: StepFEA_FeaModel
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ModelRef.
 ") SetModelRef;
 		void SetModelRef(const opencascade::handle<StepFEA_FeaModel> & ModelRef);
 
@@ -2482,56 +2596,66 @@ None
 ************************/
 class StepFEA_NodeSet : public StepGeom_GeometricRepresentationItem {
 	public:
-		/****************** StepFEA_NodeSet ******************/
-		/**** md5 signature: d579bccc327737a1551bc018ce353fbc ****/
+		/****** StepFEA_NodeSet::StepFEA_NodeSet ******/
+		/****** md5 signature: d579bccc327737a1551bc018ce353fbc ******/
 		%feature("compactdefaultargs") StepFEA_NodeSet;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeSet;
 		 StepFEA_NodeSet();
 
-		/****************** Init ******************/
-		/**** md5 signature: 1c1e288126447f0bae60a4495b7fd864 ****/
+		/****** StepFEA_NodeSet::Init ******/
+		/****** md5 signature: 1c1e288126447f0bae60a4495b7fd864 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aNodes: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aNodes);
 
-		/****************** Nodes ******************/
-		/**** md5 signature: 481dfe329e415e43ffa39c24840aa086 ****/
+		/****** StepFEA_NodeSet::Nodes ******/
+		/****** md5 signature: 481dfe329e415e43ffa39c24840aa086 ******/
 		%feature("compactdefaultargs") Nodes;
-		%feature("autodoc", "Returns field nodes.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfNodeRepresentation>
+
+Description
+-----------
+Returns field Nodes.
 ") Nodes;
 		opencascade::handle<StepFEA_HArray1OfNodeRepresentation> Nodes();
 
-		/****************** SetNodes ******************/
-		/**** md5 signature: d91f98e9b19dce0d990e0fc877dbb9f0 ****/
+		/****** StepFEA_NodeSet::SetNodes ******/
+		/****** md5 signature: d91f98e9b19dce0d990e0fc877dbb9f0 ******/
 		%feature("compactdefaultargs") SetNodes;
-		%feature("autodoc", "Set field nodes.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Nodes: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Nodes.
 ") SetNodes;
 		void SetNodes(const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & Nodes);
 
@@ -2551,40 +2675,47 @@ None
 ***********************************/
 class StepFEA_SymmetricTensor22d : public StepData_SelectType {
 	public:
-		/****************** StepFEA_SymmetricTensor22d ******************/
-		/**** md5 signature: 8e9a041926fad44763e60d111b1d6137 ****/
+		/****** StepFEA_SymmetricTensor22d::StepFEA_SymmetricTensor22d ******/
+		/****** md5 signature: 8e9a041926fad44763e60d111b1d6137 ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor22d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor22d;
 		 StepFEA_SymmetricTensor22d();
 
-		/****************** AnisotropicSymmetricTensor22d ******************/
-		/**** md5 signature: c8737641a805875df5a0cab40e284c75 ****/
+		/****** StepFEA_SymmetricTensor22d::AnisotropicSymmetricTensor22d ******/
+		/****** md5 signature: c8737641a805875df5a0cab40e284c75 ******/
 		%feature("compactdefaultargs") AnisotropicSymmetricTensor22d;
-		%feature("autodoc", "Returns value as anisotropicsymmetrictensor22d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as AnisotropicSymmetricTensor22d (or Null if another type).
 ") AnisotropicSymmetricTensor22d;
 		opencascade::handle<TColStd_HArray1OfReal> AnisotropicSymmetricTensor22d();
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: f0e39118a9846e44ccd59de148215261 ****/
+		/****** StepFEA_SymmetricTensor22d::CaseNum ******/
+		/****** md5 signature: f0e39118a9846e44ccd59de148215261 ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of symmetrictensor22d select type 1 -> harray1ofreal from tcolstd 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of SymmetricTensor22d select type 1 -> HArray1OfReal from TColStd 0 else.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
@@ -2602,133 +2733,158 @@ int
 ***********************************/
 class StepFEA_SymmetricTensor23d : public StepData_SelectType {
 	public:
-		/****************** StepFEA_SymmetricTensor23d ******************/
-		/**** md5 signature: c8b6af1a7f07e2cbc357d1dc3ef43d75 ****/
+		/****** StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d ******/
+		/****** md5 signature: c8b6af1a7f07e2cbc357d1dc3ef43d75 ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor23d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor23d;
 		 StepFEA_SymmetricTensor23d();
 
-		/****************** AnisotropicSymmetricTensor23d ******************/
-		/**** md5 signature: 00e533416c2e7620b0fcc77c26020a45 ****/
+		/****** StepFEA_SymmetricTensor23d::AnisotropicSymmetricTensor23d ******/
+		/****** md5 signature: 00e533416c2e7620b0fcc77c26020a45 ******/
 		%feature("compactdefaultargs") AnisotropicSymmetricTensor23d;
-		%feature("autodoc", "Returns value as anisotropicsymmetrictensor23d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as AnisotropicSymmetricTensor23d (or Null if another type).
 ") AnisotropicSymmetricTensor23d;
 		opencascade::handle<TColStd_HArray1OfReal> AnisotropicSymmetricTensor23d();
 
-		/****************** CaseMem ******************/
-		/**** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ****/
+		/****** StepFEA_SymmetricTensor23d::CaseMem ******/
+		/****** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ******/
 		%feature("compactdefaultargs") CaseMem;
-		%feature("autodoc", "Recognizes a items of select member symmetrictensor23dmember 1 -> isotropicsymmetrictensor23d 2 -> orthotropicsymmetrictensor23d 3 -> anisotropicsymmetrictensor23d 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: StepData_SelectMember
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a items of select member SymmetricTensor23dMember 1 -> IsotropicSymmetricTensor23d 2 -> OrthotropicSymmetricTensor23d 3 -> AnisotropicSymmetricTensor23d 0 else.
 ") CaseMem;
 		virtual Standard_Integer CaseMem(const opencascade::handle<StepData_SelectMember> & ent);
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ****/
+		/****** StepFEA_SymmetricTensor23d::CaseNum ******/
+		/****** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of symmetrictensor23d select type return 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of SymmetricTensor23d select type return 0.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
-		/****************** IsotropicSymmetricTensor23d ******************/
-		/**** md5 signature: 83420dcb027550bf001991caebc9c853 ****/
+		/****** StepFEA_SymmetricTensor23d::IsotropicSymmetricTensor23d ******/
+		/****** md5 signature: 83420dcb027550bf001991caebc9c853 ******/
 		%feature("compactdefaultargs") IsotropicSymmetricTensor23d;
-		%feature("autodoc", "Returns value as isotropicsymmetrictensor23d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns Value as IsotropicSymmetricTensor23d (or Null if another type).
 ") IsotropicSymmetricTensor23d;
 		Standard_Real IsotropicSymmetricTensor23d();
 
-		/****************** NewMember ******************/
-		/**** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ****/
+		/****** StepFEA_SymmetricTensor23d::NewMember ******/
+		/****** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ******/
 		%feature("compactdefaultargs") NewMember;
-		%feature("autodoc", "Returns a new select member the type symmetrictensor23dmember.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepData_SelectMember>
+
+Description
+-----------
+Returns a new select member the type SymmetricTensor23dMember.
 ") NewMember;
 		virtual opencascade::handle<StepData_SelectMember> NewMember();
 
-		/****************** OrthotropicSymmetricTensor23d ******************/
-		/**** md5 signature: 6382f29ac1f364b69a9bb468ff1e2006 ****/
+		/****** StepFEA_SymmetricTensor23d::OrthotropicSymmetricTensor23d ******/
+		/****** md5 signature: 6382f29ac1f364b69a9bb468ff1e2006 ******/
 		%feature("compactdefaultargs") OrthotropicSymmetricTensor23d;
-		%feature("autodoc", "Returns value as orthotropicsymmetrictensor23d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as OrthotropicSymmetricTensor23d (or Null if another type).
 ") OrthotropicSymmetricTensor23d;
 		opencascade::handle<TColStd_HArray1OfReal> OrthotropicSymmetricTensor23d();
 
-		/****************** SetAnisotropicSymmetricTensor23d ******************/
-		/**** md5 signature: e40c073b455c5732376b091cb8761634 ****/
+		/****** StepFEA_SymmetricTensor23d::SetAnisotropicSymmetricTensor23d ******/
+		/****** md5 signature: e40c073b455c5732376b091cb8761634 ******/
 		%feature("compactdefaultargs") SetAnisotropicSymmetricTensor23d;
-		%feature("autodoc", "Set value for anisotropicsymmetrictensor23d.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aVal: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set Value for AnisotropicSymmetricTensor23d.
 ") SetAnisotropicSymmetricTensor23d;
 		void SetAnisotropicSymmetricTensor23d(const opencascade::handle<TColStd_HArray1OfReal> & aVal);
 
-		/****************** SetIsotropicSymmetricTensor23d ******************/
-		/**** md5 signature: 9a64a817ba73feb9252d4aa59cd9acd0 ****/
+		/****** StepFEA_SymmetricTensor23d::SetIsotropicSymmetricTensor23d ******/
+		/****** md5 signature: 9a64a817ba73feb9252d4aa59cd9acd0 ******/
 		%feature("compactdefaultargs") SetIsotropicSymmetricTensor23d;
-		%feature("autodoc", "Set value for isotropicsymmetrictensor23d.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aVal: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set Value for IsotropicSymmetricTensor23d.
 ") SetIsotropicSymmetricTensor23d;
 		void SetIsotropicSymmetricTensor23d(const Standard_Real aVal);
 
-		/****************** SetOrthotropicSymmetricTensor23d ******************/
-		/**** md5 signature: 5e94e88fb5421e20b86bfb64aecb7d2d ****/
+		/****** StepFEA_SymmetricTensor23d::SetOrthotropicSymmetricTensor23d ******/
+		/****** md5 signature: 5e94e88fb5421e20b86bfb64aecb7d2d ******/
 		%feature("compactdefaultargs") SetOrthotropicSymmetricTensor23d;
-		%feature("autodoc", "Set value for orthotropicsymmetrictensor23d.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aVal: TColStd_HArray1OfReal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set Value for OrthotropicSymmetricTensor23d.
 ") SetOrthotropicSymmetricTensor23d;
 		void SetOrthotropicSymmetricTensor23d(const opencascade::handle<TColStd_HArray1OfReal> & aVal);
 
@@ -2746,68 +2902,80 @@ None
 *****************************************/
 class StepFEA_SymmetricTensor23dMember : public StepData_SelectArrReal {
 	public:
-		/****************** StepFEA_SymmetricTensor23dMember ******************/
-		/**** md5 signature: af97c8e716cab6096a680c31b45ef40e ****/
+		/****** StepFEA_SymmetricTensor23dMember::StepFEA_SymmetricTensor23dMember ******/
+		/****** md5 signature: af97c8e716cab6096a680c31b45ef40e ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor23dMember;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor23dMember;
 		 StepFEA_SymmetricTensor23dMember();
 
-		/****************** HasName ******************/
-		/**** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ****/
+		/****** StepFEA_SymmetricTensor23dMember::HasName ******/
+		/****** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ******/
 		%feature("compactdefaultargs") HasName;
-		%feature("autodoc", "Returns true if has name.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if has name.
 ") HasName;
 		virtual Standard_Boolean HasName();
 
-		/****************** Matches ******************/
-		/**** md5 signature: 926675035b73f94f6faae7b81ca23022 ****/
+		/****** StepFEA_SymmetricTensor23dMember::Matches ******/
+		/****** md5 signature: 926675035b73f94f6faae7b81ca23022 ******/
 		%feature("compactdefaultargs") Matches;
-		%feature("autodoc", "Tells if the name of a selectmember matches a given one;.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Tells if the name of a SelectMember matches a given one;.
 ") Matches;
-		virtual Standard_Boolean Matches(const char * name);
+		virtual Standard_Boolean Matches(Standard_CString name);
 
-		/****************** Name ******************/
-		/**** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ****/
+		/****** StepFEA_SymmetricTensor23dMember::Name ******/
+		/****** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ******/
 		%feature("compactdefaultargs") Name;
-		%feature("autodoc", "Returns set name.
-
-Returns
+		%feature("autodoc", "Return
 -------
-char *
+str
+
+Description
+-----------
+Returns set name.
 ") Name;
-		virtual const char * Name();
+		virtual Standard_CString Name();
 
-		/****************** SetName ******************/
-		/**** md5 signature: cb088c8a5caf9447945830483c3112e7 ****/
+		/****** StepFEA_SymmetricTensor23dMember::SetName ******/
+		/****** md5 signature: cb088c8a5caf9447945830483c3112e7 ******/
 		%feature("compactdefaultargs") SetName;
-		%feature("autodoc", "Set name.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Set name.
 ") SetName;
-		virtual Standard_Boolean SetName(const char * name);
+		virtual Standard_Boolean SetName(Standard_CString name);
 
 };
 
@@ -2825,40 +2993,47 @@ bool
 ***********************************/
 class StepFEA_SymmetricTensor42d : public StepData_SelectType {
 	public:
-		/****************** StepFEA_SymmetricTensor42d ******************/
-		/**** md5 signature: 98bfc78aec4dd61316ce2f76b0d99c9b ****/
+		/****** StepFEA_SymmetricTensor42d::StepFEA_SymmetricTensor42d ******/
+		/****** md5 signature: 98bfc78aec4dd61316ce2f76b0d99c9b ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor42d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor42d;
 		 StepFEA_SymmetricTensor42d();
 
-		/****************** AnisotropicSymmetricTensor42d ******************/
-		/**** md5 signature: 03de402b9c1011dd62cca1dc7d775153 ****/
+		/****** StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d ******/
+		/****** md5 signature: 03de402b9c1011dd62cca1dc7d775153 ******/
 		%feature("compactdefaultargs") AnisotropicSymmetricTensor42d;
-		%feature("autodoc", "Returns value as anisotropicsymmetrictensor42d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as AnisotropicSymmetricTensor42d (or Null if another type).
 ") AnisotropicSymmetricTensor42d;
 		opencascade::handle<TColStd_HArray1OfReal> AnisotropicSymmetricTensor42d();
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: f0e39118a9846e44ccd59de148215261 ****/
+		/****** StepFEA_SymmetricTensor42d::CaseNum ******/
+		/****** md5 signature: f0e39118a9846e44ccd59de148215261 ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Recognizes a kind of symmetrictensor42d select type 1 -> harray1ofreal from tcolstd 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a kind of SymmetricTensor42d select type 1 -> HArray1OfReal from TColStd 0 else.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
@@ -2876,121 +3051,143 @@ int
 ***********************************/
 class StepFEA_SymmetricTensor43d : public StepData_SelectType {
 	public:
-		/****************** StepFEA_SymmetricTensor43d ******************/
-		/**** md5 signature: 83297f5c4b7cb4162536442783aa8bc9 ****/
+		/****** StepFEA_SymmetricTensor43d::StepFEA_SymmetricTensor43d ******/
+		/****** md5 signature: 83297f5c4b7cb4162536442783aa8bc9 ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor43d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor43d;
 		 StepFEA_SymmetricTensor43d();
 
-		/****************** AnisotropicSymmetricTensor43d ******************/
-		/**** md5 signature: 470e718b9d67f67eecc3ee0e244362de ****/
+		/****** StepFEA_SymmetricTensor43d::AnisotropicSymmetricTensor43d ******/
+		/****** md5 signature: 470e718b9d67f67eecc3ee0e244362de ******/
 		%feature("compactdefaultargs") AnisotropicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as anisotropicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as AnisotropicSymmetricTensor43d (or Null if another type).
 ") AnisotropicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> AnisotropicSymmetricTensor43d();
 
-		/****************** CaseMem ******************/
-		/**** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ****/
+		/****** StepFEA_SymmetricTensor43d::CaseMem ******/
+		/****** md5 signature: 26af6570a62efb94f2e4c31f1b319112 ******/
 		%feature("compactdefaultargs") CaseMem;
-		%feature("autodoc", "Recognizes a items of select member curveelementfreedommember 1 -> anisotropicsymmetrictensor43d 2 -> feaisotropicsymmetrictensor43d 3 -> feaisoorthotropicsymmetrictensor43d 4 -> featransverseisotropicsymmetrictensor43d 5 -> feacolumnnormalisedorthotropicsymmetrictensor43d 6 -> feacolumnnormalisedmonoclinicsymmetrictensor43d 0 else.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: StepData_SelectMember
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Recognizes a items of select member CurveElementFreedomMember 1 -> AnisotropicSymmetricTensor43d 2 -> FeaIsotropicSymmetricTensor43d 3 -> FeaIsoOrthotropicSymmetricTensor43d 4 -> FeaTransverseIsotropicSymmetricTensor43d 5 -> FeaColumnNormalisedOrthotropicSymmetricTensor43d 6 -> FeaColumnNormalisedMonoclinicSymmetricTensor43d 0 else.
 ") CaseMem;
 		virtual Standard_Integer CaseMem(const opencascade::handle<StepData_SelectMember> & ent);
 
-		/****************** CaseNum ******************/
-		/**** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ****/
+		/****** StepFEA_SymmetricTensor43d::CaseNum ******/
+		/****** md5 signature: b9dbcdb5b972500c66bc8bc08f651d0a ******/
 		%feature("compactdefaultargs") CaseNum;
-		%feature("autodoc", "Return 0.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ent: Standard_Transient
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+return 0.
 ") CaseNum;
 		Standard_Integer CaseNum(const opencascade::handle<Standard_Transient> & ent);
 
-		/****************** FeaColumnNormalisedMonoclinicSymmetricTensor43d ******************/
-		/**** md5 signature: 3d0de2c3d1bc3d16ad76cb540b3b991b ****/
+		/****** StepFEA_SymmetricTensor43d::FeaColumnNormalisedMonoclinicSymmetricTensor43d ******/
+		/****** md5 signature: 3d0de2c3d1bc3d16ad76cb540b3b991b ******/
 		%feature("compactdefaultargs") FeaColumnNormalisedMonoclinicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as feacolumnnormalisedmonoclinicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as FeaColumnNormalisedMonoclinicSymmetricTensor43d (or Null if another type).
 ") FeaColumnNormalisedMonoclinicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> FeaColumnNormalisedMonoclinicSymmetricTensor43d();
 
-		/****************** FeaColumnNormalisedOrthotropicSymmetricTensor43d ******************/
-		/**** md5 signature: f4c71fd6965f2f2d868ba68f0bbe4613 ****/
+		/****** StepFEA_SymmetricTensor43d::FeaColumnNormalisedOrthotropicSymmetricTensor43d ******/
+		/****** md5 signature: f4c71fd6965f2f2d868ba68f0bbe4613 ******/
 		%feature("compactdefaultargs") FeaColumnNormalisedOrthotropicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as feacolumnnormalisedorthotropicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as FeaColumnNormalisedOrthotropicSymmetricTensor43d (or Null if another type).
 ") FeaColumnNormalisedOrthotropicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> FeaColumnNormalisedOrthotropicSymmetricTensor43d();
 
-		/****************** FeaIsoOrthotropicSymmetricTensor43d ******************/
-		/**** md5 signature: 15b787ce4ffce83231d4b721e6d71794 ****/
+		/****** StepFEA_SymmetricTensor43d::FeaIsoOrthotropicSymmetricTensor43d ******/
+		/****** md5 signature: 15b787ce4ffce83231d4b721e6d71794 ******/
 		%feature("compactdefaultargs") FeaIsoOrthotropicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as feaisoorthotropicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as FeaIsoOrthotropicSymmetricTensor43d (or Null if another type).
 ") FeaIsoOrthotropicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> FeaIsoOrthotropicSymmetricTensor43d();
 
-		/****************** FeaIsotropicSymmetricTensor43d ******************/
-		/**** md5 signature: 5e40182c5184c6b22c7f565211f13286 ****/
+		/****** StepFEA_SymmetricTensor43d::FeaIsotropicSymmetricTensor43d ******/
+		/****** md5 signature: 5e40182c5184c6b22c7f565211f13286 ******/
 		%feature("compactdefaultargs") FeaIsotropicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as feaisotropicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as FeaIsotropicSymmetricTensor43d (or Null if another type).
 ") FeaIsotropicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> FeaIsotropicSymmetricTensor43d();
 
-		/****************** FeaTransverseIsotropicSymmetricTensor43d ******************/
-		/**** md5 signature: db736e1f696952a446c03f921f7ce584 ****/
+		/****** StepFEA_SymmetricTensor43d::FeaTransverseIsotropicSymmetricTensor43d ******/
+		/****** md5 signature: db736e1f696952a446c03f921f7ce584 ******/
 		%feature("compactdefaultargs") FeaTransverseIsotropicSymmetricTensor43d;
-		%feature("autodoc", "Returns value as featransverseisotropicsymmetrictensor43d (or null if another type).
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TColStd_HArray1OfReal>
+
+Description
+-----------
+Returns Value as FeaTransverseIsotropicSymmetricTensor43d (or Null if another type).
 ") FeaTransverseIsotropicSymmetricTensor43d;
 		opencascade::handle<TColStd_HArray1OfReal> FeaTransverseIsotropicSymmetricTensor43d();
 
-		/****************** NewMember ******************/
-		/**** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ****/
+		/****** StepFEA_SymmetricTensor43d::NewMember ******/
+		/****** md5 signature: ae7a49ea52744ae449d83e823e9a6da7 ******/
 		%feature("compactdefaultargs") NewMember;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepData_SelectMember>
+
+Description
+-----------
+No available documentation.
 ") NewMember;
 		virtual opencascade::handle<StepData_SelectMember> NewMember();
 
@@ -3012,68 +3209,80 @@ opencascade::handle<StepData_SelectMember>
 *****************************************/
 class StepFEA_SymmetricTensor43dMember : public StepData_SelectArrReal {
 	public:
-		/****************** StepFEA_SymmetricTensor43dMember ******************/
-		/**** md5 signature: e751972448b6eaa998a614dbbca92a22 ****/
+		/****** StepFEA_SymmetricTensor43dMember::StepFEA_SymmetricTensor43dMember ******/
+		/****** md5 signature: e751972448b6eaa998a614dbbca92a22 ******/
 		%feature("compactdefaultargs") StepFEA_SymmetricTensor43dMember;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_SymmetricTensor43dMember;
 		 StepFEA_SymmetricTensor43dMember();
 
-		/****************** HasName ******************/
-		/**** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ****/
+		/****** StepFEA_SymmetricTensor43dMember::HasName ******/
+		/****** md5 signature: c4b2dbd737f3c98314fdb7955ce91c2a ******/
 		%feature("compactdefaultargs") HasName;
-		%feature("autodoc", "Returns true if has name.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns True if has name.
 ") HasName;
 		virtual Standard_Boolean HasName();
 
-		/****************** Matches ******************/
-		/**** md5 signature: 926675035b73f94f6faae7b81ca23022 ****/
+		/****** StepFEA_SymmetricTensor43dMember::Matches ******/
+		/****** md5 signature: 926675035b73f94f6faae7b81ca23022 ******/
 		%feature("compactdefaultargs") Matches;
-		%feature("autodoc", "Tells if the name of a selectmember matches a given one;.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Tells if the name of a SelectMember matches a given one;.
 ") Matches;
-		virtual Standard_Boolean Matches(const char * name);
+		virtual Standard_Boolean Matches(Standard_CString name);
 
-		/****************** Name ******************/
-		/**** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ****/
+		/****** StepFEA_SymmetricTensor43dMember::Name ******/
+		/****** md5 signature: d654a4ee9a75d24a9c3f33853f908999 ******/
 		%feature("compactdefaultargs") Name;
-		%feature("autodoc", "Returns set name.
-
-Returns
+		%feature("autodoc", "Return
 -------
-char *
+str
+
+Description
+-----------
+Returns set name.
 ") Name;
-		virtual const char * Name();
+		virtual Standard_CString Name();
 
-		/****************** SetName ******************/
-		/**** md5 signature: cb088c8a5caf9447945830483c3112e7 ****/
+		/****** StepFEA_SymmetricTensor43dMember::SetName ******/
+		/****** md5 signature: cb088c8a5caf9447945830483c3112e7 ******/
 		%feature("compactdefaultargs") SetName;
-		%feature("autodoc", "Set name.
-
+		%feature("autodoc", "
 Parameters
 ----------
-name: char *
+name: str
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+Set name.
 ") SetName;
-		virtual Standard_Boolean SetName(const char * name);
+		virtual Standard_Boolean SetName(Standard_CString name);
 
 };
 
@@ -3091,56 +3300,66 @@ bool
 ******************************************************/
 class StepFEA_AlignedCurve3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_AlignedCurve3dElementCoordinateSystem ******************/
-		/**** md5 signature: 62eaf5d317b9b694651b8037771ce967 ****/
+		/****** StepFEA_AlignedCurve3dElementCoordinateSystem::StepFEA_AlignedCurve3dElementCoordinateSystem ******/
+		/****** md5 signature: 62eaf5d317b9b694651b8037771ce967 ******/
 		%feature("compactdefaultargs") StepFEA_AlignedCurve3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_AlignedCurve3dElementCoordinateSystem;
 		 StepFEA_AlignedCurve3dElementCoordinateSystem();
 
-		/****************** CoordinateSystem ******************/
-		/**** md5 signature: 4be50b476778536461864711aea5b088 ****/
+		/****** StepFEA_AlignedCurve3dElementCoordinateSystem::CoordinateSystem ******/
+		/****** md5 signature: 4be50b476778536461864711aea5b088 ******/
 		%feature("compactdefaultargs") CoordinateSystem;
-		%feature("autodoc", "Returns field coordinatesystem.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaAxis2Placement3d>
+
+Description
+-----------
+Returns field CoordinateSystem.
 ") CoordinateSystem;
 		opencascade::handle<StepFEA_FeaAxis2Placement3d> CoordinateSystem();
 
-		/****************** Init ******************/
-		/**** md5 signature: afb804ec7043729372ca182dd151a4aa ****/
+		/****** StepFEA_AlignedCurve3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: afb804ec7043729372ca182dd151a4aa ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aCoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepFEA_FeaAxis2Placement3d> & aCoordinateSystem);
 
-		/****************** SetCoordinateSystem ******************/
-		/**** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ****/
+		/****** StepFEA_AlignedCurve3dElementCoordinateSystem::SetCoordinateSystem ******/
+		/****** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ******/
 		%feature("compactdefaultargs") SetCoordinateSystem;
-		%feature("autodoc", "Set field coordinatesystem.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CoordinateSystem.
 ") SetCoordinateSystem;
 		void SetCoordinateSystem(const opencascade::handle<StepFEA_FeaAxis2Placement3d> & CoordinateSystem);
 
@@ -3160,56 +3379,66 @@ None
 ********************************************************/
 class StepFEA_AlignedSurface3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_AlignedSurface3dElementCoordinateSystem ******************/
-		/**** md5 signature: bed7b1f06e0a5de1e765d56f7240eff0 ****/
+		/****** StepFEA_AlignedSurface3dElementCoordinateSystem::StepFEA_AlignedSurface3dElementCoordinateSystem ******/
+		/****** md5 signature: bed7b1f06e0a5de1e765d56f7240eff0 ******/
 		%feature("compactdefaultargs") StepFEA_AlignedSurface3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_AlignedSurface3dElementCoordinateSystem;
 		 StepFEA_AlignedSurface3dElementCoordinateSystem();
 
-		/****************** CoordinateSystem ******************/
-		/**** md5 signature: 4be50b476778536461864711aea5b088 ****/
+		/****** StepFEA_AlignedSurface3dElementCoordinateSystem::CoordinateSystem ******/
+		/****** md5 signature: 4be50b476778536461864711aea5b088 ******/
 		%feature("compactdefaultargs") CoordinateSystem;
-		%feature("autodoc", "Returns field coordinatesystem.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaAxis2Placement3d>
+
+Description
+-----------
+Returns field CoordinateSystem.
 ") CoordinateSystem;
 		opencascade::handle<StepFEA_FeaAxis2Placement3d> CoordinateSystem();
 
-		/****************** Init ******************/
-		/**** md5 signature: afb804ec7043729372ca182dd151a4aa ****/
+		/****** StepFEA_AlignedSurface3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: afb804ec7043729372ca182dd151a4aa ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aCoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepFEA_FeaAxis2Placement3d> & aCoordinateSystem);
 
-		/****************** SetCoordinateSystem ******************/
-		/**** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ****/
+		/****** StepFEA_AlignedSurface3dElementCoordinateSystem::SetCoordinateSystem ******/
+		/****** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ******/
 		%feature("compactdefaultargs") SetCoordinateSystem;
-		%feature("autodoc", "Set field coordinatesystem.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CoordinateSystem.
 ") SetCoordinateSystem;
 		void SetCoordinateSystem(const opencascade::handle<StepFEA_FeaAxis2Placement3d> & CoordinateSystem);
 
@@ -3229,56 +3458,66 @@ None
 *********************************************************/
 class StepFEA_ArbitraryVolume3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_ArbitraryVolume3dElementCoordinateSystem ******************/
-		/**** md5 signature: bce3ffe400e26a850550b1bfdb23f3e7 ****/
+		/****** StepFEA_ArbitraryVolume3dElementCoordinateSystem::StepFEA_ArbitraryVolume3dElementCoordinateSystem ******/
+		/****** md5 signature: bce3ffe400e26a850550b1bfdb23f3e7 ******/
 		%feature("compactdefaultargs") StepFEA_ArbitraryVolume3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ArbitraryVolume3dElementCoordinateSystem;
 		 StepFEA_ArbitraryVolume3dElementCoordinateSystem();
 
-		/****************** CoordinateSystem ******************/
-		/**** md5 signature: 4be50b476778536461864711aea5b088 ****/
+		/****** StepFEA_ArbitraryVolume3dElementCoordinateSystem::CoordinateSystem ******/
+		/****** md5 signature: 4be50b476778536461864711aea5b088 ******/
 		%feature("compactdefaultargs") CoordinateSystem;
-		%feature("autodoc", "Returns field coordinatesystem.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaAxis2Placement3d>
+
+Description
+-----------
+Returns field CoordinateSystem.
 ") CoordinateSystem;
 		opencascade::handle<StepFEA_FeaAxis2Placement3d> CoordinateSystem();
 
-		/****************** Init ******************/
-		/**** md5 signature: afb804ec7043729372ca182dd151a4aa ****/
+		/****** StepFEA_ArbitraryVolume3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: afb804ec7043729372ca182dd151a4aa ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aCoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepFEA_FeaAxis2Placement3d> & aCoordinateSystem);
 
-		/****************** SetCoordinateSystem ******************/
-		/**** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ****/
+		/****** StepFEA_ArbitraryVolume3dElementCoordinateSystem::SetCoordinateSystem ******/
+		/****** md5 signature: 31ee548bab8063d28c1e8e9bb1c205a1 ******/
 		%feature("compactdefaultargs") SetCoordinateSystem;
-		%feature("autodoc", "Set field coordinatesystem.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CoordinateSystem: StepFEA_FeaAxis2Placement3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field CoordinateSystem.
 ") SetCoordinateSystem;
 		void SetCoordinateSystem(const opencascade::handle<StepFEA_FeaAxis2Placement3d> & CoordinateSystem);
 
@@ -3298,83 +3537,98 @@ None
 *********************************************************/
 class StepFEA_ConstantSurface3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_ConstantSurface3dElementCoordinateSystem ******************/
-		/**** md5 signature: 6609483cfaa0437c50ede3b8f3dc1e3d ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::StepFEA_ConstantSurface3dElementCoordinateSystem ******/
+		/****** md5 signature: 6609483cfaa0437c50ede3b8f3dc1e3d ******/
 		%feature("compactdefaultargs") StepFEA_ConstantSurface3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ConstantSurface3dElementCoordinateSystem;
 		 StepFEA_ConstantSurface3dElementCoordinateSystem();
 
-		/****************** Angle ******************/
-		/**** md5 signature: dce50192c350c43b54f2e88e94e5372a ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::Angle ******/
+		/****** md5 signature: dce50192c350c43b54f2e88e94e5372a ******/
 		%feature("compactdefaultargs") Angle;
-		%feature("autodoc", "Returns field angle.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns field Angle.
 ") Angle;
 		Standard_Real Angle();
 
-		/****************** Axis ******************/
-		/**** md5 signature: 8c835a38d257f157c4c499e54d099895 ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::Axis ******/
+		/****** md5 signature: 8c835a38d257f157c4c499e54d099895 ******/
 		%feature("compactdefaultargs") Axis;
-		%feature("autodoc", "Returns field axis.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns field Axis.
 ") Axis;
 		Standard_Integer Axis();
 
-		/****************** Init ******************/
-		/**** md5 signature: 8b71832374bcd7b3ed64bbf6e1497439 ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: 8b71832374bcd7b3ed64bbf6e1497439 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aAxis: int
 aAngle: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const Standard_Integer aAxis, const Standard_Real aAngle);
 
-		/****************** SetAngle ******************/
-		/**** md5 signature: a0d60e2a1ea25c193dafa15194b0ab24 ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::SetAngle ******/
+		/****** md5 signature: a0d60e2a1ea25c193dafa15194b0ab24 ******/
 		%feature("compactdefaultargs") SetAngle;
-		%feature("autodoc", "Set field angle.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Angle: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Angle.
 ") SetAngle;
 		void SetAngle(const Standard_Real Angle);
 
-		/****************** SetAxis ******************/
-		/**** md5 signature: 2fce638761516dcb6b748e7c34206f1c ****/
+		/****** StepFEA_ConstantSurface3dElementCoordinateSystem::SetAxis ******/
+		/****** md5 signature: 2fce638761516dcb6b748e7c34206f1c ******/
 		%feature("compactdefaultargs") SetAxis;
-		%feature("autodoc", "Set field axis.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Axis: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Axis.
 ") SetAxis;
 		void SetAxis(const Standard_Integer Axis);
 
@@ -3394,33 +3648,36 @@ None
 *********************************************/
 class StepFEA_Curve3dElementRepresentation : public StepFEA_ElementRepresentation {
 	public:
-		/****************** StepFEA_Curve3dElementRepresentation ******************/
-		/**** md5 signature: af1a03eb9b9ff9403d14445f56b5e97e ****/
+		/****** StepFEA_Curve3dElementRepresentation::StepFEA_Curve3dElementRepresentation ******/
+		/****** md5 signature: af1a03eb9b9ff9403d14445f56b5e97e ******/
 		%feature("compactdefaultargs") StepFEA_Curve3dElementRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_Curve3dElementRepresentation;
 		 StepFEA_Curve3dElementRepresentation();
 
-		/****************** ElementDescriptor ******************/
-		/**** md5 signature: 326335d00d94977496c1aecdc6586a5e ****/
+		/****** StepFEA_Curve3dElementRepresentation::ElementDescriptor ******/
+		/****** md5 signature: 326335d00d94977496c1aecdc6586a5e ******/
 		%feature("compactdefaultargs") ElementDescriptor;
-		%feature("autodoc", "Returns field elementdescriptor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_Curve3dElementDescriptor>
+
+Description
+-----------
+Returns field ElementDescriptor.
 ") ElementDescriptor;
 		opencascade::handle<StepElement_Curve3dElementDescriptor> ElementDescriptor();
 
-		/****************** Init ******************/
-		/**** md5 signature: f635ebc2c42d6f7bc4fe298211c408c9 ****/
+		/****** StepFEA_Curve3dElementRepresentation::Init ******/
+		/****** md5 signature: f635ebc2c42d6f7bc4fe298211c408c9 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -3432,102 +3689,124 @@ aElementDescriptor: StepElement_Curve3dElementDescriptor
 aProperty: StepFEA_Curve3dElementProperty
 aMaterial: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aElementRepresentation_NodeList, const opencascade::handle<StepFEA_FeaModel3d> & aModelRef, const opencascade::handle<StepElement_Curve3dElementDescriptor> & aElementDescriptor, const opencascade::handle<StepFEA_Curve3dElementProperty> & aProperty, const opencascade::handle<StepElement_ElementMaterial> & aMaterial);
 
-		/****************** Material ******************/
-		/**** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ****/
+		/****** StepFEA_Curve3dElementRepresentation::Material ******/
+		/****** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ******/
 		%feature("compactdefaultargs") Material;
-		%feature("autodoc", "Returns field material.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_ElementMaterial>
+
+Description
+-----------
+Returns field Material.
 ") Material;
 		opencascade::handle<StepElement_ElementMaterial> Material();
 
-		/****************** ModelRef ******************/
-		/**** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ****/
+		/****** StepFEA_Curve3dElementRepresentation::ModelRef ******/
+		/****** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ******/
 		%feature("compactdefaultargs") ModelRef;
-		%feature("autodoc", "Returns field modelref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaModel3d>
+
+Description
+-----------
+Returns field ModelRef.
 ") ModelRef;
 		opencascade::handle<StepFEA_FeaModel3d> ModelRef();
 
-		/****************** Property ******************/
-		/**** md5 signature: 5a9941b6dae6bb15f9e2ade12d6db982 ****/
+		/****** StepFEA_Curve3dElementRepresentation::Property ******/
+		/****** md5 signature: 5a9941b6dae6bb15f9e2ade12d6db982 ******/
 		%feature("compactdefaultargs") Property;
-		%feature("autodoc", "Returns field property.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_Curve3dElementProperty>
+
+Description
+-----------
+Returns field Property.
 ") Property;
 		opencascade::handle<StepFEA_Curve3dElementProperty> Property();
 
-		/****************** SetElementDescriptor ******************/
-		/**** md5 signature: bf0cc124c2537ef241c5ac9c1d5b80e1 ****/
+		/****** StepFEA_Curve3dElementRepresentation::SetElementDescriptor ******/
+		/****** md5 signature: bf0cc124c2537ef241c5ac9c1d5b80e1 ******/
 		%feature("compactdefaultargs") SetElementDescriptor;
-		%feature("autodoc", "Set field elementdescriptor.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ElementDescriptor: StepElement_Curve3dElementDescriptor
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ElementDescriptor.
 ") SetElementDescriptor;
 		void SetElementDescriptor(const opencascade::handle<StepElement_Curve3dElementDescriptor> & ElementDescriptor);
 
-		/****************** SetMaterial ******************/
-		/**** md5 signature: 224016d312e5b2f0ec58641cb367214d ****/
+		/****** StepFEA_Curve3dElementRepresentation::SetMaterial ******/
+		/****** md5 signature: 224016d312e5b2f0ec58641cb367214d ******/
 		%feature("compactdefaultargs") SetMaterial;
-		%feature("autodoc", "Set field material.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Material: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Material.
 ") SetMaterial;
 		void SetMaterial(const opencascade::handle<StepElement_ElementMaterial> & Material);
 
-		/****************** SetModelRef ******************/
-		/**** md5 signature: be7659867f17ff42d15420e4c343fc43 ****/
+		/****** StepFEA_Curve3dElementRepresentation::SetModelRef ******/
+		/****** md5 signature: be7659867f17ff42d15420e4c343fc43 ******/
 		%feature("compactdefaultargs") SetModelRef;
-		%feature("autodoc", "Set field modelref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ModelRef: StepFEA_FeaModel3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ModelRef.
 ") SetModelRef;
 		void SetModelRef(const opencascade::handle<StepFEA_FeaModel3d> & ModelRef);
 
-		/****************** SetProperty ******************/
-		/**** md5 signature: 37076f43b9f1daac3c5de735fa30ac64 ****/
+		/****** StepFEA_Curve3dElementRepresentation::SetProperty ******/
+		/****** md5 signature: 37076f43b9f1daac3c5de735fa30ac64 ******/
 		%feature("compactdefaultargs") SetProperty;
-		%feature("autodoc", "Set field property.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Property: StepFEA_Curve3dElementProperty
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Property.
 ") SetProperty;
 		void SetProperty(const opencascade::handle<StepFEA_Curve3dElementProperty> & Property);
 
@@ -3547,57 +3826,67 @@ None
 *********************************************/
 class StepFEA_CurveElementIntervalConstant : public StepFEA_CurveElementInterval {
 	public:
-		/****************** StepFEA_CurveElementIntervalConstant ******************/
-		/**** md5 signature: 50d00fdfd5b6b139fa89587bee2e1db1 ****/
+		/****** StepFEA_CurveElementIntervalConstant::StepFEA_CurveElementIntervalConstant ******/
+		/****** md5 signature: 50d00fdfd5b6b139fa89587bee2e1db1 ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementIntervalConstant;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementIntervalConstant;
 		 StepFEA_CurveElementIntervalConstant();
 
-		/****************** Init ******************/
-		/**** md5 signature: dd062143b7499e805b0062bf2fe497b7 ****/
+		/****** StepFEA_CurveElementIntervalConstant::Init ******/
+		/****** md5 signature: dd062143b7499e805b0062bf2fe497b7 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aCurveElementInterval_FinishPosition: StepFEA_CurveElementLocation
 aCurveElementInterval_EuAngles: StepBasic_EulerAngles
 aSection: StepElement_CurveElementSectionDefinition
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepFEA_CurveElementLocation> & aCurveElementInterval_FinishPosition, const opencascade::handle<StepBasic_EulerAngles> & aCurveElementInterval_EuAngles, const opencascade::handle<StepElement_CurveElementSectionDefinition> & aSection);
 
-		/****************** Section ******************/
-		/**** md5 signature: d08d2b3ef59b8d73615b11e244a69402 ****/
+		/****** StepFEA_CurveElementIntervalConstant::Section ******/
+		/****** md5 signature: d08d2b3ef59b8d73615b11e244a69402 ******/
 		%feature("compactdefaultargs") Section;
-		%feature("autodoc", "Returns field section.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_CurveElementSectionDefinition>
+
+Description
+-----------
+Returns field Section.
 ") Section;
 		opencascade::handle<StepElement_CurveElementSectionDefinition> Section();
 
-		/****************** SetSection ******************/
-		/**** md5 signature: 9f09cbac0f3594d01c530a7fddd1533f ****/
+		/****** StepFEA_CurveElementIntervalConstant::SetSection ******/
+		/****** md5 signature: 9f09cbac0f3594d01c530a7fddd1533f ******/
 		%feature("compactdefaultargs") SetSection;
-		%feature("autodoc", "Set field section.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Section: StepElement_CurveElementSectionDefinition
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Section.
 ") SetSection;
 		void SetSection(const opencascade::handle<StepElement_CurveElementSectionDefinition> & Section);
 
@@ -3617,57 +3906,67 @@ None
 ****************************************************/
 class StepFEA_CurveElementIntervalLinearlyVarying : public StepFEA_CurveElementInterval {
 	public:
-		/****************** StepFEA_CurveElementIntervalLinearlyVarying ******************/
-		/**** md5 signature: 2ca7aa1db14d24d22bc668b83a5269e0 ****/
+		/****** StepFEA_CurveElementIntervalLinearlyVarying::StepFEA_CurveElementIntervalLinearlyVarying ******/
+		/****** md5 signature: 2ca7aa1db14d24d22bc668b83a5269e0 ******/
 		%feature("compactdefaultargs") StepFEA_CurveElementIntervalLinearlyVarying;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_CurveElementIntervalLinearlyVarying;
 		 StepFEA_CurveElementIntervalLinearlyVarying();
 
-		/****************** Init ******************/
-		/**** md5 signature: 6354189f461f32ff686e7faa86df8210 ****/
+		/****** StepFEA_CurveElementIntervalLinearlyVarying::Init ******/
+		/****** md5 signature: 6354189f461f32ff686e7faa86df8210 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aCurveElementInterval_FinishPosition: StepFEA_CurveElementLocation
 aCurveElementInterval_EuAngles: StepBasic_EulerAngles
 aSections: StepElement_HArray1OfCurveElementSectionDefinition
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<StepFEA_CurveElementLocation> & aCurveElementInterval_FinishPosition, const opencascade::handle<StepBasic_EulerAngles> & aCurveElementInterval_EuAngles, const opencascade::handle<StepElement_HArray1OfCurveElementSectionDefinition> & aSections);
 
-		/****************** Sections ******************/
-		/**** md5 signature: cf65681a8c80fd6de59bb2c317825fc2 ****/
+		/****** StepFEA_CurveElementIntervalLinearlyVarying::Sections ******/
+		/****** md5 signature: cf65681a8c80fd6de59bb2c317825fc2 ******/
 		%feature("compactdefaultargs") Sections;
-		%feature("autodoc", "Returns field sections.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_HArray1OfCurveElementSectionDefinition>
+
+Description
+-----------
+Returns field Sections.
 ") Sections;
 		opencascade::handle<StepElement_HArray1OfCurveElementSectionDefinition> Sections();
 
-		/****************** SetSections ******************/
-		/**** md5 signature: 2841d118c3e3dc6db822c18ee969beaf ****/
+		/****** StepFEA_CurveElementIntervalLinearlyVarying::SetSections ******/
+		/****** md5 signature: 2841d118c3e3dc6db822c18ee969beaf ******/
 		%feature("compactdefaultargs") SetSections;
-		%feature("autodoc", "Set field sections.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Sections: StepElement_HArray1OfCurveElementSectionDefinition
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Sections.
 ") SetSections;
 		void SetSections(const opencascade::handle<StepElement_HArray1OfCurveElementSectionDefinition> & Sections);
 
@@ -3687,14 +3986,16 @@ None
 **************************/
 class StepFEA_DummyNode : public StepFEA_NodeRepresentation {
 	public:
-		/****************** StepFEA_DummyNode ******************/
-		/**** md5 signature: 4d00c9eb2f2ee693c2a53e6018e01474 ****/
+		/****** StepFEA_DummyNode::StepFEA_DummyNode ******/
+		/****** md5 signature: 4d00c9eb2f2ee693c2a53e6018e01474 ******/
 		%feature("compactdefaultargs") StepFEA_DummyNode;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_DummyNode;
 		 StepFEA_DummyNode();
 
@@ -3714,33 +4015,36 @@ None
 *****************************/
 class StepFEA_ElementGroup : public StepFEA_FeaGroup {
 	public:
-		/****************** StepFEA_ElementGroup ******************/
-		/**** md5 signature: 9c280295317ba2c1345728acf07010d9 ****/
+		/****** StepFEA_ElementGroup::StepFEA_ElementGroup ******/
+		/****** md5 signature: 9c280295317ba2c1345728acf07010d9 ******/
 		%feature("compactdefaultargs") StepFEA_ElementGroup;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ElementGroup;
 		 StepFEA_ElementGroup();
 
-		/****************** Elements ******************/
-		/**** md5 signature: 930fdfb5ef3683baf2d1505dd41190ca ****/
+		/****** StepFEA_ElementGroup::Elements ******/
+		/****** md5 signature: 930fdfb5ef3683baf2d1505dd41190ca ******/
 		%feature("compactdefaultargs") Elements;
-		%feature("autodoc", "Returns field elements.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfElementRepresentation>
+
+Description
+-----------
+Returns field Elements.
 ") Elements;
 		opencascade::handle<StepFEA_HArray1OfElementRepresentation> Elements();
 
-		/****************** Init ******************/
-		/**** md5 signature: 2912e09dfb19adec2ae9dd6051d21bb8 ****/
+		/****** StepFEA_ElementGroup::Init ******/
+		/****** md5 signature: 2912e09dfb19adec2ae9dd6051d21bb8 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aGroup_Name: TCollection_HAsciiString
@@ -3748,24 +4052,31 @@ aGroup_Description: TCollection_HAsciiString
 aFeaGroup_ModelRef: StepFEA_FeaModel
 aElements: StepFEA_HArray1OfElementRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aGroup_Name, const opencascade::handle<TCollection_HAsciiString> & aGroup_Description, const opencascade::handle<StepFEA_FeaModel> & aFeaGroup_ModelRef, const opencascade::handle<StepFEA_HArray1OfElementRepresentation> & aElements);
 
-		/****************** SetElements ******************/
-		/**** md5 signature: 9a2706a40fffabc639d0b74a209ad204 ****/
+		/****** StepFEA_ElementGroup::SetElements ******/
+		/****** md5 signature: 9a2706a40fffabc639d0b74a209ad204 ******/
 		%feature("compactdefaultargs") SetElements;
-		%feature("autodoc", "Set field elements.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Elements: StepFEA_HArray1OfElementRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Elements.
 ") SetElements;
 		void SetElements(const opencascade::handle<StepFEA_HArray1OfElementRepresentation> & Elements);
 
@@ -3785,56 +4096,66 @@ None
 *******************************/
 class StepFEA_FeaAreaDensity : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaAreaDensity ******************/
-		/**** md5 signature: 4373f7dae58b0984cdf7069f4e21b045 ****/
+		/****** StepFEA_FeaAreaDensity::StepFEA_FeaAreaDensity ******/
+		/****** md5 signature: 4373f7dae58b0984cdf7069f4e21b045 ******/
 		%feature("compactdefaultargs") StepFEA_FeaAreaDensity;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaAreaDensity;
 		 StepFEA_FeaAreaDensity();
 
-		/****************** FeaConstant ******************/
-		/**** md5 signature: 0a46bd475e120e5b92b1f9101c80c915 ****/
+		/****** StepFEA_FeaAreaDensity::FeaConstant ******/
+		/****** md5 signature: 0a46bd475e120e5b92b1f9101c80c915 ******/
 		%feature("compactdefaultargs") FeaConstant;
-		%feature("autodoc", "Returns field feaconstant.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns field FeaConstant.
 ") FeaConstant;
 		Standard_Real FeaConstant();
 
-		/****************** Init ******************/
-		/**** md5 signature: 42a90c6c44a5ab3ee5b755c471c842f8 ****/
+		/****** StepFEA_FeaAreaDensity::Init ******/
+		/****** md5 signature: 42a90c6c44a5ab3ee5b755c471c842f8 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstant: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const Standard_Real aFeaConstant);
 
-		/****************** SetFeaConstant ******************/
-		/**** md5 signature: 71eb81f7cb130ff77192594450ca8b54 ****/
+		/****** StepFEA_FeaAreaDensity::SetFeaConstant ******/
+		/****** md5 signature: 71eb81f7cb130ff77192594450ca8b54 ******/
 		%feature("compactdefaultargs") SetFeaConstant;
-		%feature("autodoc", "Set field feaconstant.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstant: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstant.
 ") SetFeaConstant;
 		void SetFeaConstant(const Standard_Real FeaConstant);
 
@@ -3854,56 +4175,66 @@ None
 ************************************/
 class StepFEA_FeaLinearElasticity : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaLinearElasticity ******************/
-		/**** md5 signature: b859ff22dc1497c40d811416de1381a2 ****/
+		/****** StepFEA_FeaLinearElasticity::StepFEA_FeaLinearElasticity ******/
+		/****** md5 signature: b859ff22dc1497c40d811416de1381a2 ******/
 		%feature("compactdefaultargs") StepFEA_FeaLinearElasticity;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaLinearElasticity;
 		 StepFEA_FeaLinearElasticity();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 688d10675e49aa881289342eb7f2466c ****/
+		/****** StepFEA_FeaLinearElasticity::FeaConstants ******/
+		/****** md5 signature: 688d10675e49aa881289342eb7f2466c ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor43d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor43d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: c6bcaa6094595fb8120477f88a300003 ****/
+		/****** StepFEA_FeaLinearElasticity::Init ******/
+		/****** md5 signature: c6bcaa6094595fb8120477f88a300003 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor43d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor43d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: 6194f7f1d0082594e7c0f6dd97f507ee ****/
+		/****** StepFEA_FeaLinearElasticity::SetFeaConstants ******/
+		/****** md5 signature: 6194f7f1d0082594e7c0f6dd97f507ee ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor43d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor43d & FeaConstants);
 
@@ -3923,56 +4254,66 @@ None
 *******************************/
 class StepFEA_FeaMassDensity : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaMassDensity ******************/
-		/**** md5 signature: e5b76184481d0fc529c330c7b2cdafe7 ****/
+		/****** StepFEA_FeaMassDensity::StepFEA_FeaMassDensity ******/
+		/****** md5 signature: e5b76184481d0fc529c330c7b2cdafe7 ******/
 		%feature("compactdefaultargs") StepFEA_FeaMassDensity;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaMassDensity;
 		 StepFEA_FeaMassDensity();
 
-		/****************** FeaConstant ******************/
-		/**** md5 signature: 0a46bd475e120e5b92b1f9101c80c915 ****/
+		/****** StepFEA_FeaMassDensity::FeaConstant ******/
+		/****** md5 signature: 0a46bd475e120e5b92b1f9101c80c915 ******/
 		%feature("compactdefaultargs") FeaConstant;
-		%feature("autodoc", "Returns field feaconstant.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns field FeaConstant.
 ") FeaConstant;
 		Standard_Real FeaConstant();
 
-		/****************** Init ******************/
-		/**** md5 signature: 42a90c6c44a5ab3ee5b755c471c842f8 ****/
+		/****** StepFEA_FeaMassDensity::Init ******/
+		/****** md5 signature: 42a90c6c44a5ab3ee5b755c471c842f8 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstant: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const Standard_Real aFeaConstant);
 
-		/****************** SetFeaConstant ******************/
-		/**** md5 signature: 71eb81f7cb130ff77192594450ca8b54 ****/
+		/****** StepFEA_FeaMassDensity::SetFeaConstant ******/
+		/****** md5 signature: 71eb81f7cb130ff77192594450ca8b54 ******/
 		%feature("compactdefaultargs") SetFeaConstant;
-		%feature("autodoc", "Set field feaconstant.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstant: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstant.
 ") SetFeaConstant;
 		void SetFeaConstant(const Standard_Real FeaConstant);
 
@@ -3992,14 +4333,16 @@ None
 ***************************/
 class StepFEA_FeaModel3d : public StepFEA_FeaModel {
 	public:
-		/****************** StepFEA_FeaModel3d ******************/
-		/**** md5 signature: a3678b12def938e5731a0c4bf5b043c0 ****/
+		/****** StepFEA_FeaModel3d::StepFEA_FeaModel3d ******/
+		/****** md5 signature: a3678b12def938e5731a0c4bf5b043c0 ******/
 		%feature("compactdefaultargs") StepFEA_FeaModel3d;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaModel3d;
 		 StepFEA_FeaModel3d();
 
@@ -4019,56 +4362,66 @@ None
 **************************************/
 class StepFEA_FeaMoistureAbsorption : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaMoistureAbsorption ******************/
-		/**** md5 signature: 5aee429a133e6d1e11ab6bda5538a741 ****/
+		/****** StepFEA_FeaMoistureAbsorption::StepFEA_FeaMoistureAbsorption ******/
+		/****** md5 signature: 5aee429a133e6d1e11ab6bda5538a741 ******/
 		%feature("compactdefaultargs") StepFEA_FeaMoistureAbsorption;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaMoistureAbsorption;
 		 StepFEA_FeaMoistureAbsorption();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ****/
+		/****** StepFEA_FeaMoistureAbsorption::FeaConstants ******/
+		/****** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor23d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor23d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: 856efa6707b13ecf49314549078b237d ****/
+		/****** StepFEA_FeaMoistureAbsorption::Init ******/
+		/****** md5 signature: 856efa6707b13ecf49314549078b237d ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor23d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor23d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ****/
+		/****** StepFEA_FeaMoistureAbsorption::SetFeaConstants ******/
+		/****** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor23d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor23d & FeaConstants);
 
@@ -4088,83 +4441,98 @@ None
 *************************************************************/
 class StepFEA_FeaSecantCoefficientOfLinearThermalExpansion : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion ******************/
-		/**** md5 signature: 3bd081ee1a452eac71cd23be1a9173f8 ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::StepFEA_FeaSecantCoefficientOfLinearThermalExpansion ******/
+		/****** md5 signature: 3bd081ee1a452eac71cd23be1a9173f8 ******/
 		%feature("compactdefaultargs") StepFEA_FeaSecantCoefficientOfLinearThermalExpansion;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaSecantCoefficientOfLinearThermalExpansion;
 		 StepFEA_FeaSecantCoefficientOfLinearThermalExpansion();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::FeaConstants ******/
+		/****** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor23d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor23d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: b95492fa5d44ac834a9d2de519137869 ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::Init ******/
+		/****** md5 signature: b95492fa5d44ac834a9d2de519137869 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor23d
 aReferenceTemperature: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor23d & aFeaConstants, const Standard_Real aReferenceTemperature);
 
-		/****************** ReferenceTemperature ******************/
-		/**** md5 signature: d7c8f53ed724be61fdfa20eaa8ba9167 ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::ReferenceTemperature ******/
+		/****** md5 signature: d7c8f53ed724be61fdfa20eaa8ba9167 ******/
 		%feature("compactdefaultargs") ReferenceTemperature;
-		%feature("autodoc", "Returns field referencetemperature.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns field ReferenceTemperature.
 ") ReferenceTemperature;
 		Standard_Real ReferenceTemperature();
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::SetFeaConstants ******/
+		/****** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor23d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor23d & FeaConstants);
 
-		/****************** SetReferenceTemperature ******************/
-		/**** md5 signature: 4e845c51f17d910dd15e28852d2ba448 ****/
+		/****** StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::SetReferenceTemperature ******/
+		/****** md5 signature: 4e845c51f17d910dd15e28852d2ba448 ******/
 		%feature("compactdefaultargs") SetReferenceTemperature;
-		%feature("autodoc", "Set field referencetemperature.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ReferenceTemperature: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ReferenceTemperature.
 ") SetReferenceTemperature;
 		void SetReferenceTemperature(const Standard_Real ReferenceTemperature);
 
@@ -4184,56 +4552,66 @@ None
 *****************************************/
 class StepFEA_FeaShellBendingStiffness : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaShellBendingStiffness ******************/
-		/**** md5 signature: 6d84d02df30fc5fd9f01b199ddbc6ed4 ****/
+		/****** StepFEA_FeaShellBendingStiffness::StepFEA_FeaShellBendingStiffness ******/
+		/****** md5 signature: 6d84d02df30fc5fd9f01b199ddbc6ed4 ******/
 		%feature("compactdefaultargs") StepFEA_FeaShellBendingStiffness;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaShellBendingStiffness;
 		 StepFEA_FeaShellBendingStiffness();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 17b0831295efde53fec75eaac957a571 ****/
+		/****** StepFEA_FeaShellBendingStiffness::FeaConstants ******/
+		/****** md5 signature: 17b0831295efde53fec75eaac957a571 ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor42d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor42d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ****/
+		/****** StepFEA_FeaShellBendingStiffness::Init ******/
+		/****** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor42d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: e2564194cb3d190357bdde0092216991 ****/
+		/****** StepFEA_FeaShellBendingStiffness::SetFeaConstants ******/
+		/****** md5 signature: e2564194cb3d190357bdde0092216991 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor42d & FeaConstants);
 
@@ -4253,56 +4631,66 @@ None
 *********************************************************/
 class StepFEA_FeaShellMembraneBendingCouplingStiffness : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaShellMembraneBendingCouplingStiffness ******************/
-		/**** md5 signature: 896d21357bd5d114274454dc4b319790 ****/
+		/****** StepFEA_FeaShellMembraneBendingCouplingStiffness::StepFEA_FeaShellMembraneBendingCouplingStiffness ******/
+		/****** md5 signature: 896d21357bd5d114274454dc4b319790 ******/
 		%feature("compactdefaultargs") StepFEA_FeaShellMembraneBendingCouplingStiffness;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaShellMembraneBendingCouplingStiffness;
 		 StepFEA_FeaShellMembraneBendingCouplingStiffness();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 17b0831295efde53fec75eaac957a571 ****/
+		/****** StepFEA_FeaShellMembraneBendingCouplingStiffness::FeaConstants ******/
+		/****** md5 signature: 17b0831295efde53fec75eaac957a571 ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor42d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor42d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ****/
+		/****** StepFEA_FeaShellMembraneBendingCouplingStiffness::Init ******/
+		/****** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor42d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: e2564194cb3d190357bdde0092216991 ****/
+		/****** StepFEA_FeaShellMembraneBendingCouplingStiffness::SetFeaConstants ******/
+		/****** md5 signature: e2564194cb3d190357bdde0092216991 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor42d & FeaConstants);
 
@@ -4322,56 +4710,66 @@ None
 ******************************************/
 class StepFEA_FeaShellMembraneStiffness : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaShellMembraneStiffness ******************/
-		/**** md5 signature: daf54acd3527b6df86dd16055442afea ****/
+		/****** StepFEA_FeaShellMembraneStiffness::StepFEA_FeaShellMembraneStiffness ******/
+		/****** md5 signature: daf54acd3527b6df86dd16055442afea ******/
 		%feature("compactdefaultargs") StepFEA_FeaShellMembraneStiffness;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaShellMembraneStiffness;
 		 StepFEA_FeaShellMembraneStiffness();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 17b0831295efde53fec75eaac957a571 ****/
+		/****** StepFEA_FeaShellMembraneStiffness::FeaConstants ******/
+		/****** md5 signature: 17b0831295efde53fec75eaac957a571 ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor42d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor42d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ****/
+		/****** StepFEA_FeaShellMembraneStiffness::Init ******/
+		/****** md5 signature: d3d7c5a16dfa2b993573196ee8b6919a ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor42d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: e2564194cb3d190357bdde0092216991 ****/
+		/****** StepFEA_FeaShellMembraneStiffness::SetFeaConstants ******/
+		/****** md5 signature: e2564194cb3d190357bdde0092216991 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor42d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor42d & FeaConstants);
 
@@ -4391,56 +4789,66 @@ None
 ***************************************/
 class StepFEA_FeaShellShearStiffness : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaShellShearStiffness ******************/
-		/**** md5 signature: 4e0dc3b5c8bf45119aa627105c049cf8 ****/
+		/****** StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness ******/
+		/****** md5 signature: 4e0dc3b5c8bf45119aa627105c049cf8 ******/
 		%feature("compactdefaultargs") StepFEA_FeaShellShearStiffness;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaShellShearStiffness;
 		 StepFEA_FeaShellShearStiffness();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 29fc8df5f095d95b5b581a1fe7eb843b ****/
+		/****** StepFEA_FeaShellShearStiffness::FeaConstants ******/
+		/****** md5 signature: 29fc8df5f095d95b5b581a1fe7eb843b ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor22d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor22d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: 00285169547d2177b84c4f7464d42dae ****/
+		/****** StepFEA_FeaShellShearStiffness::Init ******/
+		/****** md5 signature: 00285169547d2177b84c4f7464d42dae ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor22d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor22d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: 4884034c1a4698d3bc0d7f1a17510d5a ****/
+		/****** StepFEA_FeaShellShearStiffness::SetFeaConstants ******/
+		/****** md5 signature: 4884034c1a4698d3bc0d7f1a17510d5a ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor22d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor22d & FeaConstants);
 
@@ -4460,56 +4868,66 @@ None
 *****************************************************************/
 class StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion : public StepFEA_FeaMaterialPropertyRepresentationItem {
 	public:
-		/****************** StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion ******************/
-		/**** md5 signature: 68803e0c97394eea4919d3c478456395 ****/
+		/****** StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion ******/
+		/****** md5 signature: 68803e0c97394eea4919d3c478456395 ******/
 		%feature("compactdefaultargs") StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion;
 		 StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion();
 
-		/****************** FeaConstants ******************/
-		/**** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ****/
+		/****** StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::FeaConstants ******/
+		/****** md5 signature: 4027771c3a1da6a1080cc98b479d3cea ******/
 		%feature("compactdefaultargs") FeaConstants;
-		%feature("autodoc", "Returns field feaconstants.
-
-Returns
+		%feature("autodoc", "Return
 -------
 StepFEA_SymmetricTensor23d
+
+Description
+-----------
+Returns field FeaConstants.
 ") FeaConstants;
 		StepFEA_SymmetricTensor23d FeaConstants();
 
-		/****************** Init ******************/
-		/**** md5 signature: 856efa6707b13ecf49314549078b237d ****/
+		/****** StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::Init ******/
+		/****** md5 signature: 856efa6707b13ecf49314549078b237d ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aFeaConstants: StepFEA_SymmetricTensor23d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const StepFEA_SymmetricTensor23d & aFeaConstants);
 
-		/****************** SetFeaConstants ******************/
-		/**** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ****/
+		/****** StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::SetFeaConstants ******/
+		/****** md5 signature: 68abf7c765a355e9868c983cb1c8c0e6 ******/
 		%feature("compactdefaultargs") SetFeaConstants;
-		%feature("autodoc", "Set field feaconstants.
-
+		%feature("autodoc", "
 Parameters
 ----------
 FeaConstants: StepFEA_SymmetricTensor23d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field FeaConstants.
 ") SetFeaConstants;
 		void SetFeaConstants(const StepFEA_SymmetricTensor23d & FeaConstants);
 
@@ -4529,14 +4947,16 @@ None
 ******************************/
 class StepFEA_GeometricNode : public StepFEA_NodeRepresentation {
 	public:
-		/****************** StepFEA_GeometricNode ******************/
-		/**** md5 signature: 581941e3b7f7df358f20d9bc26a074d8 ****/
+		/****** StepFEA_GeometricNode::StepFEA_GeometricNode ******/
+		/****** md5 signature: 581941e3b7f7df358f20d9bc26a074d8 ******/
 		%feature("compactdefaultargs") StepFEA_GeometricNode;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_GeometricNode;
 		 StepFEA_GeometricNode();
 
@@ -4556,14 +4976,16 @@ None
 *********************/
 class StepFEA_Node : public StepFEA_NodeRepresentation {
 	public:
-		/****************** StepFEA_Node ******************/
-		/**** md5 signature: 1adb05c4446b864d3974b57f7babe36b ****/
+		/****** StepFEA_Node::StepFEA_Node ******/
+		/****** md5 signature: 1adb05c4446b864d3974b57f7babe36b ******/
 		%feature("compactdefaultargs") StepFEA_Node;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_Node;
 		 StepFEA_Node();
 
@@ -4583,22 +5005,23 @@ None
 **************************/
 class StepFEA_NodeGroup : public StepFEA_FeaGroup {
 	public:
-		/****************** StepFEA_NodeGroup ******************/
-		/**** md5 signature: a347f3d392e72865338ca18fbcb702ab ****/
+		/****** StepFEA_NodeGroup::StepFEA_NodeGroup ******/
+		/****** md5 signature: a347f3d392e72865338ca18fbcb702ab ******/
 		%feature("compactdefaultargs") StepFEA_NodeGroup;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeGroup;
 		 StepFEA_NodeGroup();
 
-		/****************** Init ******************/
-		/**** md5 signature: e7f976e16a2d1d00b1cab14846cb6f45 ****/
+		/****** StepFEA_NodeGroup::Init ******/
+		/****** md5 signature: e7f976e16a2d1d00b1cab14846cb6f45 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aGroup_Name: TCollection_HAsciiString
@@ -4606,35 +5029,44 @@ aGroup_Description: TCollection_HAsciiString
 aFeaGroup_ModelRef: StepFEA_FeaModel
 aNodes: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aGroup_Name, const opencascade::handle<TCollection_HAsciiString> & aGroup_Description, const opencascade::handle<StepFEA_FeaModel> & aFeaGroup_ModelRef, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aNodes);
 
-		/****************** Nodes ******************/
-		/**** md5 signature: 481dfe329e415e43ffa39c24840aa086 ****/
+		/****** StepFEA_NodeGroup::Nodes ******/
+		/****** md5 signature: 481dfe329e415e43ffa39c24840aa086 ******/
 		%feature("compactdefaultargs") Nodes;
-		%feature("autodoc", "Returns field nodes.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_HArray1OfNodeRepresentation>
+
+Description
+-----------
+Returns field Nodes.
 ") Nodes;
 		opencascade::handle<StepFEA_HArray1OfNodeRepresentation> Nodes();
 
-		/****************** SetNodes ******************/
-		/**** md5 signature: d91f98e9b19dce0d990e0fc877dbb9f0 ****/
+		/****** StepFEA_NodeGroup::SetNodes ******/
+		/****** md5 signature: d91f98e9b19dce0d990e0fc877dbb9f0 ******/
 		%feature("compactdefaultargs") SetNodes;
-		%feature("autodoc", "Set field nodes.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Nodes: StepFEA_HArray1OfNodeRepresentation
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Nodes.
 ") SetNodes;
 		void SetNodes(const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & Nodes);
 
@@ -4654,56 +5086,66 @@ None
 ************************************************************/
 class StepFEA_ParametricCurve3dElementCoordinateDirection : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_ParametricCurve3dElementCoordinateDirection ******************/
-		/**** md5 signature: a5489bf90f58470c24ce7cdc2c3f9afa ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateDirection::StepFEA_ParametricCurve3dElementCoordinateDirection ******/
+		/****** md5 signature: a5489bf90f58470c24ce7cdc2c3f9afa ******/
 		%feature("compactdefaultargs") StepFEA_ParametricCurve3dElementCoordinateDirection;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ParametricCurve3dElementCoordinateDirection;
 		 StepFEA_ParametricCurve3dElementCoordinateDirection();
 
-		/****************** Init ******************/
-		/**** md5 signature: 5b5786e201ac9fdcd803e47cdc47b9ca ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateDirection::Init ******/
+		/****** md5 signature: 5b5786e201ac9fdcd803e47cdc47b9ca ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aOrientation: StepGeom_Direction
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepGeom_Direction> & aOrientation);
 
-		/****************** Orientation ******************/
-		/**** md5 signature: c15d8334f768a61c925ef032b15fafce ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateDirection::Orientation ******/
+		/****** md5 signature: c15d8334f768a61c925ef032b15fafce ******/
 		%feature("compactdefaultargs") Orientation;
-		%feature("autodoc", "Returns field orientation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepGeom_Direction>
+
+Description
+-----------
+Returns field Orientation.
 ") Orientation;
 		opencascade::handle<StepGeom_Direction> Orientation();
 
-		/****************** SetOrientation ******************/
-		/**** md5 signature: 9e0c28299b6721e2ad7e674ed5da584b ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateDirection::SetOrientation ******/
+		/****** md5 signature: 9e0c28299b6721e2ad7e674ed5da584b ******/
 		%feature("compactdefaultargs") SetOrientation;
-		%feature("autodoc", "Set field orientation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Orientation: StepGeom_Direction
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Orientation.
 ") SetOrientation;
 		void SetOrientation(const opencascade::handle<StepGeom_Direction> & Orientation);
 
@@ -4723,56 +5165,66 @@ None
 *********************************************************/
 class StepFEA_ParametricCurve3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_ParametricCurve3dElementCoordinateSystem ******************/
-		/**** md5 signature: 1a34a512376ab2e9835162dc7ebd6b4a ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateSystem::StepFEA_ParametricCurve3dElementCoordinateSystem ******/
+		/****** md5 signature: 1a34a512376ab2e9835162dc7ebd6b4a ******/
 		%feature("compactdefaultargs") StepFEA_ParametricCurve3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ParametricCurve3dElementCoordinateSystem;
 		 StepFEA_ParametricCurve3dElementCoordinateSystem();
 
-		/****************** Direction ******************/
-		/**** md5 signature: 5fd1c7f0c3d3f7e2d93c5e2b52cd13a8 ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateSystem::Direction ******/
+		/****** md5 signature: 5fd1c7f0c3d3f7e2d93c5e2b52cd13a8 ******/
 		%feature("compactdefaultargs") Direction;
-		%feature("autodoc", "Returns field direction.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateDirection>
+
+Description
+-----------
+Returns field Direction.
 ") Direction;
 		opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> Direction();
 
-		/****************** Init ******************/
-		/**** md5 signature: 587e14bde37622722ae0e98b9455faf5 ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: 587e14bde37622722ae0e98b9455faf5 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aDirection: StepFEA_ParametricCurve3dElementCoordinateDirection
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> & aDirection);
 
-		/****************** SetDirection ******************/
-		/**** md5 signature: 91959ac1a1ff0fc546d57fb49a4e8133 ****/
+		/****** StepFEA_ParametricCurve3dElementCoordinateSystem::SetDirection ******/
+		/****** md5 signature: 91959ac1a1ff0fc546d57fb49a4e8133 ******/
 		%feature("compactdefaultargs") SetDirection;
-		%feature("autodoc", "Set field direction.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Direction: StepFEA_ParametricCurve3dElementCoordinateDirection
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Direction.
 ") SetDirection;
 		void SetDirection(const opencascade::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> & Direction);
 
@@ -4792,83 +5244,98 @@ None
 ***********************************************************/
 class StepFEA_ParametricSurface3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem {
 	public:
-		/****************** StepFEA_ParametricSurface3dElementCoordinateSystem ******************/
-		/**** md5 signature: b1ec4ff548f7ed078675e916c5de85e4 ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::StepFEA_ParametricSurface3dElementCoordinateSystem ******/
+		/****** md5 signature: b1ec4ff548f7ed078675e916c5de85e4 ******/
 		%feature("compactdefaultargs") StepFEA_ParametricSurface3dElementCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_ParametricSurface3dElementCoordinateSystem;
 		 StepFEA_ParametricSurface3dElementCoordinateSystem();
 
-		/****************** Angle ******************/
-		/**** md5 signature: dce50192c350c43b54f2e88e94e5372a ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::Angle ******/
+		/****** md5 signature: dce50192c350c43b54f2e88e94e5372a ******/
 		%feature("compactdefaultargs") Angle;
-		%feature("autodoc", "Returns field angle.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+Returns field Angle.
 ") Angle;
 		Standard_Real Angle();
 
-		/****************** Axis ******************/
-		/**** md5 signature: 8c835a38d257f157c4c499e54d099895 ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::Axis ******/
+		/****** md5 signature: 8c835a38d257f157c4c499e54d099895 ******/
 		%feature("compactdefaultargs") Axis;
-		%feature("autodoc", "Returns field axis.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+Returns field Axis.
 ") Axis;
 		Standard_Integer Axis();
 
-		/****************** Init ******************/
-		/**** md5 signature: 8b71832374bcd7b3ed64bbf6e1497439 ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::Init ******/
+		/****** md5 signature: 8b71832374bcd7b3ed64bbf6e1497439 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentationItem_Name: TCollection_HAsciiString
 aAxis: int
 aAngle: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentationItem_Name, const Standard_Integer aAxis, const Standard_Real aAngle);
 
-		/****************** SetAngle ******************/
-		/**** md5 signature: a0d60e2a1ea25c193dafa15194b0ab24 ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::SetAngle ******/
+		/****** md5 signature: a0d60e2a1ea25c193dafa15194b0ab24 ******/
 		%feature("compactdefaultargs") SetAngle;
-		%feature("autodoc", "Set field angle.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Angle: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Angle.
 ") SetAngle;
 		void SetAngle(const Standard_Real Angle);
 
-		/****************** SetAxis ******************/
-		/**** md5 signature: 2fce638761516dcb6b748e7c34206f1c ****/
+		/****** StepFEA_ParametricSurface3dElementCoordinateSystem::SetAxis ******/
+		/****** md5 signature: 2fce638761516dcb6b748e7c34206f1c ******/
 		%feature("compactdefaultargs") SetAxis;
-		%feature("autodoc", "Set field axis.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Axis: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Axis.
 ") SetAxis;
 		void SetAxis(const Standard_Integer Axis);
 
@@ -4888,33 +5355,36 @@ None
 ***********************************************/
 class StepFEA_Surface3dElementRepresentation : public StepFEA_ElementRepresentation {
 	public:
-		/****************** StepFEA_Surface3dElementRepresentation ******************/
-		/**** md5 signature: 8f0b9651541d276e1fd7fe1119f05e42 ****/
+		/****** StepFEA_Surface3dElementRepresentation::StepFEA_Surface3dElementRepresentation ******/
+		/****** md5 signature: 8f0b9651541d276e1fd7fe1119f05e42 ******/
 		%feature("compactdefaultargs") StepFEA_Surface3dElementRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_Surface3dElementRepresentation;
 		 StepFEA_Surface3dElementRepresentation();
 
-		/****************** ElementDescriptor ******************/
-		/**** md5 signature: 85a49e218d8144b147b4edc767bd2ed6 ****/
+		/****** StepFEA_Surface3dElementRepresentation::ElementDescriptor ******/
+		/****** md5 signature: 85a49e218d8144b147b4edc767bd2ed6 ******/
 		%feature("compactdefaultargs") ElementDescriptor;
-		%feature("autodoc", "Returns field elementdescriptor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_Surface3dElementDescriptor>
+
+Description
+-----------
+Returns field ElementDescriptor.
 ") ElementDescriptor;
 		opencascade::handle<StepElement_Surface3dElementDescriptor> ElementDescriptor();
 
-		/****************** Init ******************/
-		/**** md5 signature: f6611ef61b997946cdf6603fd888af6f ****/
+		/****** StepFEA_Surface3dElementRepresentation::Init ******/
+		/****** md5 signature: f6611ef61b997946cdf6603fd888af6f ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -4926,102 +5396,124 @@ aElementDescriptor: StepElement_Surface3dElementDescriptor
 aProperty: StepElement_SurfaceElementProperty
 aMaterial: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aElementRepresentation_NodeList, const opencascade::handle<StepFEA_FeaModel3d> & aModelRef, const opencascade::handle<StepElement_Surface3dElementDescriptor> & aElementDescriptor, const opencascade::handle<StepElement_SurfaceElementProperty> & aProperty, const opencascade::handle<StepElement_ElementMaterial> & aMaterial);
 
-		/****************** Material ******************/
-		/**** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ****/
+		/****** StepFEA_Surface3dElementRepresentation::Material ******/
+		/****** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ******/
 		%feature("compactdefaultargs") Material;
-		%feature("autodoc", "Returns field material.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_ElementMaterial>
+
+Description
+-----------
+Returns field Material.
 ") Material;
 		opencascade::handle<StepElement_ElementMaterial> Material();
 
-		/****************** ModelRef ******************/
-		/**** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ****/
+		/****** StepFEA_Surface3dElementRepresentation::ModelRef ******/
+		/****** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ******/
 		%feature("compactdefaultargs") ModelRef;
-		%feature("autodoc", "Returns field modelref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaModel3d>
+
+Description
+-----------
+Returns field ModelRef.
 ") ModelRef;
 		opencascade::handle<StepFEA_FeaModel3d> ModelRef();
 
-		/****************** Property ******************/
-		/**** md5 signature: 4d560d1ac294e97b4afb29cc73669b8f ****/
+		/****** StepFEA_Surface3dElementRepresentation::Property ******/
+		/****** md5 signature: 4d560d1ac294e97b4afb29cc73669b8f ******/
 		%feature("compactdefaultargs") Property;
-		%feature("autodoc", "Returns field property.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_SurfaceElementProperty>
+
+Description
+-----------
+Returns field Property.
 ") Property;
 		opencascade::handle<StepElement_SurfaceElementProperty> Property();
 
-		/****************** SetElementDescriptor ******************/
-		/**** md5 signature: f8f6ddf12c36d78b354b483e6cc8ccca ****/
+		/****** StepFEA_Surface3dElementRepresentation::SetElementDescriptor ******/
+		/****** md5 signature: f8f6ddf12c36d78b354b483e6cc8ccca ******/
 		%feature("compactdefaultargs") SetElementDescriptor;
-		%feature("autodoc", "Set field elementdescriptor.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ElementDescriptor: StepElement_Surface3dElementDescriptor
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ElementDescriptor.
 ") SetElementDescriptor;
 		void SetElementDescriptor(const opencascade::handle<StepElement_Surface3dElementDescriptor> & ElementDescriptor);
 
-		/****************** SetMaterial ******************/
-		/**** md5 signature: 224016d312e5b2f0ec58641cb367214d ****/
+		/****** StepFEA_Surface3dElementRepresentation::SetMaterial ******/
+		/****** md5 signature: 224016d312e5b2f0ec58641cb367214d ******/
 		%feature("compactdefaultargs") SetMaterial;
-		%feature("autodoc", "Set field material.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Material: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Material.
 ") SetMaterial;
 		void SetMaterial(const opencascade::handle<StepElement_ElementMaterial> & Material);
 
-		/****************** SetModelRef ******************/
-		/**** md5 signature: be7659867f17ff42d15420e4c343fc43 ****/
+		/****** StepFEA_Surface3dElementRepresentation::SetModelRef ******/
+		/****** md5 signature: be7659867f17ff42d15420e4c343fc43 ******/
 		%feature("compactdefaultargs") SetModelRef;
-		%feature("autodoc", "Set field modelref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ModelRef: StepFEA_FeaModel3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ModelRef.
 ") SetModelRef;
 		void SetModelRef(const opencascade::handle<StepFEA_FeaModel3d> & ModelRef);
 
-		/****************** SetProperty ******************/
-		/**** md5 signature: 480ff49a137fee223f7e8342979b3816 ****/
+		/****** StepFEA_Surface3dElementRepresentation::SetProperty ******/
+		/****** md5 signature: 480ff49a137fee223f7e8342979b3816 ******/
 		%feature("compactdefaultargs") SetProperty;
-		%feature("autodoc", "Set field property.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Property: StepElement_SurfaceElementProperty
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Property.
 ") SetProperty;
 		void SetProperty(const opencascade::handle<StepElement_SurfaceElementProperty> & Property);
 
@@ -5041,33 +5533,36 @@ None
 **********************************************/
 class StepFEA_Volume3dElementRepresentation : public StepFEA_ElementRepresentation {
 	public:
-		/****************** StepFEA_Volume3dElementRepresentation ******************/
-		/**** md5 signature: 2d4b0c806245608d7ae1ade6e6ea740b ****/
+		/****** StepFEA_Volume3dElementRepresentation::StepFEA_Volume3dElementRepresentation ******/
+		/****** md5 signature: 2d4b0c806245608d7ae1ade6e6ea740b ******/
 		%feature("compactdefaultargs") StepFEA_Volume3dElementRepresentation;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_Volume3dElementRepresentation;
 		 StepFEA_Volume3dElementRepresentation();
 
-		/****************** ElementDescriptor ******************/
-		/**** md5 signature: c0e0e1be420873c6ac799075c1fbe2bf ****/
+		/****** StepFEA_Volume3dElementRepresentation::ElementDescriptor ******/
+		/****** md5 signature: c0e0e1be420873c6ac799075c1fbe2bf ******/
 		%feature("compactdefaultargs") ElementDescriptor;
-		%feature("autodoc", "Returns field elementdescriptor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_Volume3dElementDescriptor>
+
+Description
+-----------
+Returns field ElementDescriptor.
 ") ElementDescriptor;
 		opencascade::handle<StepElement_Volume3dElementDescriptor> ElementDescriptor();
 
-		/****************** Init ******************/
-		/**** md5 signature: 42456ddb362a8999c5a16908e92a86f0 ****/
+		/****** StepFEA_Volume3dElementRepresentation::Init ******/
+		/****** md5 signature: 42456ddb362a8999c5a16908e92a86f0 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "Initialize all fields (own and inherited).
-
+		%feature("autodoc", "
 Parameters
 ----------
 aRepresentation_Name: TCollection_HAsciiString
@@ -5078,76 +5573,93 @@ aModelRef: StepFEA_FeaModel3d
 aElementDescriptor: StepElement_Volume3dElementDescriptor
 aMaterial: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Initialize all fields (own and inherited).
 ") Init;
 		void Init(const opencascade::handle<TCollection_HAsciiString> & aRepresentation_Name, const opencascade::handle<StepRepr_HArray1OfRepresentationItem> & aRepresentation_Items, const opencascade::handle<StepRepr_RepresentationContext> & aRepresentation_ContextOfItems, const opencascade::handle<StepFEA_HArray1OfNodeRepresentation> & aElementRepresentation_NodeList, const opencascade::handle<StepFEA_FeaModel3d> & aModelRef, const opencascade::handle<StepElement_Volume3dElementDescriptor> & aElementDescriptor, const opencascade::handle<StepElement_ElementMaterial> & aMaterial);
 
-		/****************** Material ******************/
-		/**** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ****/
+		/****** StepFEA_Volume3dElementRepresentation::Material ******/
+		/****** md5 signature: d6c4d9812dbdfac4cc3b5047d6625c8d ******/
 		%feature("compactdefaultargs") Material;
-		%feature("autodoc", "Returns field material.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepElement_ElementMaterial>
+
+Description
+-----------
+Returns field Material.
 ") Material;
 		opencascade::handle<StepElement_ElementMaterial> Material();
 
-		/****************** ModelRef ******************/
-		/**** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ****/
+		/****** StepFEA_Volume3dElementRepresentation::ModelRef ******/
+		/****** md5 signature: 3396b3c3f41fca848f8edae9b26835a6 ******/
 		%feature("compactdefaultargs") ModelRef;
-		%feature("autodoc", "Returns field modelref.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<StepFEA_FeaModel3d>
+
+Description
+-----------
+Returns field ModelRef.
 ") ModelRef;
 		opencascade::handle<StepFEA_FeaModel3d> ModelRef();
 
-		/****************** SetElementDescriptor ******************/
-		/**** md5 signature: afbfb0a9dd6aaf0a196021f77b6dbcec ****/
+		/****** StepFEA_Volume3dElementRepresentation::SetElementDescriptor ******/
+		/****** md5 signature: afbfb0a9dd6aaf0a196021f77b6dbcec ******/
 		%feature("compactdefaultargs") SetElementDescriptor;
-		%feature("autodoc", "Set field elementdescriptor.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ElementDescriptor: StepElement_Volume3dElementDescriptor
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ElementDescriptor.
 ") SetElementDescriptor;
 		void SetElementDescriptor(const opencascade::handle<StepElement_Volume3dElementDescriptor> & ElementDescriptor);
 
-		/****************** SetMaterial ******************/
-		/**** md5 signature: 224016d312e5b2f0ec58641cb367214d ****/
+		/****** StepFEA_Volume3dElementRepresentation::SetMaterial ******/
+		/****** md5 signature: 224016d312e5b2f0ec58641cb367214d ******/
 		%feature("compactdefaultargs") SetMaterial;
-		%feature("autodoc", "Set field material.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Material: StepElement_ElementMaterial
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field Material.
 ") SetMaterial;
 		void SetMaterial(const opencascade::handle<StepElement_ElementMaterial> & Material);
 
-		/****************** SetModelRef ******************/
-		/**** md5 signature: be7659867f17ff42d15420e4c343fc43 ****/
+		/****** StepFEA_Volume3dElementRepresentation::SetModelRef ******/
+		/****** md5 signature: be7659867f17ff42d15420e4c343fc43 ******/
 		%feature("compactdefaultargs") SetModelRef;
-		%feature("autodoc", "Set field modelref.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ModelRef: StepFEA_FeaModel3d
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set field ModelRef.
 ") SetModelRef;
 		void SetModelRef(const opencascade::handle<StepFEA_FeaModel3d> & ModelRef);
 
@@ -5167,14 +5679,16 @@ None
 *************************************************/
 class StepFEA_NodeWithSolutionCoordinateSystem : public StepFEA_Node {
 	public:
-		/****************** StepFEA_NodeWithSolutionCoordinateSystem ******************/
-		/**** md5 signature: 9f8b4d4baa08136866108a6a226f7fa4 ****/
+		/****** StepFEA_NodeWithSolutionCoordinateSystem::StepFEA_NodeWithSolutionCoordinateSystem ******/
+		/****** md5 signature: 9f8b4d4baa08136866108a6a226f7fa4 ******/
 		%feature("compactdefaultargs") StepFEA_NodeWithSolutionCoordinateSystem;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeWithSolutionCoordinateSystem;
 		 StepFEA_NodeWithSolutionCoordinateSystem();
 
@@ -5194,14 +5708,16 @@ None
 *******************************/
 class StepFEA_NodeWithVector : public StepFEA_Node {
 	public:
-		/****************** StepFEA_NodeWithVector ******************/
-		/**** md5 signature: 32d260c195ad31343d7616c4d4a5d8cf ****/
+		/****** StepFEA_NodeWithVector::StepFEA_NodeWithVector ******/
+		/****** md5 signature: 32d260c195ad31343d7616c4d4a5d8cf ******/
 		%feature("compactdefaultargs") StepFEA_NodeWithVector;
-		%feature("autodoc", "Empty constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Empty constructor.
 ") StepFEA_NodeWithVector;
 		 StepFEA_NodeWithVector();
 
@@ -5218,17 +5734,6 @@ None
 
 /* harray1 classes */
 
-class StepFEA_HArray1OfCurveElementInterval : public StepFEA_Array1OfCurveElementInterval, public Standard_Transient {
-  public:
-    StepFEA_HArray1OfCurveElementInterval(const Standard_Integer theLower, const Standard_Integer theUpper);
-    StepFEA_HArray1OfCurveElementInterval(const Standard_Integer theLower, const Standard_Integer theUpper, const StepFEA_Array1OfCurveElementInterval::value_type& theValue);
-    StepFEA_HArray1OfCurveElementInterval(const StepFEA_Array1OfCurveElementInterval& theOther);
-    const StepFEA_Array1OfCurveElementInterval& Array1();
-    StepFEA_Array1OfCurveElementInterval& ChangeArray1();
-};
-%make_alias(StepFEA_HArray1OfCurveElementInterval)
-
-
 class StepFEA_HArray1OfCurveElementEndOffset : public StepFEA_Array1OfCurveElementEndOffset, public Standard_Transient {
   public:
     StepFEA_HArray1OfCurveElementEndOffset(const Standard_Integer theLower, const Standard_Integer theUpper);
@@ -5238,17 +5743,6 @@ class StepFEA_HArray1OfCurveElementEndOffset : public StepFEA_Array1OfCurveEleme
     StepFEA_Array1OfCurveElementEndOffset& ChangeArray1();
 };
 %make_alias(StepFEA_HArray1OfCurveElementEndOffset)
-
-
-class StepFEA_HArray1OfElementRepresentation : public StepFEA_Array1OfElementRepresentation, public Standard_Transient {
-  public:
-    StepFEA_HArray1OfElementRepresentation(const Standard_Integer theLower, const Standard_Integer theUpper);
-    StepFEA_HArray1OfElementRepresentation(const Standard_Integer theLower, const Standard_Integer theUpper, const StepFEA_Array1OfElementRepresentation::value_type& theValue);
-    StepFEA_HArray1OfElementRepresentation(const StepFEA_Array1OfElementRepresentation& theOther);
-    const StepFEA_Array1OfElementRepresentation& Array1();
-    StepFEA_Array1OfElementRepresentation& ChangeArray1();
-};
-%make_alias(StepFEA_HArray1OfElementRepresentation)
 
 
 class StepFEA_HArray1OfCurveElementEndRelease : public StepFEA_Array1OfCurveElementEndRelease, public Standard_Transient {
@@ -5262,6 +5756,17 @@ class StepFEA_HArray1OfCurveElementEndRelease : public StepFEA_Array1OfCurveElem
 %make_alias(StepFEA_HArray1OfCurveElementEndRelease)
 
 
+class StepFEA_HArray1OfCurveElementInterval : public StepFEA_Array1OfCurveElementInterval, public Standard_Transient {
+  public:
+    StepFEA_HArray1OfCurveElementInterval(const Standard_Integer theLower, const Standard_Integer theUpper);
+    StepFEA_HArray1OfCurveElementInterval(const Standard_Integer theLower, const Standard_Integer theUpper, const StepFEA_Array1OfCurveElementInterval::value_type& theValue);
+    StepFEA_HArray1OfCurveElementInterval(const StepFEA_Array1OfCurveElementInterval& theOther);
+    const StepFEA_Array1OfCurveElementInterval& Array1();
+    StepFEA_Array1OfCurveElementInterval& ChangeArray1();
+};
+%make_alias(StepFEA_HArray1OfCurveElementInterval)
+
+
 class StepFEA_HArray1OfDegreeOfFreedom : public StepFEA_Array1OfDegreeOfFreedom, public Standard_Transient {
   public:
     StepFEA_HArray1OfDegreeOfFreedom(const Standard_Integer theLower, const Standard_Integer theUpper);
@@ -5271,6 +5776,17 @@ class StepFEA_HArray1OfDegreeOfFreedom : public StepFEA_Array1OfDegreeOfFreedom,
     StepFEA_Array1OfDegreeOfFreedom& ChangeArray1();
 };
 %make_alias(StepFEA_HArray1OfDegreeOfFreedom)
+
+
+class StepFEA_HArray1OfElementRepresentation : public StepFEA_Array1OfElementRepresentation, public Standard_Transient {
+  public:
+    StepFEA_HArray1OfElementRepresentation(const Standard_Integer theLower, const Standard_Integer theUpper);
+    StepFEA_HArray1OfElementRepresentation(const Standard_Integer theLower, const Standard_Integer theUpper, const StepFEA_Array1OfElementRepresentation::value_type& theValue);
+    StepFEA_HArray1OfElementRepresentation(const StepFEA_Array1OfElementRepresentation& theOther);
+    const StepFEA_Array1OfElementRepresentation& Array1();
+    StepFEA_Array1OfElementRepresentation& ChangeArray1();
+};
+%make_alias(StepFEA_HArray1OfElementRepresentation)
 
 
 class StepFEA_HArray1OfNodeRepresentation : public StepFEA_Array1OfNodeRepresentation, public Standard_Transient {
@@ -5285,16 +5801,16 @@ class StepFEA_HArray1OfNodeRepresentation : public StepFEA_Array1OfNodeRepresent
 
 /* harray2 classes */
 /* hsequence classes */
-class StepFEA_HSequenceOfElementRepresentation : public StepFEA_SequenceOfElementRepresentation, public Standard_Transient {
+class StepFEA_HSequenceOfCurve3dElementProperty : public StepFEA_SequenceOfCurve3dElementProperty, public Standard_Transient {
   public:
-    StepFEA_HSequenceOfElementRepresentation();
-    StepFEA_HSequenceOfElementRepresentation(const StepFEA_SequenceOfElementRepresentation& theOther);
-    const StepFEA_SequenceOfElementRepresentation& Sequence();
-    void Append (const StepFEA_SequenceOfElementRepresentation::value_type& theItem);
-    void Append (StepFEA_SequenceOfElementRepresentation& theSequence);
-    StepFEA_SequenceOfElementRepresentation& ChangeSequence();
+    StepFEA_HSequenceOfCurve3dElementProperty();
+    StepFEA_HSequenceOfCurve3dElementProperty(const StepFEA_SequenceOfCurve3dElementProperty& theOther);
+    const StepFEA_SequenceOfCurve3dElementProperty& Sequence();
+    void Append (const StepFEA_SequenceOfCurve3dElementProperty::value_type& theItem);
+    void Append (StepFEA_SequenceOfCurve3dElementProperty& theSequence);
+    StepFEA_SequenceOfCurve3dElementProperty& ChangeSequence();
 };
-%make_alias(StepFEA_HSequenceOfElementRepresentation)
+%make_alias(StepFEA_HSequenceOfCurve3dElementProperty)
 
 
 class StepFEA_HSequenceOfElementGeometricRelationship : public StepFEA_SequenceOfElementGeometricRelationship, public Standard_Transient {
@@ -5309,6 +5825,18 @@ class StepFEA_HSequenceOfElementGeometricRelationship : public StepFEA_SequenceO
 %make_alias(StepFEA_HSequenceOfElementGeometricRelationship)
 
 
+class StepFEA_HSequenceOfElementRepresentation : public StepFEA_SequenceOfElementRepresentation, public Standard_Transient {
+  public:
+    StepFEA_HSequenceOfElementRepresentation();
+    StepFEA_HSequenceOfElementRepresentation(const StepFEA_SequenceOfElementRepresentation& theOther);
+    const StepFEA_SequenceOfElementRepresentation& Sequence();
+    void Append (const StepFEA_SequenceOfElementRepresentation::value_type& theItem);
+    void Append (StepFEA_SequenceOfElementRepresentation& theSequence);
+    StepFEA_SequenceOfElementRepresentation& ChangeSequence();
+};
+%make_alias(StepFEA_HSequenceOfElementRepresentation)
+
+
 class StepFEA_HSequenceOfNodeRepresentation : public StepFEA_SequenceOfNodeRepresentation, public Standard_Transient {
   public:
     StepFEA_HSequenceOfNodeRepresentation();
@@ -5321,15 +5849,6 @@ class StepFEA_HSequenceOfNodeRepresentation : public StepFEA_SequenceOfNodeRepre
 %make_alias(StepFEA_HSequenceOfNodeRepresentation)
 
 
-class StepFEA_HSequenceOfCurve3dElementProperty : public StepFEA_SequenceOfCurve3dElementProperty, public Standard_Transient {
-  public:
-    StepFEA_HSequenceOfCurve3dElementProperty();
-    StepFEA_HSequenceOfCurve3dElementProperty(const StepFEA_SequenceOfCurve3dElementProperty& theOther);
-    const StepFEA_SequenceOfCurve3dElementProperty& Sequence();
-    void Append (const StepFEA_SequenceOfCurve3dElementProperty::value_type& theItem);
-    void Append (StepFEA_SequenceOfCurve3dElementProperty& theSequence);
-    StepFEA_SequenceOfCurve3dElementProperty& ChangeSequence();
-};
-%make_alias(StepFEA_HSequenceOfCurve3dElementProperty)
-
-
+/* class aliases */
+%pythoncode {
+}

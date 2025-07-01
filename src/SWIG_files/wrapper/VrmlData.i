@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define VRMLDATADOCSTRING
 "VrmlData module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_vrmldata.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_vrmldata.html"
 %enddef
 %module (package="OCC.Core", docstring=VRMLDATADOCSTRING) VrmlData
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_vrmldata.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -95,7 +98,7 @@ enum VrmlData_ErrorStatus {
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 
 class VrmlData_ErrorStatus(IntEnum):
@@ -191,215 +194,256 @@ typedef NCollection_Map<opencascade::handle<VrmlData_Node>> VrmlData_MapOfNode;
 %nodefaultctor VrmlData_Node;
 class VrmlData_Node : public Standard_Transient {
 	public:
-		/****************** Clone ******************/
-		/**** md5 signature: 38d4971277e3d118e2102169429f1309 ****/
+		/****** VrmlData_Node::Clone ******/
+		/****** md5 signature: 38d4971277e3d118e2102169429f1309 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified.<p> * this method nullifies the argument node if its member myscene differs * from that one of the current instance. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 &: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified.<p> * This method nullifies the argument node if its member myScene differs * from that one of the current instance. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node > &);
 
-		/****************** GlobalIndent ******************/
-		/**** md5 signature: 34dc63c04f14bab986cae9b597e23160 ****/
+		/****** VrmlData_Node::GlobalIndent ******/
+		/****** md5 signature: 34dc63c04f14bab986cae9b597e23160 ******/
 		%feature("compactdefaultargs") GlobalIndent;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
-inline int
+int
+
+Description
+-----------
+/** * Define the common Indent in spaces, for writing all nodes. */.
 ") GlobalIndent;
-		static inline Standard_Integer GlobalIndent();
+		static Standard_Integer GlobalIndent();
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 1b7a136faa0c8ac407d7529214546ac4 ****/
+		/****** VrmlData_Node::IsDefault ******/
+		/****** md5 signature: 1b7a136faa0c8ac407d7529214546ac4 ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, then it would not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, then it would not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Name ******************/
-		/**** md5 signature: 2c4c1f4b45fa5a8704130a64841502c2 ****/
+		/****** VrmlData_Node::Name ******/
+		/****** md5 signature: 2c4c1f4b45fa5a8704130a64841502c2 ******/
 		%feature("compactdefaultargs") Name;
-		%feature("autodoc", "/** * query the name */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 char *
+
+Description
+-----------
+/** * Query the name */.
 ") Name;
 		const char * Name();
 
-		/****************** OK ******************/
-		/**** md5 signature: cb1fbcecf8852bbcc5ef89f9f2e03292 ****/
+		/****** VrmlData_Node::OK ******/
+		/****** md5 signature: cb1fbcecf8852bbcc5ef89f9f2e03292 ******/
 		%feature("compactdefaultargs") OK;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theStat: VrmlData_ErrorStatus
 
-Returns
+Return
 -------
-inline bool
+bool
+
+Description
+-----------
+No available documentation.
 ") OK;
-		static inline Standard_Boolean OK(const VrmlData_ErrorStatus theStat);
+		static Standard_Boolean OK(const VrmlData_ErrorStatus theStat);
 
-		/****************** OK ******************/
-		/**** md5 signature: 78490ef035e0d10fa78bb02187dae4ae ****/
+		/****** VrmlData_Node::OK ******/
+		/****** md5 signature: 78490ef035e0d10fa78bb02187dae4ae ******/
 		%feature("compactdefaultargs") OK;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
+theStat: VrmlData_ErrorStatus
+
+Return
+-------
 outStat: VrmlData_ErrorStatus
-theStat: VrmlData_ErrorStatus
 
-Returns
--------
-inline bool
+Description
+-----------
+No available documentation.
 ") OK;
-		static inline Standard_Boolean OK(VrmlData_ErrorStatus & outStat, const VrmlData_ErrorStatus theStat);
+		static Standard_Boolean OK(VrmlData_ErrorStatus &OutValue, const VrmlData_ErrorStatus theStat);
 
-		/****************** Read ******************/
-		/**** md5 signature: 1ad536bb6f0a141f658023ed487ae5c4 ****/
+		/****** VrmlData_Node::Read ******/
+		/****** md5 signature: 1ad536bb6f0a141f658023ed487ae5c4 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** ReadBoolean ******************/
-		/**** md5 signature: d7acd275cf78c930f898aae17a29f008 ****/
+		/****** VrmlData_Node::ReadBoolean ******/
+		/****** md5 signature: d7acd275cf78c930f898aae17a29f008 ******/
 		%feature("compactdefaultargs") ReadBoolean;
-		%feature("autodoc", "/** * read one boolean value (true or false). */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 theResult: bool
+
+Description
+-----------
+/** * Read one boolean value (True or False). */.
 ") ReadBoolean;
 		static VrmlData_ErrorStatus ReadBoolean(VrmlData_InBuffer & theBuffer, Standard_Boolean &OutValue);
 
-		/****************** ReadInteger ******************/
-		/**** md5 signature: e68a6013750cd6f9172d2976a08fcd99 ****/
+		/****** VrmlData_Node::ReadInteger ******/
+		/****** md5 signature: e68a6013750cd6f9172d2976a08fcd99 ******/
 		%feature("compactdefaultargs") ReadInteger;
-		%feature("autodoc", "/** * read one integer value. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 theResult: long
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read one integer value. */.
 ") ReadInteger;
 		static VrmlData_ErrorStatus ReadInteger(VrmlData_InBuffer & theBuffer, long & theResult);
 
-		/****************** ReadMultiString ******************/
-		/**** md5 signature: e2fb1c34c24297cb83cdb64600a1f3a9 ****/
+		/****** VrmlData_Node::ReadMultiString ******/
+		/****** md5 signature: e2fb1c34c24297cb83cdb64600a1f3a9 ******/
 		%feature("compactdefaultargs") ReadMultiString;
-		%feature("autodoc", "/** * read one quoted string, the quotes are removed. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 theRes: NCollection_List<TCollection_AsciiString>
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read one quoted string, the quotes are removed. */.
 ") ReadMultiString;
 		static VrmlData_ErrorStatus ReadMultiString(VrmlData_InBuffer & theBuffer, NCollection_List<TCollection_AsciiString> & theRes);
 
-		/****************** ReadNode ******************/
-		/**** md5 signature: 879da44ca3b131a6f63b8cf28d587f04 ****/
+		/****** VrmlData_Node::ReadNode ******/
+		/****** md5 signature: 879da44ca3b131a6f63b8cf28d587f04 ******/
 		%feature("compactdefaultargs") ReadNode;
-		%feature("autodoc", "/** * read a complete node definition from vrml stream * @param thebuffer * buffer receiving the input data. * @param thenode * <tt>[out]</tt> node restored from the buffer data * @param type * node type to be checked. if it is null(default) no type checking is done. * otherwise the created node is matched and an error is returned if * no match detected. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 theNode: VrmlData_Node
-Type: Standard_Type,optional
-	default value is NULL
+Type: Standard_Type (optional, default to NULL)
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read a complete node definition from VRML stream * 
+Parameter theBuffer * Buffer receiving the input data. * 
+Parameter theNode * <tt>[out]</tt> Node restored from the buffer data * 
+Parameter Type * Node type to be checked. If it is NULL(default) no type checking is done. * Otherwise the created node is matched and an error is returned if * no match detected. */.
 ") ReadNode;
 		VrmlData_ErrorStatus ReadNode(VrmlData_InBuffer & theBuffer, opencascade::handle<VrmlData_Node> & theNode, const opencascade::handle<Standard_Type> & Type = NULL);
 
-		/****************** ReadString ******************/
-		/**** md5 signature: 10bb9614bca7b920e23bdbdf23c9c677 ****/
+		/****** VrmlData_Node::ReadString ******/
+		/****** md5 signature: 10bb9614bca7b920e23bdbdf23c9c677 ******/
 		%feature("compactdefaultargs") ReadString;
-		%feature("autodoc", "/** * read one quoted string, the quotes are removed. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
-theRes: TCollection_AsciiString
+theRes: str
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read one quoted string, the quotes are removed. */.
 ") ReadString;
 		static VrmlData_ErrorStatus ReadString(VrmlData_InBuffer & theBuffer, TCollection_AsciiString & theRes);
 
-		/****************** Scene ******************/
-		/**** md5 signature: 7cd55fa14ff98139c875d8a22b2dae83 ****/
+		/****** VrmlData_Node::Scene ******/
+		/****** md5 signature: 7cd55fa14ff98139c875d8a22b2dae83 ******/
 		%feature("compactdefaultargs") Scene;
-		%feature("autodoc", "/** * query the scene that contains this node */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 VrmlData_Scene
+
+Description
+-----------
+/** * Query the Scene that contains this Node */.
 ") Scene;
 		const VrmlData_Scene & Scene();
 
-		/****************** Write ******************/
-		/**** md5 signature: cb843c1e0dee6a359cf95725d05270a5 ****/
+		/****** VrmlData_Node::Write ******/
+		/****** md5 signature: cb843c1e0dee6a359cf95725d05270a5 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
-		/****************** WriteClosing ******************/
-		/**** md5 signature: 0f7fa21c7b0e728fbde404c8b35ba2ee ****/
+		/****** VrmlData_Node::WriteClosing ******/
+		/****** md5 signature: 0f7fa21c7b0e728fbde404c8b35ba2ee ******/
 		%feature("compactdefaultargs") WriteClosing;
-		%feature("autodoc", "/** * write the closing brace in the end of a node output. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the closing brace in the end of a node output. */.
 ") WriteClosing;
 		VrmlData_ErrorStatus WriteClosing();
 
@@ -420,220 +464,271 @@ VrmlData_ErrorStatus
 class VrmlData_Scene {
 	public:
 typedef VrmlData_ListOfNode ::Iterator Iterator;
-		/****************** VrmlData_Scene ******************/
-		/**** md5 signature: 1e25ecb1dc18d738bfd2921992deea3b ****/
+		/****** VrmlData_Scene::VrmlData_Scene ******/
+		/****** md5 signature: 1e25ecb1dc18d738bfd2921992deea3b ******/
 		%feature("compactdefaultargs") VrmlData_Scene;
-		%feature("autodoc", "/** * constructor. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
-&: NCollection_IncAllocator,optional
-	default value is 0L
+&: NCollection_IncAllocator (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. */.
 ") VrmlData_Scene;
 		 VrmlData_Scene(const opencascade::handle<NCollection_IncAllocator > & = 0L);
 
-		/****************** AddNode ******************/
-		/**** md5 signature: 6a4ae55d6e300286914af41a6d87f1a0 ****/
+		/****** VrmlData_Scene::AddNode ******/
+		/****** md5 signature: 6a4ae55d6e300286914af41a6d87f1a0 ******/
 		%feature("compactdefaultargs") AddNode;
-		%feature("autodoc", "/** * add a node. if then belongs to another scene, it is cloned. * <p>vrmldata_worldinfo cannot be added, in this case the method * returns a null handle. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theN: VrmlData_Node
-isTopLevel: bool,optional
-	default value is Standard_True
+isTopLevel: bool (optional, default to Standard_True)
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Add a Node. If theN belongs to another Scene, it is cloned. * <p>VrmlData_WorldInfo cannot be added, in this case the method * returns a NULL handle. */.
 ") AddNode;
 		const opencascade::handle<VrmlData_Node> & AddNode(const opencascade::handle<VrmlData_Node> & theN, const Standard_Boolean isTopLevel = Standard_True);
 
-		/****************** Allocator ******************/
-		/**** md5 signature: 4e28fef9a355f8e2f25d143af5e72dd8 ****/
+		/****** VrmlData_Scene::Allocator ******/
+		/****** md5 signature: 4e28fef9a355f8e2f25d143af5e72dd8 ******/
 		%feature("compactdefaultargs") Allocator;
-		%feature("autodoc", "/** * allocator used by all nodes contained in the scene. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<NCollection_IncAllocator>
+
+Description
+-----------
+/** * Allocator used by all nodes contained in the Scene. */.
 ") Allocator;
 		const opencascade::handle<NCollection_IncAllocator> & Allocator();
 
+		/****** VrmlData_Scene::Dump ******/
+		/****** md5 signature: c7b7f3310b5193de5f2365d935cd2c95 ******/
+		%feature("compactdefaultargs") Dump;
+		%feature("autodoc", "
+Parameters
+----------
 
-        %feature("autodoc", "1");
-        %extend{
-            std::string DumpToString() {
-            std::stringstream s;
-            self->Dump(s);
-            return s.str();}
-        };
-		/****************** FindNode ******************/
-		/**** md5 signature: bb943cbcf67db155aea431d31d5e4097 ****/
+Return
+-------
+theStream: Standard_OStream
+
+Description
+-----------
+/** * Diagnostic dump of the contents */.
+") Dump;
+		void Dump(std::ostream &OutValue);
+
+		/****** VrmlData_Scene::FindNode ******/
+		/****** md5 signature: bb943cbcf67db155aea431d31d5e4097 ******/
 		%feature("compactdefaultargs") FindNode;
-		%feature("autodoc", "/** * find a node by its name. * @param thename * name of the node to find. * @param thetype * type to match. if this value is null, the first found node with the * given name is returned. if thetype is given, only the node that has * that type is returned. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theName: char *
-theType: Standard_Type,optional
-	default value is 0L
+theType: Standard_Type (optional, default to 0)
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Find a node by its name. * 
+Parameter theName * Name of the node to find. * 
+Parameter theType * Type to match. If this value is NULL, the first found node with the * given name is returned. If theType is given, only the node that has * that type is returned. */.
 ") FindNode;
 		opencascade::handle<VrmlData_Node> FindNode(const char * theName, const opencascade::handle<Standard_Type> & theType = 0L);
 
-		/****************** FindNode ******************/
-		/**** md5 signature: feedaf69513e6cee44e38be3fcaedac2 ****/
+		/****** VrmlData_Scene::FindNode ******/
+		/****** md5 signature: feedaf69513e6cee44e38be3fcaedac2 ******/
 		%feature("compactdefaultargs") FindNode;
-		%feature("autodoc", "/** * find a node by its name. * @param thename * name of the node to search for. * @param thelocation * location of the found node with respect to the whole vrml shape. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theName: char *
 theLocation: gp_Trsf
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Find a node by its name. * 
+Parameter theName * Name of the node to search for. * 
+Parameter theLocation * Location of the found node with respect to the whole VRML shape. */.
 ") FindNode;
 		opencascade::handle<VrmlData_Node> FindNode(const char * theName, gp_Trsf & theLocation);
 
-		/****************** GetIterator ******************/
-		/**** md5 signature: eb2840af7431a8179fe0b1dabdc7bbbd ****/
+		/****** VrmlData_Scene::GetIterator ******/
+		/****** md5 signature: eb2840af7431a8179fe0b1dabdc7bbbd ******/
 		%feature("compactdefaultargs") GetIterator;
-		%feature("autodoc", "/** * iterator of nodes */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Iterator
+
+Description
+-----------
+/** * Iterator of Nodes */.
 ") GetIterator;
 		Iterator GetIterator();
 
-		/****************** GetLineError ******************/
-		/**** md5 signature: 99998ea33b6f4845bfd1d9a2f75e8a6f ****/
+		/****** VrmlData_Scene::GetLineError ******/
+		/****** md5 signature: 99998ea33b6f4845bfd1d9a2f75e8a6f ******/
 		%feature("compactdefaultargs") GetLineError;
-		%feature("autodoc", "/** * query the line where the error occurred (if the status is not ok) */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+/** * Query the line where the error occurred (if the status is not OK) */.
 ") GetLineError;
 		Standard_Integer GetLineError();
 
-		/****************** GetShape ******************/
-		/**** md5 signature: ca46f2aa9b54e25e8f902de55e34455a ****/
+		/****** VrmlData_Scene::GetShape ******/
+		/****** md5 signature: ca46f2aa9b54e25e8f902de55e34455a ******/
 		%feature("compactdefaultargs") GetShape;
-		%feature("autodoc", "/** * convert the scene to a shape, with the information on materials defined * for each sub-shape. this method should be used instead of topods_shape * explicit conversion operator when you need to retrieve the material * aspect for each face or edge in the returned topological object. * @param m * data map that binds an appearance instance to each created tface or * tedge if the appearance node is defined in vrml scene for that geometry. * returns * topods_shape (compound) holding all the scene, similar to the result of * explicit topods_shape conversion operator. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 M: VrmlData_DataMapOfShapeAppearance
 
-Returns
+Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+/** * Convert the scene to a Shape, with the information on materials defined * for each sub-shape. This method should be used instead of TopoDS_Shape * explicit conversion operator when you need to retrieve the material * aspect for each face or edge in the returned topological object. * 
+Parameter M * Data Map that binds an Appearance instance to each created TFace or * TEdge if the Appearance node is defined in VRML scene for that geometry. * 
+Return: * TopoDS_Shape (Compound) holding all the scene, similar to the result of * explicit TopoDS_Shape conversion operator. */.
 ") GetShape;
 		TopoDS_Shape GetShape(VrmlData_DataMapOfShapeAppearance & M);
 
-		/****************** IsDummyWrite ******************/
-		/**** md5 signature: 1ca2d9906b0da72268fcf68070f962af ****/
+		/****** VrmlData_Scene::IsDummyWrite ******/
+		/****** md5 signature: 1ca2d9906b0da72268fcf68070f962af ******/
 		%feature("compactdefaultargs") IsDummyWrite;
-		%feature("autodoc", "/** * query if the current write operation is dummy, i.e., for the purpose of * collecting information before the real write is commenced. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the current write operation is dummy, i.e., for the purpose of * collecting information before the real write is commenced. */.
 ") IsDummyWrite;
 		Standard_Boolean IsDummyWrite();
 
-		/****************** NamedNodesIterator ******************/
-		/**** md5 signature: 9b887a7b29ee8caccd653f9a89564086 ****/
+		/****** VrmlData_Scene::NamedNodesIterator ******/
+		/****** md5 signature: 9b887a7b29ee8caccd653f9a89564086 ******/
 		%feature("compactdefaultargs") NamedNodesIterator;
-		%feature("autodoc", "/** * get the iterator of named nodes. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 VrmlData_MapOfNode::Iterator
+
+Description
+-----------
+/** * Get the iterator of named nodes. */.
 ") NamedNodesIterator;
 		VrmlData_MapOfNode::Iterator NamedNodesIterator();
 
-		/****************** ReadArrIndex ******************/
-		/**** md5 signature: d67efde97661473390f579e21524dd63 ****/
+		/****** VrmlData_Scene::ReadArrIndex ******/
+		/****** md5 signature: d67efde97661473390f579e21524dd63 ******/
 		%feature("compactdefaultargs") ReadArrIndex;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 theArr: int * *
 theNBl: Standard_Size
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read an array of integer indices, for IndexedfaceSet and IndexedLineSet. */.
 ") ReadArrIndex;
 		VrmlData_ErrorStatus ReadArrIndex(VrmlData_InBuffer & theBuffer, const Standard_Integer * * & theArr, Standard_Size & theNBl);
 
-		/****************** ReadLine ******************/
-		/**** md5 signature: 463dc9d784335e0fc4c761b7b8b4ece8 ****/
+		/****** VrmlData_Scene::ReadLine ******/
+		/****** md5 signature: 463dc9d784335e0fc4c761b7b8b4ece8 ******/
 		%feature("compactdefaultargs") ReadLine;
-		%feature("autodoc", "/** * read a vrml line. empty lines and comments are skipped. * the processing starts here from thebuffer.lineptr; if there is at least * one non-empty character (neither space nor comment), this line is used * without reading the next one. * @param theline * buffer receiving the input line * @param theinput * input stream * @param thelen * length of the input buffer (maximal line length) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read a VRML line. Empty lines and comments are skipped. * The processing starts here from theBuffer.LinePtr; if there is at least * one non-empty character (neither space nor comment), this line is used * without reading the next one. * 
+Parameter theLine * Buffer receiving the input line * 
+Parameter theInput * Input stream * 
+Parameter theLen * Length of the input buffer (maximal line length) */.
 ") ReadLine;
 		static VrmlData_ErrorStatus ReadLine(VrmlData_InBuffer & theBuffer);
 
-		/****************** ReadReal ******************/
-		/**** md5 signature: f35136b54565cc98596b8d71e4aff35b ****/
+		/****** VrmlData_Scene::ReadReal ******/
+		/****** md5 signature: f35136b54565cc98596b8d71e4aff35b ******/
 		%feature("compactdefaultargs") ReadReal;
-		%feature("autodoc", "/** * read one real value. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 isApplyScale: bool
 isOnlyPositive: bool
 
-Returns
+Return
 -------
 theResult: float
+
+Description
+-----------
+/** * Read one real value. */.
 ") ReadReal;
 		VrmlData_ErrorStatus ReadReal(VrmlData_InBuffer & theBuffer, Standard_Real &OutValue, Standard_Boolean isApplyScale, Standard_Boolean isOnlyPositive);
 
-		/****************** ReadWord ******************/
-		/**** md5 signature: 9f756806cb42b9cf048d618659c2ad43 ****/
+		/****** VrmlData_Scene::ReadWord ******/
+		/****** md5 signature: 9f756806cb42b9cf048d618659c2ad43 ******/
 		%feature("compactdefaultargs") ReadWord;
-		%feature("autodoc", "/** * read a singel word from the input stream, delimited by whitespace. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
-theStr: TCollection_AsciiString
+theStr: str
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read a single word from the input stream, delimited by whitespace. */.
 ") ReadWord;
 		static VrmlData_ErrorStatus ReadWord(VrmlData_InBuffer & theBuffer, TCollection_AsciiString & theStr);
 
-		/****************** ReadXY ******************/
-		/**** md5 signature: df6a9895b512d9ec7e4f7446fce4675a ****/
+		/****** VrmlData_Scene::ReadXY ******/
+		/****** md5 signature: df6a9895b512d9ec7e4f7446fce4675a ******/
 		%feature("compactdefaultargs") ReadXY;
-		%feature("autodoc", "/** * read one doublet of real values. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
@@ -641,17 +736,20 @@ theXYZ: gp_XY
 isApplyScale: bool
 isOnlyPositive: bool
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read one doublet of real values. */.
 ") ReadXY;
 		VrmlData_ErrorStatus ReadXY(VrmlData_InBuffer & theBuffer, gp_XY & theXYZ, Standard_Boolean isApplyScale, Standard_Boolean isOnlyPositive);
 
-		/****************** ReadXYZ ******************/
-		/**** md5 signature: 29ddf91948c85aaed3290439f77da20e ****/
+		/****** VrmlData_Scene::ReadXYZ ******/
+		/****** md5 signature: 29ddf91948c85aaed3290439f77da20e ******/
 		%feature("compactdefaultargs") ReadXYZ;
-		%feature("autodoc", "/** * read one triplet of real values. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
@@ -659,157 +757,193 @@ theXYZ: gp_XYZ
 isApplyScale: bool
 isOnlyPositive: bool
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read one triplet of real values. */.
 ") ReadXYZ;
 		VrmlData_ErrorStatus ReadXYZ(VrmlData_InBuffer & theBuffer, gp_XYZ & theXYZ, Standard_Boolean isApplyScale, Standard_Boolean isOnlyPositive);
 
-		/****************** SetIndent ******************/
-		/**** md5 signature: 98895640f3e98b674aa9aa6ddba58989 ****/
+		/****** VrmlData_Scene::SetIndent ******/
+		/****** md5 signature: 98895640f3e98b674aa9aa6ddba58989 ******/
 		%feature("compactdefaultargs") SetIndent;
-		%feature("autodoc", "/** * store the indentation for vrml output. * @param nspc * number of spaces to insert at every indentation level */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nSpc: int
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Store the indentation for VRML output. * 
+Parameter nSpc * number of spaces to insert at every indentation level */.
 ") SetIndent;
 		void SetIndent(const Standard_Integer nSpc);
 
-		/****************** SetLinearScale ******************/
-		/**** md5 signature: 38cfc9610c04a64446367581600bc8ca ****/
+		/****** VrmlData_Scene::SetLinearScale ******/
+		/****** md5 signature: 38cfc9610c04a64446367581600bc8ca ******/
 		%feature("compactdefaultargs") SetLinearScale;
-		%feature("autodoc", "/** * set the scale factor that would be further used in methods * readreal, readxyz and readxy. all coordinates, distances and sized are * multiplied by this factor during reading the data. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScale: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the scale factor that would be further used in methods * ReadReal, ReadXYZ and ReadXY. All coordinates, distances and sized are * multiplied by this factor during reading the data. */.
 ") SetLinearScale;
 		void SetLinearScale(const Standard_Real theScale);
 
-		/****************** SetVrmlDir ******************/
-		/**** md5 signature: c61174c1f52c4ff5b725672bce4a62a7 ****/
+		/****** VrmlData_Scene::SetVrmlDir ******/
+		/****** md5 signature: c61174c1f52c4ff5b725672bce4a62a7 ******/
 		%feature("compactdefaultargs") SetVrmlDir;
-		%feature("autodoc", "/** * add the given directory path to the list of vrml file search directories. * this method forms the list of directories ordered according to the * sequence of this method calls. when an inline node is found, the urls * in that node are matched with these directories. * the last (implicit) search directory is the current process directory * ('.'). it takes effect if the list is empty or if there is no match with * exisiting directories. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
-&: TCollection_ExtendedString
+&: str
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Add the given directory path to the list of VRML file search directories. * This method forms the list of directories ordered according to the * sequence of this method calls. When an Inline node is found, the URLs * in that node are matched with these directories. * The last (implicit) search directory is the current process directory * ('.'). It takes effect if the list is empty or if there is no match with * existing directories. */.
 ") SetVrmlDir;
 		void SetVrmlDir(const TCollection_ExtendedString &);
 
-		/****************** Status ******************/
-		/**** md5 signature: f03039d78ccb208df273c1f1f10a8d8f ****/
+		/****** VrmlData_Scene::Status ******/
+		/****** md5 signature: f03039d78ccb208df273c1f1f10a8d8f ******/
 		%feature("compactdefaultargs") Status;
-		%feature("autodoc", "/** * query the status of the previous operation. * normally it should be equal to vrmldata_statusok (no error). */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Query the status of the previous operation. * Normally it should be equal to VrmlData_StatusOK (no error). */.
 ") Status;
 		VrmlData_ErrorStatus Status();
 
-		/****************** VrmlDirIterator ******************/
-		/**** md5 signature: bb38e737d6185ad960925e7bb895ddc2 ****/
+		/****** VrmlData_Scene::VrmlDirIterator ******/
+		/****** md5 signature: bb38e737d6185ad960925e7bb895ddc2 ******/
 		%feature("compactdefaultargs") VrmlDirIterator;
-		%feature("autodoc", "/** * returns the directory iterator, to check the presence of requested vrml * file in each iterated directory. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 NCollection_List<TCollection_ExtendedString >::Iterator
+
+Description
+-----------
+/** * Returns the directory iterator, to check the presence of requested VRML * file in each iterated directory. */.
 ") VrmlDirIterator;
 		NCollection_List<TCollection_ExtendedString >::Iterator VrmlDirIterator();
 
-		/****************** WorldInfo ******************/
-		/**** md5 signature: 8ad3acd26207bc3f4cec13dfc2d423ab ****/
+		/****** VrmlData_Scene::WorldInfo ******/
+		/****** md5 signature: 8ad3acd26207bc3f4cec13dfc2d423ab ******/
 		%feature("compactdefaultargs") WorldInfo;
-		%feature("autodoc", "/** * query the worldinfo member. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_WorldInfo>
+
+Description
+-----------
+/** * Query the WorldInfo member. */.
 ") WorldInfo;
 		const opencascade::handle<VrmlData_WorldInfo> & WorldInfo();
 
-		/****************** WriteArrIndex ******************/
-		/**** md5 signature: c4cfa4c75dd78e287d3e23e38ec4217a ****/
+		/****** VrmlData_Scene::WriteArrIndex ******/
+		/****** md5 signature: c4cfa4c75dd78e287d3e23e38ec4217a ******/
 		%feature("compactdefaultargs") WriteArrIndex;
-		%feature("autodoc", "/** * write an array of integer indices, for indexedfaceset and indexedlineset. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 theArr: int * *
 theNbBl: Standard_Size
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write an array of integer indices, for IndexedFaceSet and IndexedLineSet. */.
 ") WriteArrIndex;
 		VrmlData_ErrorStatus WriteArrIndex(const char * thePrefix, const Standard_Integer * * theArr, const Standard_Size theNbBl);
 
-		/****************** WriteLine ******************/
-		/**** md5 signature: faafa101acc6388d5340510813b579fb ****/
+		/****** VrmlData_Scene::WriteLine ******/
+		/****** md5 signature: faafa101acc6388d5340510813b579fb ******/
 		%feature("compactdefaultargs") WriteLine;
-		%feature("autodoc", "/** * write a string to the output stream respecting the indentation. the string * can be defined as two substrings that will be separated by a space. * each of the substrings can be null, then it is ignored. if both * are null, then a single newline is output (without indent). * @param theline0 * the first part of string to output * @param theline1 * the second part of string to output * @param theindent * - 0 value ignored. * - negative decreases the current indent and then outputs. * - positive outputs and then increases the current indent. * returns * error status of the stream, or a special error if myoutput == null. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLine0: char *
-theLine1: char *,optional
-	default value is 0L
-theIndent: int,optional
-	default value is 0
+theLine1: char * (optional, default to 0)
+theIndent: int (optional, default to 0)
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write a string to the output stream respecting the indentation. The string * can be defined as two substrings that will be separated by a space. * Each of the substrings can be NULL, then it is ignored. If both * are NULL, then a single newline is output (without indent). * 
+Parameter theLine0 * The first part of string to output * 
+Parameter theLine1 * The second part of string to output * 
+Parameter theIndent * - 0 value ignored. * - negative decreases the current indent and then outputs. * - positive outputs and then increases the current indent. * 
+Return: * Error status of the stream, or a special error if myOutput == NULL. */.
 ") WriteLine;
 		VrmlData_ErrorStatus WriteLine(const char * theLine0, const char * theLine1 = 0L, const Standard_Integer theIndent = 0);
 
-		/****************** WriteNode ******************/
-		/**** md5 signature: d213e29a668ed5a7ef2dd0142e10027c ****/
+		/****** VrmlData_Scene::WriteNode ******/
+		/****** md5 signature: d213e29a668ed5a7ef2dd0142e10027c ******/
 		%feature("compactdefaultargs") WriteNode;
-		%feature("autodoc", "/** * write the given node to output stream 'myoutput'. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 &: VrmlData_Node
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the given node to output stream 'myOutput'. */.
 ") WriteNode;
 		VrmlData_ErrorStatus WriteNode(const char * thePrefix, const opencascade::handle<VrmlData_Node > &);
 
-		/****************** WriteXYZ ******************/
-		/**** md5 signature: 0a114bf1ea6405d7e4a3b5c08ea9d7a0 ****/
+		/****** VrmlData_Scene::WriteXYZ ******/
+		/****** md5 signature: 0a114bf1ea6405d7e4a3b5c08ea9d7a0 ******/
 		%feature("compactdefaultargs") WriteXYZ;
-		%feature("autodoc", "/** * write a triplet of real values on a separate line. * @param thexyz * the value to be output. * @param isscale * if true, then each component is divided by mylinearscale. * @param thepostfix * optional string that is added before the end of the line. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theXYZ: gp_XYZ
 isScale: bool
-thePostfix: char *,optional
-	default value is 0L
+thePostfix: char * (optional, default to 0)
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write a triplet of real values on a separate line. * 
+Parameter theXYZ * The value to be output. * 
+Parameter isScale * If True, then each component is divided by myLinearScale. * 
+Parameter thePostfix * Optional string that is added before the end of the line. */.
 ") WriteXYZ;
 		VrmlData_ErrorStatus WriteXYZ(const gp_XYZ & theXYZ, const Standard_Boolean isScale, const char * thePostfix = 0L);
 
@@ -828,72 +962,86 @@ VrmlData_ErrorStatus
 class VrmlData_ShapeConvert {
 	public:
 		class ShapeData {};
-		/****************** VrmlData_ShapeConvert ******************/
-		/**** md5 signature: 68e08b4d3980da44c6e1dd4d301de8b2 ****/
+		/****** VrmlData_ShapeConvert::VrmlData_ShapeConvert ******/
+		/****** md5 signature: 68e08b4d3980da44c6e1dd4d301de8b2 ******/
 		%feature("compactdefaultargs") VrmlData_ShapeConvert;
-		%feature("autodoc", "/** * constructor. * @param thescene * scene receiving all vrml data. * @param thescale * scale factor, considering that vrml standard specifies coordinates in * meters. so if your data are in mm, you should provide thescale=0.001 */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
-theScale: float,optional
-	default value is 1
+theScale: float (optional, default to 1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. * 
+Parameter theScene * Scene receiving all Vrml data. * 
+Parameter theScale * Scale factor, considering that VRML standard specifies coordinates in * meters. So if your data are in mm, you should provide theScale=0.001 */.
 ") VrmlData_ShapeConvert;
 		 VrmlData_ShapeConvert(VrmlData_Scene & theScene, const Standard_Real theScale = 1);
 
-		/****************** AddShape ******************/
-		/**** md5 signature: 9597bbe799f71f2931a398e9b8211a3d ****/
+		/****** VrmlData_ShapeConvert::AddShape ******/
+		/****** md5 signature: 9597bbe799f71f2931a398e9b8211a3d ******/
 		%feature("compactdefaultargs") AddShape;
-		%feature("autodoc", "/** * add one shape to the internal list, may be called several times with * different shapes. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theShape: TopoDS_Shape
-theName: char *,optional
-	default value is 0L
+theName: char * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Add one shape to the internal list, may be called several times with * different shapes. */.
 ") AddShape;
 		void AddShape(const TopoDS_Shape & theShape, const char * theName = 0L);
 
-		/****************** Convert ******************/
-		/**** md5 signature: f593201deba882e1902592660879f146 ****/
+		/****** VrmlData_ShapeConvert::Convert ******/
+		/****** md5 signature: f593201deba882e1902592660879f146 ******/
 		%feature("compactdefaultargs") Convert;
-		%feature("autodoc", "/** * convert all accumulated shapes and store them in myscene. * the internal data structures are cleared in the end of convertion. * @param theextractfaces * if true, converter extracst faces from the shapes. * @param theextractedges * if true, converter extracts edges from the shapes. * @param thedeflection * deflection for tessellation of geometrical lines/surfaces. existing mesh * is used if its deflection is smaller than the one given by this * parameter. * @param thedeflangle * angular deflection for tessellation of geometrical lines. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theExtractFaces: bool
 theExtractEdges: bool
-theDeflection: float,optional
-	default value is 0.01
-theDeflAngle: float,optional
-	default value is 20*M_PI/180
+theDeflection: float (optional, default to 0.01)
+theDeflAngle: float (optional, default to 20*M_PI/180)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Convert all accumulated shapes and store them in myScene. * The internal data structures are cleared in the end of conversion. * 
+Parameter theExtractFaces * If True, converter extracst faces from the shapes. * 
+Parameter theExtractEdges * If True, converter extracts edges from the shapes. * 
+Parameter theDeflection * Deflection for tessellation of geometrical lines/surfaces. Existing mesh * is used if its deflection is smaller than the one given by this * parameter. * 
+Parameter theDeflAngle * Angular deflection for tessellation of geometrical lines. */.
 ") Convert;
 		void Convert(const Standard_Boolean theExtractFaces, const Standard_Boolean theExtractEdges, const Standard_Real theDeflection = 0.01, const Standard_Real theDeflAngle = 20*M_PI/180);
 
-		/****************** ConvertDocument ******************/
-		/**** md5 signature: a4a53d2f864346e4690a0bb1f4bf88b8 ****/
+		/****** VrmlData_ShapeConvert::ConvertDocument ******/
+		/****** md5 signature: a4a53d2f864346e4690a0bb1f4bf88b8 ******/
 		%feature("compactdefaultargs") ConvertDocument;
-		%feature("autodoc", "/** * add all shapes start from given document with colors and names to the internal structure */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theDoc: TDocStd_Document
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Add all shapes start from given document with colors and names to the internal structure */.
 ") ConvertDocument;
 		void ConvertDocument(const opencascade::handle<TDocStd_Document> & theDoc);
 
@@ -906,169 +1054,206 @@ None
 	}
 };
 
+/*****************************************************
+* class equal_to<opencascade::handle<VrmlData_Node>> *
+*****************************************************/
+/*************************************************
+* class hash<opencascade::handle<VrmlData_Node>> *
+*************************************************/
 /****************************
 * class VrmlData_Appearance *
 ****************************/
 class VrmlData_Appearance : public VrmlData_Node {
 	public:
-		/****************** VrmlData_Appearance ******************/
-		/**** md5 signature: 78d4cedac9e21834b3e15aeea776897b ****/
+		/****** VrmlData_Appearance::VrmlData_Appearance ******/
+		/****** md5 signature: 78d4cedac9e21834b3e15aeea776897b ******/
 		%feature("compactdefaultargs") VrmlData_Appearance;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Appearance;
 		 VrmlData_Appearance();
 
-		/****************** VrmlData_Appearance ******************/
-		/**** md5 signature: f602ec806c76f8c47b43bd2117d0b152 ****/
+		/****** VrmlData_Appearance::VrmlData_Appearance ******/
+		/****** md5 signature: f602ec806c76f8c47b43bd2117d0b152 ******/
 		%feature("compactdefaultargs") VrmlData_Appearance;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Appearance;
 		 VrmlData_Appearance(const VrmlData_Scene & theScene, const char * theName);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 42d9803ab6bf2ca46b0f74ce90b6a996 ****/
+		/****** VrmlData_Appearance::Clone ******/
+		/****** md5 signature: 42d9803ab6bf2ca46b0f74ce90b6a996 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified.<p> */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 &: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified.<p> */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node > &);
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_Appearance::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, so that it should not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, so that it should not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Material ******************/
-		/**** md5 signature: dfeebcaa22399b65f8e44bab4895f82a ****/
+		/****** VrmlData_Appearance::Material ******/
+		/****** md5 signature: dfeebcaa22399b65f8e44bab4895f82a ******/
 		%feature("compactdefaultargs") Material;
-		%feature("autodoc", "/** * query the material */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Material>
+
+Description
+-----------
+/** * Query the Material */.
 ") Material;
 		const opencascade::handle<VrmlData_Material> & Material();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Appearance::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetMaterial ******************/
-		/**** md5 signature: 176aa723bd6d66cb0800eeffc747ec2f ****/
+		/****** VrmlData_Appearance::SetMaterial ******/
+		/****** md5 signature: 176aa723bd6d66cb0800eeffc747ec2f ******/
 		%feature("compactdefaultargs") SetMaterial;
-		%feature("autodoc", "/** * set the material */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theMat: VrmlData_Material
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Material */.
 ") SetMaterial;
 		void SetMaterial(const opencascade::handle<VrmlData_Material> & theMat);
 
-		/****************** SetTexture ******************/
-		/**** md5 signature: 95006966de79d9897f58d7677e31b19f ****/
+		/****** VrmlData_Appearance::SetTexture ******/
+		/****** md5 signature: 95006966de79d9897f58d7677e31b19f ******/
 		%feature("compactdefaultargs") SetTexture;
-		%feature("autodoc", "/** * set the texture */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theTexture: VrmlData_Texture
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Texture */.
 ") SetTexture;
 		void SetTexture(const opencascade::handle<VrmlData_Texture> & theTexture);
 
-		/****************** SetTextureTransform ******************/
-		/**** md5 signature: ec2b4dc33a369d79ad0ed1ec33f5778f ****/
+		/****** VrmlData_Appearance::SetTextureTransform ******/
+		/****** md5 signature: ec2b4dc33a369d79ad0ed1ec33f5778f ******/
 		%feature("compactdefaultargs") SetTextureTransform;
-		%feature("autodoc", "/** * set the texture transform */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theTT: VrmlData_TextureTransform
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Texture Transform */.
 ") SetTextureTransform;
 		void SetTextureTransform(const opencascade::handle<VrmlData_TextureTransform> & theTT);
 
-		/****************** Texture ******************/
-		/**** md5 signature: 21e8cf614290f83ff95ea00ca14e284c ****/
+		/****** VrmlData_Appearance::Texture ******/
+		/****** md5 signature: 21e8cf614290f83ff95ea00ca14e284c ******/
 		%feature("compactdefaultargs") Texture;
-		%feature("autodoc", "/** * query the texture */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Texture>
+
+Description
+-----------
+/** * Query the Texture */.
 ") Texture;
 		const opencascade::handle<VrmlData_Texture> & Texture();
 
-		/****************** TextureTransform ******************/
-		/**** md5 signature: bbde9d0f47eddbfab2dfd262c15d6259 ****/
+		/****** VrmlData_Appearance::TextureTransform ******/
+		/****** md5 signature: bbde9d0f47eddbfab2dfd262c15d6259 ******/
 		%feature("compactdefaultargs") TextureTransform;
-		%feature("autodoc", "/** * query the texturetransform */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_TextureTransform>
+
+Description
+-----------
+/** * Query the TextureTransform */.
 ") TextureTransform;
 		const opencascade::handle<VrmlData_TextureTransform> & TextureTransform();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Appearance::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node from input stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -1092,14 +1277,16 @@ VrmlData_ErrorStatus
 %nodefaultctor VrmlData_Geometry;
 class VrmlData_Geometry : public VrmlData_Node {
 	public:
-		/****************** TShape ******************/
-		/**** md5 signature: dbadc622b80832b75bd4efea3d9429df ****/
+		/****** VrmlData_Geometry::TShape ******/
+		/****** md5 signature: dbadc622b80832b75bd4efea3d9429df ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the shape. this method checks the flag myismodified; if true it * should rebuild the shape presentation. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the shape. This method checks the flag myIsModified; if True it * should rebuild the shape presentation. */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
@@ -1120,218 +1307,265 @@ opencascade::handle<TopoDS_TShape>
 class VrmlData_Group : public VrmlData_Node {
 	public:
 typedef VrmlData_ListOfNode ::Iterator Iterator;
-		/****************** VrmlData_Group ******************/
-		/**** md5 signature: 4a4b8084283a33ae08c7ae61eaa4fb12 ****/
+		/****** VrmlData_Group::VrmlData_Group ******/
+		/****** md5 signature: 4a4b8084283a33ae08c7ae61eaa4fb12 ******/
 		%feature("compactdefaultargs") VrmlData_Group;
-		%feature("autodoc", "/** * empty constructor. * @param istransform * true if the group of type transform is defined * @param thealloc * allocator used for the list of children */.
-
+		%feature("autodoc", "
 Parameters
 ----------
-isTransform: bool,optional
-	default value is Standard_False
+isTransform: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor. * 
+Parameter isTransform * True if the group of type Transform is defined * 
+Parameter theAlloc * Allocator used for the list of children */.
 ") VrmlData_Group;
 		 VrmlData_Group(const Standard_Boolean isTransform = Standard_False);
 
-		/****************** VrmlData_Group ******************/
-		/**** md5 signature: 2872950a619c18ca0020a203419b55b7 ****/
+		/****** VrmlData_Group::VrmlData_Group ******/
+		/****** md5 signature: 2872950a619c18ca0020a203419b55b7 ******/
 		%feature("compactdefaultargs") VrmlData_Group;
-		%feature("autodoc", "/** * constructor. * @param thename * name of the group node * @param istransform * true if the group of type transform is defined * @param thealloc * allocator used for the list of children */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-isTransform: bool,optional
-	default value is Standard_False
+isTransform: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. * 
+Parameter theName * Name of the Group node * 
+Parameter isTransform * True if the group of type Transform is defined * 
+Parameter theAlloc * Allocator used for the list of children */.
 ") VrmlData_Group;
 		 VrmlData_Group(const VrmlData_Scene & theScene, const char * theName, const Standard_Boolean isTransform = Standard_False);
 
-		/****************** AddNode ******************/
-		/**** md5 signature: 3f11ff6c3809d97b9ed6a1a52fec5515 ****/
+		/****** VrmlData_Group::AddNode ******/
+		/****** md5 signature: 3f11ff6c3809d97b9ed6a1a52fec5515 ******/
 		%feature("compactdefaultargs") AddNode;
-		%feature("autodoc", "/** * add one node to the group. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theNode: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Add one node to the Group. */.
 ") AddNode;
 		opencascade::handle<VrmlData_Node> & AddNode(const opencascade::handle<VrmlData_Node> & theNode);
 
-		/****************** Box ******************/
-		/**** md5 signature: 79505dc9b66a5350ccdc24c305c2610f ****/
+		/****** VrmlData_Group::Box ******/
+		/****** md5 signature: 79505dc9b66a5350ccdc24c305c2610f ******/
 		%feature("compactdefaultargs") Box;
-		%feature("autodoc", "/** * query the bounding box. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Bnd_B3f
+
+Description
+-----------
+/** * Query the bounding box. */.
 ") Box;
 		const Bnd_B3f & Box();
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Group::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** FindNode ******************/
-		/**** md5 signature: feedaf69513e6cee44e38be3fcaedac2 ****/
+		/****** VrmlData_Group::FindNode ******/
+		/****** md5 signature: feedaf69513e6cee44e38be3fcaedac2 ******/
 		%feature("compactdefaultargs") FindNode;
-		%feature("autodoc", "/** * find a node by its name, inside this group * @param thename * name of the node to search for. * @param thelocation * location of the found node with respect to this group. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theName: char *
 theLocation: gp_Trsf
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Find a node by its name, inside this Group * 
+Parameter theName * Name of the node to search for. * 
+Parameter theLocation * Location of the found node with respect to this Group. */.
 ") FindNode;
 		opencascade::handle<VrmlData_Node> FindNode(const char * theName, gp_Trsf & theLocation);
 
-		/****************** GetTransform ******************/
-		/**** md5 signature: d12c205b591852c15c62f6d350ce2c60 ****/
+		/****** VrmlData_Group::GetTransform ******/
+		/****** md5 signature: d12c205b591852c15c62f6d350ce2c60 ******/
 		%feature("compactdefaultargs") GetTransform;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Trsf
+
+Description
+-----------
+/** * Query the transform value. * For group without transformation this always returns Identity */.
 ") GetTransform;
 		const gp_Trsf GetTransform();
 
-		/****************** IsTransform ******************/
-		/**** md5 signature: 698d1d2517dd6d50affe948167d5d36d ****/
+		/****** VrmlData_Group::IsTransform ******/
+		/****** md5 signature: 698d1d2517dd6d50affe948167d5d36d ******/
 		%feature("compactdefaultargs") IsTransform;
-		%feature("autodoc", "/** * query if the node is transform type. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the node is Transform type. */.
 ") IsTransform;
 		Standard_Boolean IsTransform();
 
-		/****************** NodeIterator ******************/
-		/**** md5 signature: ad0aab1fa703096830ba4e298bc4db90 ****/
+		/****** VrmlData_Group::NodeIterator ******/
+		/****** md5 signature: ad0aab1fa703096830ba4e298bc4db90 ******/
 		%feature("compactdefaultargs") NodeIterator;
-		%feature("autodoc", "/** * create iterator on nodes belonging to the group. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Iterator
+
+Description
+-----------
+/** * Create iterator on nodes belonging to the Group. */.
 ") NodeIterator;
 		Iterator NodeIterator();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Group::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** RemoveNode ******************/
-		/**** md5 signature: 0c90603f2da345adb321b9ac9c94a1ab ****/
+		/****** VrmlData_Group::RemoveNode ******/
+		/****** md5 signature: 0c90603f2da345adb321b9ac9c94a1ab ******/
 		%feature("compactdefaultargs") RemoveNode;
-		%feature("autodoc", "/** * remove one node from the group. * returns * true if the node was located and removed, false if none removed. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theNode: VrmlData_Node
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+/** * Remove one node from the Group. * 
+Return: * True if the node was located and removed, False if none removed. */.
 ") RemoveNode;
 		Standard_Boolean RemoveNode(const opencascade::handle<VrmlData_Node> & theNode);
 
-		/****************** SetBox ******************/
-		/**** md5 signature: 80ba51ed8c20e9ee360285534d5b3767 ****/
+		/****** VrmlData_Group::SetBox ******/
+		/****** md5 signature: 80ba51ed8c20e9ee360285534d5b3767 ******/
 		%feature("compactdefaultargs") SetBox;
-		%feature("autodoc", "/** * set the bounding box. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBox: Bnd_B3f
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the bounding box. */.
 ") SetBox;
 		void SetBox(const Bnd_B3f & theBox);
 
-		/****************** SetTransform ******************/
-		/**** md5 signature: a79c8b6e3b300aa0676359932262e26f ****/
+		/****** VrmlData_Group::SetTransform ******/
+		/****** md5 signature: a79c8b6e3b300aa0676359932262e26f ******/
 		%feature("compactdefaultargs") SetTransform;
-		%feature("autodoc", "/** * set the transformation. returns true if the group is transform type, * otherwise do nothing and return false. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theTrsf: gp_Trsf
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+/** * Set the transformation. Returns True if the group is Transform type, * otherwise do nothing and return False. */.
 ") SetTransform;
 		Standard_Boolean SetTransform(const gp_Trsf & theTrsf);
 
-		/****************** Shape ******************/
-		/**** md5 signature: 3cc08b169b52e7f7ede2b7523742bc93 ****/
+		/****** VrmlData_Group::Shape ******/
+		/****** md5 signature: 3cc08b169b52e7f7ede2b7523742bc93 ******/
 		%feature("compactdefaultargs") Shape;
-		%feature("autodoc", "/** * get the shape representing the group geometry. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theShape: TopoDS_Shape
 pMapApp: VrmlData_DataMapOfShapeAppearance *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Get the shape representing the group geometry. */.
 ") Shape;
 		void Shape(TopoDS_Shape & theShape, VrmlData_DataMapOfShapeAppearance * pMapApp);
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Group::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -1351,248 +1585,322 @@ VrmlData_ErrorStatus
 **************************/
 class VrmlData_Material : public VrmlData_Node {
 	public:
-		/****************** VrmlData_Material ******************/
-		/**** md5 signature: bd9d0415c735d2c7ae9052fa93064b87 ****/
+		/****** VrmlData_Material::VrmlData_Material ******/
+		/****** md5 signature: bd9d0415c735d2c7ae9052fa93064b87 ******/
 		%feature("compactdefaultargs") VrmlData_Material;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Material;
 		 VrmlData_Material();
 
-		/****************** VrmlData_Material ******************/
-		/**** md5 signature: ae7e51685706df89044aaea15b8f1c5c ****/
+		/****** VrmlData_Material::VrmlData_Material ******/
+		/****** md5 signature: ae7e51685706df89044aaea15b8f1c5c ******/
 		%feature("compactdefaultargs") VrmlData_Material;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-theAmbientIntensity: float,optional
-	default value is -1
-theShininess: float,optional
-	default value is -1
-theTransparency: float,optional
-	default value is -1
+theAmbientIntensity: float (optional, default to -1)
+theShininess: float (optional, default to -1)
+theTransparency: float (optional, default to -1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Material;
 		 VrmlData_Material(const VrmlData_Scene & theScene, const char * theName, const Standard_Real theAmbientIntensity = -1, const Standard_Real theShininess = -1, const Standard_Real theTransparency = -1);
 
-		/****************** AmbientIntensity ******************/
-		/**** md5 signature: d32af26bf065597070a37499321d5992 ****/
-		%feature("compactdefaultargs") AmbientIntensity;
-		%feature("autodoc", "/** * query the ambient intensity value */.
+		/****** VrmlData_Material::AmbientColor ******/
+		/****** md5 signature: 5fbe476d31e03b68b11845a1f91d2082 ******/
+		%feature("compactdefaultargs") AmbientColor;
+		%feature("autodoc", "Return
+-------
+Quantity_Color
 
-Returns
+Description
+-----------
+/** * Query the Ambient color */.
+") AmbientColor;
+		const Quantity_Color & AmbientColor();
+
+		/****** VrmlData_Material::AmbientIntensity ******/
+		/****** md5 signature: d32af26bf065597070a37499321d5992 ******/
+		%feature("compactdefaultargs") AmbientIntensity;
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Ambient Intensity value */.
 ") AmbientIntensity;
 		Standard_Real AmbientIntensity();
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Material::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** DiffuseColor ******************/
-		/**** md5 signature: 9c49a8c7f3b34d6fad0a422398d823cc ****/
+		/****** VrmlData_Material::DiffuseColor ******/
+		/****** md5 signature: 9c49a8c7f3b34d6fad0a422398d823cc ******/
 		%feature("compactdefaultargs") DiffuseColor;
-		%feature("autodoc", "/** * query the diffuse color */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query the Diffuse color */.
 ") DiffuseColor;
 		const Quantity_Color & DiffuseColor();
 
-		/****************** EmissiveColor ******************/
-		/**** md5 signature: a81902b710d4283046e2074f8c68f238 ****/
+		/****** VrmlData_Material::EmissiveColor ******/
+		/****** md5 signature: a81902b710d4283046e2074f8c68f238 ******/
 		%feature("compactdefaultargs") EmissiveColor;
-		%feature("autodoc", "/** * query the emissive color */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query the Emissive color */.
 ") EmissiveColor;
 		const Quantity_Color & EmissiveColor();
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_Material::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, so that it should not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, so that it should not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Material::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetAmbientIntensity ******************/
-		/**** md5 signature: 71cfa04b401f8be3353ac2a3dc8275a4 ****/
-		%feature("compactdefaultargs") SetAmbientIntensity;
-		%feature("autodoc", "/** * set the ambient intensity value */.
+		/****** VrmlData_Material::SetAmbientColor ******/
+		/****** md5 signature: 873429e2370ae4f721b603f1ebb96dad ******/
+		%feature("compactdefaultargs") SetAmbientColor;
+		%feature("autodoc", "
+Parameters
+----------
+theColor: Quantity_Color
 
+Return
+-------
+None
+
+Description
+-----------
+/** * Query the Ambient color */.
+") SetAmbientColor;
+		void SetAmbientColor(const Quantity_Color & theColor);
+
+		/****** VrmlData_Material::SetAmbientIntensity ******/
+		/****** md5 signature: 71cfa04b401f8be3353ac2a3dc8275a4 ******/
+		%feature("compactdefaultargs") SetAmbientIntensity;
+		%feature("autodoc", "
 Parameters
 ----------
 theAmbientIntensity: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Ambient Intensity value */.
 ") SetAmbientIntensity;
 		void SetAmbientIntensity(const Standard_Real theAmbientIntensity);
 
-		/****************** SetDiffuseColor ******************/
-		/**** md5 signature: a706faa79c39966ccc5de82231bccb71 ****/
+		/****** VrmlData_Material::SetDiffuseColor ******/
+		/****** md5 signature: a706faa79c39966ccc5de82231bccb71 ******/
 		%feature("compactdefaultargs") SetDiffuseColor;
-		%feature("autodoc", "/** * query the diffuse color */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theColor: Quantity_Color
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Query the Diffuse color */.
 ") SetDiffuseColor;
 		void SetDiffuseColor(const Quantity_Color & theColor);
 
-		/****************** SetEmissiveColor ******************/
-		/**** md5 signature: 7e66ad66ed9e2434756333c8dfa79c87 ****/
+		/****** VrmlData_Material::SetEmissiveColor ******/
+		/****** md5 signature: 7e66ad66ed9e2434756333c8dfa79c87 ******/
 		%feature("compactdefaultargs") SetEmissiveColor;
-		%feature("autodoc", "/** * query the emissive color */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theColor: Quantity_Color
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Query the Emissive color */.
 ") SetEmissiveColor;
 		void SetEmissiveColor(const Quantity_Color & theColor);
 
-		/****************** SetShininess ******************/
-		/**** md5 signature: 004a07a86fd2858f7efa7ec10a36e474 ****/
+		/****** VrmlData_Material::SetShininess ******/
+		/****** md5 signature: 004a07a86fd2858f7efa7ec10a36e474 ******/
 		%feature("compactdefaultargs") SetShininess;
-		%feature("autodoc", "/** * set the shininess value */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theShininess: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Shininess value */.
 ") SetShininess;
 		void SetShininess(const Standard_Real theShininess);
 
-		/****************** SetSpecularColor ******************/
-		/**** md5 signature: 12ed5001ae01a3cbcd54180d440dda73 ****/
+		/****** VrmlData_Material::SetSpecularColor ******/
+		/****** md5 signature: 12ed5001ae01a3cbcd54180d440dda73 ******/
 		%feature("compactdefaultargs") SetSpecularColor;
-		%feature("autodoc", "/** * query the specular color */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theColor: Quantity_Color
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Query the Specular color */.
 ") SetSpecularColor;
 		void SetSpecularColor(const Quantity_Color & theColor);
 
-		/****************** SetTransparency ******************/
-		/**** md5 signature: 17e88f34e47ad9901af84d1e770277d5 ****/
+		/****** VrmlData_Material::SetTransparency ******/
+		/****** md5 signature: 17e88f34e47ad9901af84d1e770277d5 ******/
 		%feature("compactdefaultargs") SetTransparency;
-		%feature("autodoc", "/** * set the transparency value */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theTransparency: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Transparency value */.
 ") SetTransparency;
 		void SetTransparency(const Standard_Real theTransparency);
 
-		/****************** Shininess ******************/
-		/**** md5 signature: 983427691a540fd8368535dcb05b594e ****/
+		/****** VrmlData_Material::Shininess ******/
+		/****** md5 signature: 983427691a540fd8368535dcb05b594e ******/
 		%feature("compactdefaultargs") Shininess;
-		%feature("autodoc", "/** * query the shininess value */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Shininess value */.
 ") Shininess;
 		Standard_Real Shininess();
 
-		/****************** SpecularColor ******************/
-		/**** md5 signature: be13421d5a460089944a56fa84b44f51 ****/
+		/****** VrmlData_Material::SpecularColor ******/
+		/****** md5 signature: be13421d5a460089944a56fa84b44f51 ******/
 		%feature("compactdefaultargs") SpecularColor;
-		%feature("autodoc", "/** * query the specular color */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query the Specular color */.
 ") SpecularColor;
 		const Quantity_Color & SpecularColor();
 
-		/****************** Transparency ******************/
-		/**** md5 signature: 9bfecadb0f0bfb252b68fe64205240fc ****/
+		/****** VrmlData_Material::Transparency ******/
+		/****** md5 signature: 9bfecadb0f0bfb252b68fe64205240fc ******/
 		%feature("compactdefaultargs") Transparency;
-		%feature("autodoc", "/** * query the transparency value */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Transparency value */.
 ") Transparency;
 		Standard_Real Transparency();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Material::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to the scene output. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to the Scene output. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -1612,138 +1920,164 @@ VrmlData_ErrorStatus
 ***************************/
 class VrmlData_ShapeNode : public VrmlData_Node {
 	public:
-		/****************** VrmlData_ShapeNode ******************/
-		/**** md5 signature: 3dde003850ddec445b760acddec7977d ****/
+		/****** VrmlData_ShapeNode::VrmlData_ShapeNode ******/
+		/****** md5 signature: 3dde003850ddec445b760acddec7977d ******/
 		%feature("compactdefaultargs") VrmlData_ShapeNode;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_ShapeNode;
 		 VrmlData_ShapeNode();
 
-		/****************** VrmlData_ShapeNode ******************/
-		/**** md5 signature: e5acc2d5d906e1df28b1135e2c10a2f6 ****/
+		/****** VrmlData_ShapeNode::VrmlData_ShapeNode ******/
+		/****** md5 signature: e5acc2d5d906e1df28b1135e2c10a2f6 ******/
 		%feature("compactdefaultargs") VrmlData_ShapeNode;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_ShapeNode;
 		 VrmlData_ShapeNode(const VrmlData_Scene & theScene, const char * theName);
 
-		/****************** Appearance ******************/
-		/**** md5 signature: ee08713a55f30954fc7a40ab04da9356 ****/
+		/****** VrmlData_ShapeNode::Appearance ******/
+		/****** md5 signature: ee08713a55f30954fc7a40ab04da9356 ******/
 		%feature("compactdefaultargs") Appearance;
-		%feature("autodoc", "/** * query the appearance. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Appearance>
+
+Description
+-----------
+/** * Query the Appearance. */.
 ") Appearance;
 		const opencascade::handle<VrmlData_Appearance> & Appearance();
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_ShapeNode::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Geometry ******************/
-		/**** md5 signature: 4835d1901667aa281770c33090c3e6f5 ****/
+		/****** VrmlData_ShapeNode::Geometry ******/
+		/****** md5 signature: 4835d1901667aa281770c33090c3e6f5 ******/
 		%feature("compactdefaultargs") Geometry;
-		%feature("autodoc", "/** * query the geometry. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Geometry>
+
+Description
+-----------
+/** * Query the Geometry. */.
 ") Geometry;
 		const opencascade::handle<VrmlData_Geometry> & Geometry();
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_ShapeNode::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * check if the shape node is writeable. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Check if the Shape Node is writeable. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_ShapeNode::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetAppearance ******************/
-		/**** md5 signature: b488e0e7ff5275e40d10ae0678567399 ****/
+		/****** VrmlData_ShapeNode::SetAppearance ******/
+		/****** md5 signature: b488e0e7ff5275e40d10ae0678567399 ******/
 		%feature("compactdefaultargs") SetAppearance;
-		%feature("autodoc", "/** * set the appearance */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theAppear: VrmlData_Appearance
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Appearance */.
 ") SetAppearance;
 		void SetAppearance(const opencascade::handle<VrmlData_Appearance> & theAppear);
 
-		/****************** SetGeometry ******************/
-		/**** md5 signature: 2eebe1602c0ddfeb3e9b0c2cd24b0c4e ****/
+		/****** VrmlData_ShapeNode::SetGeometry ******/
+		/****** md5 signature: 2eebe1602c0ddfeb3e9b0c2cd24b0c4e ******/
 		%feature("compactdefaultargs") SetGeometry;
-		%feature("autodoc", "/** * set the geometry */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theGeometry: VrmlData_Geometry
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Geometry */.
 ") SetGeometry;
 		void SetGeometry(const opencascade::handle<VrmlData_Geometry> & theGeometry);
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_ShapeNode::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -1766,117 +2100,137 @@ VrmlData_ErrorStatus
 ***********************************/
 class VrmlData_TextureCoordinate : public VrmlData_Node {
 	public:
-		/****************** VrmlData_TextureCoordinate ******************/
-		/**** md5 signature: 1e0218f2ec543d6d77789d9d5b9ecdb9 ****/
+		/****** VrmlData_TextureCoordinate::VrmlData_TextureCoordinate ******/
+		/****** md5 signature: 1e0218f2ec543d6d77789d9d5b9ecdb9 ******/
 		%feature("compactdefaultargs") VrmlData_TextureCoordinate;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_TextureCoordinate;
 		 VrmlData_TextureCoordinate();
 
-		/****************** VrmlData_TextureCoordinate ******************/
-		/**** md5 signature: a4102e9b0fb9dd68244eb21ad6fac2c7 ****/
+		/****** VrmlData_TextureCoordinate::VrmlData_TextureCoordinate ******/
+		/****** md5 signature: a4102e9b0fb9dd68244eb21ad6fac2c7 ******/
 		%feature("compactdefaultargs") VrmlData_TextureCoordinate;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-nPoints: size_t,optional
-	default value is 0
-arrPoints: gp_XY *,optional
-	default value is 0L
+nPoints: size_t (optional, default to 0)
+arrPoints: gp_XY * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_TextureCoordinate;
 		 VrmlData_TextureCoordinate(const VrmlData_Scene & theScene, const char * theName, const size_t nPoints = 0, const gp_XY * arrPoints = 0L);
 
-		/****************** AllocateValues ******************/
-		/**** md5 signature: 88bf53f92249259a9becd560ef2840f4 ****/
+		/****** VrmlData_TextureCoordinate::AllocateValues ******/
+		/****** md5 signature: 88bf53f92249259a9becd560ef2840f4 ******/
 		%feature("compactdefaultargs") AllocateValues;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theLength: Standard_Size
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+/** * Create a data array and assign the field myArray. * 
+Return: * True if allocation was successful. */.
 ") AllocateValues;
 		Standard_Boolean AllocateValues(const Standard_Size theLength);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_TextureCoordinate::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Length ******************/
-		/**** md5 signature: 57871cd344e2dd1877fbc297250c0f44 ****/
+		/****** VrmlData_TextureCoordinate::Length ******/
+		/****** md5 signature: 57871cd344e2dd1877fbc297250c0f44 ******/
 		%feature("compactdefaultargs") Length;
-		%feature("autodoc", "/** * query the number of points */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the number of points */.
 ") Length;
 		size_t Length();
 
-		/****************** Points ******************/
-		/**** md5 signature: fba12d84b09cea75d6adf0416f8768aa ****/
+		/****** VrmlData_TextureCoordinate::Points ******/
+		/****** md5 signature: fba12d84b09cea75d6adf0416f8768aa ******/
 		%feature("compactdefaultargs") Points;
-		%feature("autodoc", "/** * query the points */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_XY *
+
+Description
+-----------
+/** * Query the points */.
 ") Points;
 		const gp_XY * Points();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_TextureCoordinate::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetPoints ******************/
-		/**** md5 signature: 6c0c72d8d5061b968d0ceb584db20278 ****/
+		/****** VrmlData_TextureCoordinate::SetPoints ******/
+		/****** md5 signature: 6c0c72d8d5061b968d0ceb584db20278 ******/
 		%feature("compactdefaultargs") SetPoints;
-		%feature("autodoc", "/** * set the points array */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nPoints: size_t
 arrPoints: gp_XY *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the points array */.
 ") SetPoints;
 		void SetPoints(const size_t nPoints, const gp_XY * arrPoints);
 
@@ -1899,70 +2253,80 @@ None
 *****************************/
 class VrmlData_UnknownNode : public VrmlData_Node {
 	public:
-		/****************** VrmlData_UnknownNode ******************/
-		/**** md5 signature: 017effc09a5d619486cc4f798d6e3fb1 ****/
+		/****** VrmlData_UnknownNode::VrmlData_UnknownNode ******/
+		/****** md5 signature: 017effc09a5d619486cc4f798d6e3fb1 ******/
 		%feature("compactdefaultargs") VrmlData_UnknownNode;
-		%feature("autodoc", "/** * empty constructor. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty Constructor. */.
 ") VrmlData_UnknownNode;
 		 VrmlData_UnknownNode();
 
-		/****************** VrmlData_UnknownNode ******************/
-		/**** md5 signature: 57b4673e61eae586704a23ba1fdac668 ****/
+		/****** VrmlData_UnknownNode::VrmlData_UnknownNode ******/
+		/****** md5 signature: 57b4673e61eae586704a23ba1fdac668 ******/
 		%feature("compactdefaultargs") VrmlData_UnknownNode;
-		%feature("autodoc", "/** * constructor. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
-theName: char *,optional
-	default value is 0L
-theTitle: char *,optional
-	default value is 0L
+theName: char * (optional, default to 0)
+theTitle: char * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. */.
 ") VrmlData_UnknownNode;
 		 VrmlData_UnknownNode(const VrmlData_Scene & theScene, const char * theName = 0L, const char * theTitle = 0L);
 
-		/****************** GetTitle ******************/
-		/**** md5 signature: fd792bcd35ddb15e7f5160d6ea5f7ec0 ****/
+		/****** VrmlData_UnknownNode::GetTitle ******/
+		/****** md5 signature: fd792bcd35ddb15e7f5160d6ea5f7ec0 ******/
 		%feature("compactdefaultargs") GetTitle;
-		%feature("autodoc", "/** * query the title of the unknown node. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TCollection_AsciiString
+
+Description
+-----------
+/** * Query the title of the unknown node. */.
 ") GetTitle;
 		const TCollection_AsciiString & GetTitle();
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_UnknownNode::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * check if the node is non-writeable -- always returns true. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Check if the Node is non-writeable -- always returns true. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_UnknownNode::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the unknown node, till the last closing brace of it. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the unknown node, till the last closing brace of it. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
@@ -1982,141 +2346,165 @@ VrmlData_ErrorStatus
 ***************************/
 class VrmlData_WorldInfo : public VrmlData_Node {
 	public:
-		/****************** VrmlData_WorldInfo ******************/
-		/**** md5 signature: ba5f3e416e2336f1c58ba9cf60eb277f ****/
+		/****** VrmlData_WorldInfo::VrmlData_WorldInfo ******/
+		/****** md5 signature: ba5f3e416e2336f1c58ba9cf60eb277f ******/
 		%feature("compactdefaultargs") VrmlData_WorldInfo;
-		%feature("autodoc", "/** * empty constructor. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty Constructor. */.
 ") VrmlData_WorldInfo;
 		 VrmlData_WorldInfo();
 
-		/****************** VrmlData_WorldInfo ******************/
-		/**** md5 signature: eb291290f915cd06f1244dcd42ac5559 ****/
+		/****** VrmlData_WorldInfo::VrmlData_WorldInfo ******/
+		/****** md5 signature: eb291290f915cd06f1244dcd42ac5559 ******/
 		%feature("compactdefaultargs") VrmlData_WorldInfo;
-		%feature("autodoc", "/** * constructor. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
-theName: char *,optional
-	default value is 0L
-theTitle: char *,optional
-	default value is 0L
+theName: char * (optional, default to 0)
+theTitle: char * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. */.
 ") VrmlData_WorldInfo;
 		 VrmlData_WorldInfo(const VrmlData_Scene & theScene, const char * theName = 0L, const char * theTitle = 0L);
 
-		/****************** AddInfo ******************/
-		/**** md5 signature: dc28827f0f74529728a3e3149aec9a99 ****/
+		/****** VrmlData_WorldInfo::AddInfo ******/
+		/****** md5 signature: dc28827f0f74529728a3e3149aec9a99 ******/
 		%feature("compactdefaultargs") AddInfo;
-		%feature("autodoc", "/** * add a string to the list of info strings. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theString: char *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Add a string to the list of info strings. */.
 ") AddInfo;
 		void AddInfo(const char * theString);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_WorldInfo::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** InfoIterator ******************/
-		/**** md5 signature: b8a6257f9e0a11b87294100742e9b5b8 ****/
+		/****** VrmlData_WorldInfo::InfoIterator ******/
+		/****** md5 signature: b8a6257f9e0a11b87294100742e9b5b8 ******/
 		%feature("compactdefaultargs") InfoIterator;
-		%feature("autodoc", "/** * return the iterator of info strings. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 NCollection_List< char * >::Iterator
+
+Description
+-----------
+/** * Return the iterator of Info strings. */.
 ") InfoIterator;
 		NCollection_List<const char * >::Iterator InfoIterator();
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_WorldInfo::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, then it would not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, then it would not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_WorldInfo::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetTitle ******************/
-		/**** md5 signature: 41d6771cbe93b9c5e7b0e70d5879c0b3 ****/
+		/****** VrmlData_WorldInfo::SetTitle ******/
+		/****** md5 signature: 41d6771cbe93b9c5e7b0e70d5879c0b3 ******/
 		%feature("compactdefaultargs") SetTitle;
-		%feature("autodoc", "/** * set or modify the title. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theString: char *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set or modify the title. */.
 ") SetTitle;
 		void SetTitle(const char * theString);
 
-		/****************** Title ******************/
-		/**** md5 signature: 09fbe2e16809a7795a7df1384e695b1b ****/
+		/****** VrmlData_WorldInfo::Title ******/
+		/****** md5 signature: 09fbe2e16809a7795a7df1384e695b1b ******/
 		%feature("compactdefaultargs") Title;
-		%feature("autodoc", "/** * query the title string. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 char *
+
+Description
+-----------
+/** * Query the title string. */.
 ") Title;
 		const char * Title();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_WorldInfo::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to the scene output. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to the Scene output. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2136,118 +2524,136 @@ VrmlData_ErrorStatus
 *********************/
 class VrmlData_Box : public VrmlData_Geometry {
 	public:
-		/****************** VrmlData_Box ******************/
-		/**** md5 signature: d30516859426c07b2f913fe75ec3f22e ****/
+		/****** VrmlData_Box::VrmlData_Box ******/
+		/****** md5 signature: d30516859426c07b2f913fe75ec3f22e ******/
 		%feature("compactdefaultargs") VrmlData_Box;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Box;
 		 VrmlData_Box();
 
-		/****************** VrmlData_Box ******************/
-		/**** md5 signature: 3100b66caab1ba4bb8b2cde8b9df5cbe ****/
+		/****** VrmlData_Box::VrmlData_Box ******/
+		/****** md5 signature: 3100b66caab1ba4bb8b2cde8b9df5cbe ******/
 		%feature("compactdefaultargs") VrmlData_Box;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-sizeX: float,optional
-	default value is 2
-sizeY: float,optional
-	default value is 2
-sizeZ: float,optional
-	default value is 2
+sizeX: float (optional, default to 2)
+sizeY: float (optional, default to 2)
+sizeZ: float (optional, default to 2)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Box;
 		 VrmlData_Box(const VrmlData_Scene & theScene, const char * theName, const Standard_Real sizeX = 2, const Standard_Real sizeY = 2, const Standard_Real sizeZ = 2);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Box::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Box::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetSize ******************/
-		/**** md5 signature: 19e2115bbf1402d11970cdce575fce1d ****/
+		/****** VrmlData_Box::SetSize ******/
+		/****** md5 signature: 19e2115bbf1402d11970cdce575fce1d ******/
 		%feature("compactdefaultargs") SetSize;
-		%feature("autodoc", "/** * set the box size */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theSize: gp_XYZ
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Box Size */.
 ") SetSize;
 		void SetSize(const gp_XYZ & theSize);
 
-		/****************** Size ******************/
-		/**** md5 signature: 7e535208625ee843fb3d514d99dc0e16 ****/
+		/****** VrmlData_Box::Size ******/
+		/****** md5 signature: 7e535208625ee843fb3d514d99dc0e16 ******/
 		%feature("compactdefaultargs") Size;
-		%feature("autodoc", "/** * query the box size */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_XYZ
+
+Description
+-----------
+/** * Query the Box size */.
 ") Size;
 		const gp_XYZ Size();
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_Box::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the primitive topology. this method returns a null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the primitive topology. This method returns a Null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Box::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2267,110 +2673,130 @@ VrmlData_ErrorStatus
 ***********************/
 class VrmlData_Color : public VrmlData_ArrayVec3d {
 	public:
-		/****************** VrmlData_Color ******************/
-		/**** md5 signature: ae8189262602c6cc2c116135bccd416e ****/
+		/****** VrmlData_Color::VrmlData_Color ******/
+		/****** md5 signature: ae8189262602c6cc2c116135bccd416e ******/
 		%feature("compactdefaultargs") VrmlData_Color;
-		%feature("autodoc", "/** * empty constructor. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor. */.
 ") VrmlData_Color;
 		 VrmlData_Color();
 
-		/****************** VrmlData_Color ******************/
-		/**** md5 signature: b7e214cf3e454f240b3da18173f2237c ****/
+		/****** VrmlData_Color::VrmlData_Color ******/
+		/****** md5 signature: b7e214cf3e454f240b3da18173f2237c ******/
 		%feature("compactdefaultargs") VrmlData_Color;
-		%feature("autodoc", "/** * constructor. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-nColors: size_t,optional
-	default value is 0
-arrColors: gp_XYZ *,optional
-	default value is 0L
+nColors: size_t (optional, default to 0)
+arrColors: gp_XYZ * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. */.
 ") VrmlData_Color;
 		 VrmlData_Color(const VrmlData_Scene & theScene, const char * theName, const size_t nColors = 0, const gp_XYZ * arrColors = 0L);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Color::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified.<p> */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified.<p> */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Color ******************/
-		/**** md5 signature: 1898eb767daf45418674bf3651393f45 ****/
+		/****** VrmlData_Color::Color ******/
+		/****** md5 signature: 1898eb767daf45418674bf3651393f45 ******/
 		%feature("compactdefaultargs") Color;
-		%feature("autodoc", "/** * query one color * @param i * index in the array of colors [0 .. n-1] * returns * the color value for the index. if index irrelevant, returns (0., 0., 0.) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 i: int
 
-Returns
+Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query one color * 
+Parameter i * index in the array of colors [0 .. N-1] * 
+Return: * the color value for the index. If index irrelevant, returns (0., 0., 0.) */.
 ") Color;
 		const Quantity_Color Color(const Standard_Integer i);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Color::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetColors ******************/
-		/**** md5 signature: 8eff2cd53c18cdcf0826a72535eb4322 ****/
+		/****** VrmlData_Color::SetColors ******/
+		/****** md5 signature: 8eff2cd53c18cdcf0826a72535eb4322 ******/
 		%feature("compactdefaultargs") SetColors;
-		%feature("autodoc", "/** * set the array data */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nColors: size_t
 arrColors: gp_XYZ *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the array data */.
 ") SetColors;
 		void SetColors(const size_t nColors, const gp_XYZ * arrColors);
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Color::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to the scene output. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to the Scene output. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2390,180 +2816,211 @@ VrmlData_ErrorStatus
 **********************/
 class VrmlData_Cone : public VrmlData_Geometry {
 	public:
-		/****************** VrmlData_Cone ******************/
-		/**** md5 signature: 8db8bb078fa51ba51579a6fe8a5e2ae2 ****/
+		/****** VrmlData_Cone::VrmlData_Cone ******/
+		/****** md5 signature: 8db8bb078fa51ba51579a6fe8a5e2ae2 ******/
 		%feature("compactdefaultargs") VrmlData_Cone;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Cone;
 		 VrmlData_Cone();
 
-		/****************** VrmlData_Cone ******************/
-		/**** md5 signature: 3c1076725275cf56394c2dd84f2306f2 ****/
+		/****** VrmlData_Cone::VrmlData_Cone ******/
+		/****** md5 signature: 3c1076725275cf56394c2dd84f2306f2 ******/
 		%feature("compactdefaultargs") VrmlData_Cone;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-theBottomRadius: float,optional
-	default value is 1
-theHeight: float,optional
-	default value is 2
+theBottomRadius: float (optional, default to 1)
+theHeight: float (optional, default to 2)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Cone;
 		 VrmlData_Cone(const VrmlData_Scene & theScene, const char * theName, const Standard_Real theBottomRadius = 1, const Standard_Real theHeight = 2);
 
-		/****************** BottomRadius ******************/
-		/**** md5 signature: 513ae48fc9e9433a4d42d5ab899d8c9e ****/
+		/****** VrmlData_Cone::BottomRadius ******/
+		/****** md5 signature: 513ae48fc9e9433a4d42d5ab899d8c9e ******/
 		%feature("compactdefaultargs") BottomRadius;
-		%feature("autodoc", "/** * query the bottom radius */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Bottom Radius */.
 ") BottomRadius;
 		Standard_Real BottomRadius();
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Cone::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** HasBottom ******************/
-		/**** md5 signature: 25e14da0c2fbc11e5f9af7b96668446c ****/
+		/****** VrmlData_Cone::HasBottom ******/
+		/****** md5 signature: 25e14da0c2fbc11e5f9af7b96668446c ******/
 		%feature("compactdefaultargs") HasBottom;
-		%feature("autodoc", "/** * query if the bottom circle is included */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the bottom circle is included */.
 ") HasBottom;
 		Standard_Boolean HasBottom();
 
-		/****************** HasSide ******************/
-		/**** md5 signature: c8a7940100871f9d13e6d4209710b8f2 ****/
+		/****** VrmlData_Cone::HasSide ******/
+		/****** md5 signature: c8a7940100871f9d13e6d4209710b8f2 ******/
 		%feature("compactdefaultargs") HasSide;
-		%feature("autodoc", "/** * query if the side surface is included */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the side surface is included */.
 ") HasSide;
 		Standard_Boolean HasSide();
 
-		/****************** Height ******************/
-		/**** md5 signature: ead56356911f8df313dceca6929dde18 ****/
+		/****** VrmlData_Cone::Height ******/
+		/****** md5 signature: ead56356911f8df313dceca6929dde18 ******/
 		%feature("compactdefaultargs") Height;
-		%feature("autodoc", "/** * query the height */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Height */.
 ") Height;
 		Standard_Real Height();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Cone::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetBottomRadius ******************/
-		/**** md5 signature: 4578a591fab6a97bff75355134dce8b1 ****/
+		/****** VrmlData_Cone::SetBottomRadius ******/
+		/****** md5 signature: 4578a591fab6a97bff75355134dce8b1 ******/
 		%feature("compactdefaultargs") SetBottomRadius;
-		%feature("autodoc", "/** * set the bottom radius */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theRadius: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Bottom Radius */.
 ") SetBottomRadius;
 		void SetBottomRadius(const Standard_Real theRadius);
 
-		/****************** SetFaces ******************/
-		/**** md5 signature: fbbd4f6837038f188c4b930de01bc1a8 ****/
+		/****** VrmlData_Cone::SetFaces ******/
+		/****** md5 signature: fbbd4f6837038f188c4b930de01bc1a8 ******/
 		%feature("compactdefaultargs") SetFaces;
-		%feature("autodoc", "/** * set which faces are included */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 hasBottom: bool
 hasSide: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set which faces are included */.
 ") SetFaces;
 		void SetFaces(const Standard_Boolean hasBottom, const Standard_Boolean hasSide);
 
-		/****************** SetHeight ******************/
-		/**** md5 signature: 390c55787a7bcabd97d84df43b58e6f5 ****/
+		/****** VrmlData_Cone::SetHeight ******/
+		/****** md5 signature: 390c55787a7bcabd97d84df43b58e6f5 ******/
 		%feature("compactdefaultargs") SetHeight;
-		%feature("autodoc", "/** * set the height */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theHeight: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Height */.
 ") SetHeight;
 		void SetHeight(const Standard_Real theHeight);
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_Cone::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the primitive topology. this method returns a null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the primitive topology. This method returns a Null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Cone::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2583,94 +3040,111 @@ VrmlData_ErrorStatus
 ****************************/
 class VrmlData_Coordinate : public VrmlData_ArrayVec3d {
 	public:
-		/****************** VrmlData_Coordinate ******************/
-		/**** md5 signature: 1bbdc4faa9d29da5f1fe7f37662fcb9b ****/
+		/****** VrmlData_Coordinate::VrmlData_Coordinate ******/
+		/****** md5 signature: 1bbdc4faa9d29da5f1fe7f37662fcb9b ******/
 		%feature("compactdefaultargs") VrmlData_Coordinate;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty Constructor */.
 ") VrmlData_Coordinate;
 		 VrmlData_Coordinate();
 
-		/****************** VrmlData_Coordinate ******************/
-		/**** md5 signature: 001c403814378e9a41212a101b7087de ****/
+		/****** VrmlData_Coordinate::VrmlData_Coordinate ******/
+		/****** md5 signature: 001c403814378e9a41212a101b7087de ******/
 		%feature("compactdefaultargs") VrmlData_Coordinate;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-nPoints: size_t,optional
-	default value is 0
-arrPoints: gp_XYZ *,optional
-	default value is 0L
+nPoints: size_t (optional, default to 0)
+arrPoints: gp_XYZ * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Coordinate;
 		 VrmlData_Coordinate(const VrmlData_Scene & theScene, const char * theName, const size_t nPoints = 0, const gp_XYZ * arrPoints = 0L);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Coordinate::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Coordinate ******************/
-		/**** md5 signature: 9d6eea96681e77a109b87318977e507a ****/
+		/****** VrmlData_Coordinate::Coordinate ******/
+		/****** md5 signature: 9d6eea96681e77a109b87318977e507a ******/
 		%feature("compactdefaultargs") Coordinate;
-		%feature("autodoc", "/** * query one point * @param i * index in the array of points [0 .. n-1] * returns * the coordinate for the index. if index irrelevant, returns (0., 0., 0.) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 i: int
 
-Returns
+Return
 -------
 gp_XYZ
+
+Description
+-----------
+/** * Query one point * 
+Parameter i * index in the array of points [0 .. N-1] * 
+Return: * the coordinate for the index. If index irrelevant, returns (0., 0., 0.) */.
 ") Coordinate;
 		const gp_XYZ Coordinate(const Standard_Integer i);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Coordinate::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Coordinate::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to the scene output. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to the Scene output. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2690,192 +3164,225 @@ VrmlData_ErrorStatus
 **************************/
 class VrmlData_Cylinder : public VrmlData_Geometry {
 	public:
-		/****************** VrmlData_Cylinder ******************/
-		/**** md5 signature: 898b22af591489d021496ce1afc5b5a2 ****/
+		/****** VrmlData_Cylinder::VrmlData_Cylinder ******/
+		/****** md5 signature: 898b22af591489d021496ce1afc5b5a2 ******/
 		%feature("compactdefaultargs") VrmlData_Cylinder;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Cylinder;
 		 VrmlData_Cylinder();
 
-		/****************** VrmlData_Cylinder ******************/
-		/**** md5 signature: 0f20848858e3daf2c32cecd2fcbdcf84 ****/
+		/****** VrmlData_Cylinder::VrmlData_Cylinder ******/
+		/****** md5 signature: 0f20848858e3daf2c32cecd2fcbdcf84 ******/
 		%feature("compactdefaultargs") VrmlData_Cylinder;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-theRadius: float,optional
-	default value is 1
-theHeight: float,optional
-	default value is 2
+theRadius: float (optional, default to 1)
+theHeight: float (optional, default to 2)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Cylinder;
 		 VrmlData_Cylinder(const VrmlData_Scene & theScene, const char * theName, const Standard_Real theRadius = 1, const Standard_Real theHeight = 2);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Cylinder::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** HasBottom ******************/
-		/**** md5 signature: 25e14da0c2fbc11e5f9af7b96668446c ****/
+		/****** VrmlData_Cylinder::HasBottom ******/
+		/****** md5 signature: 25e14da0c2fbc11e5f9af7b96668446c ******/
 		%feature("compactdefaultargs") HasBottom;
-		%feature("autodoc", "/** * query if the bottom circle is included */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the bottom circle is included */.
 ") HasBottom;
 		Standard_Boolean HasBottom();
 
-		/****************** HasSide ******************/
-		/**** md5 signature: c8a7940100871f9d13e6d4209710b8f2 ****/
+		/****** VrmlData_Cylinder::HasSide ******/
+		/****** md5 signature: c8a7940100871f9d13e6d4209710b8f2 ******/
 		%feature("compactdefaultargs") HasSide;
-		%feature("autodoc", "/** * query if the side surface is included */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the side surface is included */.
 ") HasSide;
 		Standard_Boolean HasSide();
 
-		/****************** HasTop ******************/
-		/**** md5 signature: 2b763f765f4d0a768b40c60677894ed9 ****/
+		/****** VrmlData_Cylinder::HasTop ******/
+		/****** md5 signature: 2b763f765f4d0a768b40c60677894ed9 ******/
 		%feature("compactdefaultargs") HasTop;
-		%feature("autodoc", "/** * query if the top surface is included */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Query if the top surface is included */.
 ") HasTop;
 		Standard_Boolean HasTop();
 
-		/****************** Height ******************/
-		/**** md5 signature: ead56356911f8df313dceca6929dde18 ****/
+		/****** VrmlData_Cylinder::Height ******/
+		/****** md5 signature: ead56356911f8df313dceca6929dde18 ******/
 		%feature("compactdefaultargs") Height;
-		%feature("autodoc", "/** * query the height */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Height */.
 ") Height;
 		Standard_Real Height();
 
-		/****************** Radius ******************/
-		/**** md5 signature: b6bde1f02875769e3b96869e2c7c3dfd ****/
+		/****** VrmlData_Cylinder::Radius ******/
+		/****** md5 signature: b6bde1f02875769e3b96869e2c7c3dfd ******/
 		%feature("compactdefaultargs") Radius;
-		%feature("autodoc", "/** * query the radius */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the Radius */.
 ") Radius;
 		Standard_Real Radius();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Cylinder::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetFaces ******************/
-		/**** md5 signature: 36e2e2be558fc8fe9ad04c399b820395 ****/
+		/****** VrmlData_Cylinder::SetFaces ******/
+		/****** md5 signature: 36e2e2be558fc8fe9ad04c399b820395 ******/
 		%feature("compactdefaultargs") SetFaces;
-		%feature("autodoc", "/** * set which faces are included */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 hasBottom: bool
 hasSide: bool
 hasTop: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set which faces are included */.
 ") SetFaces;
 		void SetFaces(const Standard_Boolean hasBottom, const Standard_Boolean hasSide, const Standard_Boolean hasTop);
 
-		/****************** SetHeight ******************/
-		/**** md5 signature: 390c55787a7bcabd97d84df43b58e6f5 ****/
+		/****** VrmlData_Cylinder::SetHeight ******/
+		/****** md5 signature: 390c55787a7bcabd97d84df43b58e6f5 ******/
 		%feature("compactdefaultargs") SetHeight;
-		%feature("autodoc", "/** * set the height */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theHeight: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Height */.
 ") SetHeight;
 		void SetHeight(const Standard_Real theHeight);
 
-		/****************** SetRadius ******************/
-		/**** md5 signature: 088308acb04b143d2b529239c413a089 ****/
+		/****** VrmlData_Cylinder::SetRadius ******/
+		/****** md5 signature: 088308acb04b143d2b529239c413a089 ******/
 		%feature("compactdefaultargs") SetRadius;
-		%feature("autodoc", "/** * set the radius */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theRadius: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Radius */.
 ") SetRadius;
 		void SetRadius(const Standard_Real theRadius);
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_Cylinder::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the primitive topology. this method returns a null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the primitive topology. This method returns a Null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Cylinder::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -2898,92 +3405,105 @@ VrmlData_ErrorStatus
 ******************************/
 class VrmlData_ImageTexture : public VrmlData_Texture {
 	public:
-		/****************** VrmlData_ImageTexture ******************/
-		/**** md5 signature: 53e75a67acab7db4ffbdb655f2fd4db4 ****/
+		/****** VrmlData_ImageTexture::VrmlData_ImageTexture ******/
+		/****** md5 signature: 53e75a67acab7db4ffbdb655f2fd4db4 ******/
 		%feature("compactdefaultargs") VrmlData_ImageTexture;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_ImageTexture;
 		 VrmlData_ImageTexture();
 
-		/****************** VrmlData_ImageTexture ******************/
-		/**** md5 signature: 1306437286f22423cda70151366d3429 ****/
+		/****** VrmlData_ImageTexture::VrmlData_ImageTexture ******/
+		/****** md5 signature: 1306437286f22423cda70151366d3429 ******/
 		%feature("compactdefaultargs") VrmlData_ImageTexture;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-theURL: char *,optional
-	default value is 0L
-theRepS: bool,optional
-	default value is Standard_False
-theRepT: bool,optional
-	default value is Standard_False
+theURL: char * (optional, default to 0)
+theRepS: bool (optional, default to Standard_False)
+theRepT: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_ImageTexture;
 		 VrmlData_ImageTexture(const VrmlData_Scene & theScene, const char * theName, const char * theURL = 0L, const Standard_Boolean theRepS = Standard_False, const Standard_Boolean theRepT = Standard_False);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_ImageTexture::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_ImageTexture::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** URL ******************/
-		/**** md5 signature: b69bf89decd854d8adc42703c3682ea2 ****/
+		/****** VrmlData_ImageTexture::URL ******/
+		/****** md5 signature: b69bf89decd854d8adc42703c3682ea2 ******/
 		%feature("compactdefaultargs") URL;
-		%feature("autodoc", "/** * query the associated url. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 NCollection_List<TCollection_AsciiString>
+
+Description
+-----------
+/** * Query the associated URL. */.
 ") URL;
 		const NCollection_List<TCollection_AsciiString> & URL();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_ImageTexture::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -3003,260 +3523,316 @@ VrmlData_ErrorStatus
 ********************************/
 class VrmlData_IndexedLineSet : public VrmlData_Geometry {
 	public:
-		/****************** VrmlData_IndexedLineSet ******************/
-		/**** md5 signature: 8a125211d4aec3ce066e097fb2ae890d ****/
+		/****** VrmlData_IndexedLineSet::VrmlData_IndexedLineSet ******/
+		/****** md5 signature: 8a125211d4aec3ce066e097fb2ae890d ******/
 		%feature("compactdefaultargs") VrmlData_IndexedLineSet;
-		%feature("autodoc", "/** * empty constructor. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor. */.
 ") VrmlData_IndexedLineSet;
 		 VrmlData_IndexedLineSet();
 
-		/****************** VrmlData_IndexedLineSet ******************/
-		/**** md5 signature: 44bf6d254fffdb07c24a262da3d9b76e ****/
+		/****** VrmlData_IndexedLineSet::VrmlData_IndexedLineSet ******/
+		/****** md5 signature: 44bf6d254fffdb07c24a262da3d9b76e ******/
 		%feature("compactdefaultargs") VrmlData_IndexedLineSet;
-		%feature("autodoc", "/** * constructor. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-isColorPerVertex: bool,optional
-	default value is Standard_True
+isColorPerVertex: bool (optional, default to Standard_True)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor. */.
 ") VrmlData_IndexedLineSet;
 		 VrmlData_IndexedLineSet(const VrmlData_Scene & theScene, const char * theName, const Standard_Boolean isColorPerVertex = Standard_True);
 
-		/****************** ArrayColorInd ******************/
-		/**** md5 signature: c4909a4558d3167469a33463503c9345 ****/
+		/****** VrmlData_IndexedLineSet::ArrayColorInd ******/
+		/****** md5 signature: c4909a4558d3167469a33463503c9345 ******/
 		%feature("compactdefaultargs") ArrayColorInd;
-		%feature("autodoc", "/** * query the array of color indice * @param arrcolorind * <tt>[out]</tt> array of colorindex as it is described in vrml2.0 spec * returns * number of integers in the array arrcolorind. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrColorInd: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of color indice * 
+Parameter arrColorInd * <tt>[out]</tt> array of colorIndex as it is described in VRML2.0 spec * 
+Return: * Number of integers in the array arrColorInd. */.
 ") ArrayColorInd;
 		size_t ArrayColorInd(const Standard_Integer * * & arrColorInd);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_IndexedLineSet::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Colors ******************/
-		/**** md5 signature: 5b4d455a40cc08c0769667c66599bf33 ****/
+		/****** VrmlData_IndexedLineSet::Colors ******/
+		/****** md5 signature: 5b4d455a40cc08c0769667c66599bf33 ******/
 		%feature("compactdefaultargs") Colors;
-		%feature("autodoc", "/** * query the colors. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Color>
+
+Description
+-----------
+/** * Query the Colors. */.
 ") Colors;
 		const opencascade::handle<VrmlData_Color> & Colors();
 
-		/****************** Coordinates ******************/
-		/**** md5 signature: dff615ecf03f4916071d4af06ba569bd ****/
+		/****** VrmlData_IndexedLineSet::Coordinates ******/
+		/****** md5 signature: dff615ecf03f4916071d4af06ba569bd ******/
 		%feature("compactdefaultargs") Coordinates;
-		%feature("autodoc", "/** * query the coordinates. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Coordinate>
+
+Description
+-----------
+/** * Query the Coordinates. */.
 ") Coordinates;
 		const opencascade::handle<VrmlData_Coordinate> & Coordinates();
 
-		/****************** GetColor ******************/
-		/**** md5 signature: a020b9dcebdd30dfa4aee7144dc3e7a6 ****/
+		/****** VrmlData_IndexedLineSet::GetColor ******/
+		/****** md5 signature: a020b9dcebdd30dfa4aee7144dc3e7a6 ******/
 		%feature("compactdefaultargs") GetColor;
-		%feature("autodoc", "/** * query a color for one node in the given element. the color is * interpreted according to fields mycolors, myarrcolorind, * mycolorpervertex, as defined in vrml 2.0. * @param iface * rank of the polygon [0 .. n-1] * @param ivertex * rank of the vertex in the polygon [0 .. m-1]. this parameter is ignored * if (mycolorpervertex == false) * returns * color value (rgb); if the color is indefinite then returns (0., 0., 0.) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 iFace: int
 iVertex: int
 
-Returns
+Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query a color for one node in the given element. The color is * interpreted according to fields myColors, myArrColorInd, * myColorPerVertex, as defined in VRML 2.0. * 
+Parameter iFace * rank of the polygon [0 .. N-1] * 
+Parameter iVertex * rank of the vertex in the polygon [0 .. M-1]. This parameter is ignored * if (myColorPerVertex == False) * 
+Return: * Color value (RGB); if the color is indefinite then returns (0., 0., 0.) */.
 ") GetColor;
 		Quantity_Color GetColor(const Standard_Integer iFace, const Standard_Integer iVertex);
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_IndexedLineSet::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, so that it should not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, so that it should not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Polygon ******************/
-		/**** md5 signature: a115c67bc0e3a7674096a0b7bece1f07 ****/
+		/****** VrmlData_IndexedLineSet::Polygon ******/
+		/****** md5 signature: a115c67bc0e3a7674096a0b7bece1f07 ******/
 		%feature("compactdefaultargs") Polygon;
-		%feature("autodoc", "/** * query one polygon. * @param ipolygon * rank of the polygon [0 .. n-1] * @param outindice * <tt>[out]</tt> array of vertex indice * returns * number of vertice in the polygon - the dimension of outindice array */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 iPolygon: int
 outIndice: int *
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+/** * Query one polygon. * 
+Parameter iPolygon * rank of the polygon [0 .. N-1] * 
+Parameter outIndice * <tt>[out]</tt> array of vertex indice * 
+Return: * number of vertice in the polygon - the dimension of outIndice array */.
 ") Polygon;
 		Standard_Integer Polygon(const Standard_Integer iPolygon, const Standard_Integer * & outIndice);
 
-		/****************** Polygons ******************/
-		/**** md5 signature: e6bcceeaaf838ffe8cef407d5f7d5a45 ****/
+		/****** VrmlData_IndexedLineSet::Polygons ******/
+		/****** md5 signature: e6bcceeaaf838ffe8cef407d5f7d5a45 ******/
 		%feature("compactdefaultargs") Polygons;
-		%feature("autodoc", "/** * query the array of polygons */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrPolygons: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of polygons */.
 ") Polygons;
 		size_t Polygons(const Standard_Integer * * & arrPolygons);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_IndexedLineSet::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetColorInd ******************/
-		/**** md5 signature: a8b546e53cea49d49c61298bbbcd6fe0 ****/
+		/****** VrmlData_IndexedLineSet::SetColorInd ******/
+		/****** md5 signature: a8b546e53cea49d49c61298bbbcd6fe0 ******/
 		%feature("compactdefaultargs") SetColorInd;
-		%feature("autodoc", "/** * set the colors array of indice */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nIndice: Standard_Size
 theIndice: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the colors array of indice */.
 ") SetColorInd;
 		void SetColorInd(const Standard_Size nIndice, const Standard_Integer * * theIndice);
 
-		/****************** SetColorPerVertex ******************/
-		/**** md5 signature: fa366f870d7e3f62742a025e7f4090bb ****/
+		/****** VrmlData_IndexedLineSet::SetColorPerVertex ******/
+		/****** md5 signature: fa366f870d7e3f62742a025e7f4090bb ******/
 		%feature("compactdefaultargs") SetColorPerVertex;
-		%feature("autodoc", "/** * set the boolean value 'colorpervertex' */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 isColorPerVertex: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the boolean value 'colorPerVertex' */.
 ") SetColorPerVertex;
 		void SetColorPerVertex(const Standard_Boolean isColorPerVertex);
 
-		/****************** SetColors ******************/
-		/**** md5 signature: da46e6673528d4cedf179f062bf01e72 ****/
+		/****** VrmlData_IndexedLineSet::SetColors ******/
+		/****** md5 signature: da46e6673528d4cedf179f062bf01e72 ******/
 		%feature("compactdefaultargs") SetColors;
-		%feature("autodoc", "/** * set the color node */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theColors: VrmlData_Color
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Color node */.
 ") SetColors;
 		void SetColors(const opencascade::handle<VrmlData_Color> & theColors);
 
-		/****************** SetCoordinates ******************/
-		/**** md5 signature: bf51adc127a7b2dd3219a99e2901a3c6 ****/
+		/****** VrmlData_IndexedLineSet::SetCoordinates ******/
+		/****** md5 signature: bf51adc127a7b2dd3219a99e2901a3c6 ******/
 		%feature("compactdefaultargs") SetCoordinates;
-		%feature("autodoc", "/** * set the nodes */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theCoord: VrmlData_Coordinate
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the nodes */.
 ") SetCoordinates;
 		void SetCoordinates(const opencascade::handle<VrmlData_Coordinate> & theCoord);
 
-		/****************** SetPolygons ******************/
-		/**** md5 signature: 02125773a51a65ded3e1f69ef3940628 ****/
+		/****** VrmlData_IndexedLineSet::SetPolygons ******/
+		/****** md5 signature: 02125773a51a65ded3e1f69ef3940628 ******/
 		%feature("compactdefaultargs") SetPolygons;
-		%feature("autodoc", "/** * set the polygons */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nPolygons: Standard_Size
 thePolygons: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the polygons */.
 ") SetPolygons;
 		void SetPolygons(const Standard_Size nPolygons, const Standard_Integer * * thePolygons);
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_IndexedLineSet::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the shape. this method checks the flag myismodified; if true it * should rebuild the shape presentation. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the shape. This method checks the flag myIsModified; if True it * should rebuild the shape presentation. */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_IndexedLineSet::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -3276,94 +3852,111 @@ VrmlData_ErrorStatus
 ************************/
 class VrmlData_Normal : public VrmlData_ArrayVec3d {
 	public:
-		/****************** VrmlData_Normal ******************/
-		/**** md5 signature: a0870e0802e497490081d50051601672 ****/
+		/****** VrmlData_Normal::VrmlData_Normal ******/
+		/****** md5 signature: a0870e0802e497490081d50051601672 ******/
 		%feature("compactdefaultargs") VrmlData_Normal;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Normal;
 		 VrmlData_Normal();
 
-		/****************** VrmlData_Normal ******************/
-		/**** md5 signature: 9859a50d88d9a4dd95d188b484ca1648 ****/
+		/****** VrmlData_Normal::VrmlData_Normal ******/
+		/****** md5 signature: 9859a50d88d9a4dd95d188b484ca1648 ******/
 		%feature("compactdefaultargs") VrmlData_Normal;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-nVec: size_t,optional
-	default value is 0
-arrVec: gp_XYZ *,optional
-	default value is 0L
+nVec: size_t (optional, default to 0)
+arrVec: gp_XYZ * (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Normal;
 		 VrmlData_Normal(const VrmlData_Scene & theScene, const char * theName, const size_t nVec = 0, const gp_XYZ * arrVec = 0L);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Normal::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Normal ******************/
-		/**** md5 signature: 4b640cc49ffa8b6ca7801e2851dc585b ****/
+		/****** VrmlData_Normal::Normal ******/
+		/****** md5 signature: 4b640cc49ffa8b6ca7801e2851dc585b ******/
 		%feature("compactdefaultargs") Normal;
-		%feature("autodoc", "/** * query one normal * @param i * index in the array of normals [0 .. n-1] * returns * the normal value for the index. if index irrelevant, returns (0., 0., 0.) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 i: int
 
-Returns
+Return
 -------
 gp_XYZ
+
+Description
+-----------
+/** * Query one normal * 
+Parameter i * index in the array of normals [0 .. N-1] * 
+Return: * the normal value for the index. If index irrelevant, returns (0., 0., 0.) */.
 ") Normal;
 		const gp_XYZ Normal(const Standard_Integer i);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Normal::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Normal::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to the scene output. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to the Scene output. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -3383,114 +3976,134 @@ VrmlData_ErrorStatus
 ************************/
 class VrmlData_Sphere : public VrmlData_Geometry {
 	public:
-		/****************** VrmlData_Sphere ******************/
-		/**** md5 signature: 16f1b145583f7c046eeb8523af246c61 ****/
+		/****** VrmlData_Sphere::VrmlData_Sphere ******/
+		/****** md5 signature: 16f1b145583f7c046eeb8523af246c61 ******/
 		%feature("compactdefaultargs") VrmlData_Sphere;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_Sphere;
 		 VrmlData_Sphere();
 
-		/****************** VrmlData_Sphere ******************/
-		/**** md5 signature: e2324ed361c04f299e2a4aed36bc432f ****/
+		/****** VrmlData_Sphere::VrmlData_Sphere ******/
+		/****** md5 signature: e2324ed361c04f299e2a4aed36bc432f ******/
 		%feature("compactdefaultargs") VrmlData_Sphere;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-theRadius: float,optional
-	default value is 1
+theRadius: float (optional, default to 1)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_Sphere;
 		 VrmlData_Sphere(const VrmlData_Scene & theScene, const char * theName, const Standard_Real theRadius = 1);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_Sphere::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Radius ******************/
-		/**** md5 signature: b6bde1f02875769e3b96869e2c7c3dfd ****/
+		/****** VrmlData_Sphere::Radius ******/
+		/****** md5 signature: b6bde1f02875769e3b96869e2c7c3dfd ******/
 		%feature("compactdefaultargs") Radius;
-		%feature("autodoc", "/** * query the sphere radius */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+/** * Query the sphere radius */.
 ") Radius;
 		Standard_Real Radius();
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_Sphere::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * fill the node internal data from the given input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Fill the Node internal data from the given input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetRadius ******************/
-		/**** md5 signature: 088308acb04b143d2b529239c413a089 ****/
+		/****** VrmlData_Sphere::SetRadius ******/
+		/****** md5 signature: 088308acb04b143d2b529239c413a089 ******/
 		%feature("compactdefaultargs") SetRadius;
-		%feature("autodoc", "/** * set the spere radius */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theRadius: float
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the sphere radius */.
 ") SetRadius;
 		void SetRadius(const Standard_Real theRadius);
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_Sphere::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the primitive topology. this method returns a null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the primitive topology. This method returns a Null shape if there * is an internal error during the primitive creation (zero radius, etc.) */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_Sphere::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -3510,411 +4123,499 @@ VrmlData_ErrorStatus
 ********************************/
 class VrmlData_IndexedFaceSet : public VrmlData_Faceted {
 	public:
-		/****************** VrmlData_IndexedFaceSet ******************/
-		/**** md5 signature: 56865c96be521fd297fcf6647ded2447 ****/
+		/****** VrmlData_IndexedFaceSet::VrmlData_IndexedFaceSet ******/
+		/****** md5 signature: 56865c96be521fd297fcf6647ded2447 ******/
 		%feature("compactdefaultargs") VrmlData_IndexedFaceSet;
-		%feature("autodoc", "/** * empty constructor */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/** * Empty constructor */.
 ") VrmlData_IndexedFaceSet;
 		 VrmlData_IndexedFaceSet();
 
-		/****************** VrmlData_IndexedFaceSet ******************/
-		/**** md5 signature: c5db453c541790928e632d73a04d887c ****/
+		/****** VrmlData_IndexedFaceSet::VrmlData_IndexedFaceSet ******/
+		/****** md5 signature: c5db453c541790928e632d73a04d887c ******/
 		%feature("compactdefaultargs") VrmlData_IndexedFaceSet;
-		%feature("autodoc", "/** * constructor */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theScene: VrmlData_Scene
 theName: char *
-isCCW: bool,optional
-	default value is Standard_True
-isSolid: bool,optional
-	default value is Standard_True
-isConvex: bool,optional
-	default value is Standard_True
-theCreaseAngle: float,optional
-	default value is 0
+isCCW: bool (optional, default to Standard_True)
+isSolid: bool (optional, default to Standard_True)
+isConvex: bool (optional, default to Standard_True)
+theCreaseAngle: float (optional, default to 0)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Constructor */.
 ") VrmlData_IndexedFaceSet;
 		 VrmlData_IndexedFaceSet(const VrmlData_Scene & theScene, const char * theName, const Standard_Boolean isCCW = Standard_True, const Standard_Boolean isSolid = Standard_True, const Standard_Boolean isConvex = Standard_True, const Standard_Real theCreaseAngle = 0);
 
-		/****************** ArrayColorInd ******************/
-		/**** md5 signature: c4909a4558d3167469a33463503c9345 ****/
+		/****** VrmlData_IndexedFaceSet::ArrayColorInd ******/
+		/****** md5 signature: c4909a4558d3167469a33463503c9345 ******/
 		%feature("compactdefaultargs") ArrayColorInd;
-		%feature("autodoc", "/** * query the array of color indice * @param arrcolorind * <tt>[out]</tt> array of colorindex as it is described in vrml2.0 spec * returns * number of integers in the array arrcolorind. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrColorInd: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of color indice * 
+Parameter arrColorInd * <tt>[out]</tt> array of colorIndex as it is described in VRML2.0 spec * 
+Return: * Number of integers in the array arrColorInd. */.
 ") ArrayColorInd;
 		size_t ArrayColorInd(const Standard_Integer * * & arrColorInd);
 
-		/****************** ArrayNormalInd ******************/
-		/**** md5 signature: 26ef190401d0d586c7669e26de222f05 ****/
+		/****** VrmlData_IndexedFaceSet::ArrayNormalInd ******/
+		/****** md5 signature: 26ef190401d0d586c7669e26de222f05 ******/
 		%feature("compactdefaultargs") ArrayNormalInd;
-		%feature("autodoc", "/** * query the array of normal indice * @param arrnormalind * <tt>[out]</tt> array of normalindex as it is described in vrml2.0 spec * returns * number of integers in the array arrnormalind. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrNormalInd: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of normal indice * 
+Parameter arrNormalInd * <tt>[out]</tt> array of normalIndex as it is described in VRML2.0 spec * 
+Return: * Number of integers in the array arrNormalInd. */.
 ") ArrayNormalInd;
 		size_t ArrayNormalInd(const Standard_Integer * * & arrNormalInd);
 
-		/****************** ArrayTextureCoordInd ******************/
-		/**** md5 signature: 9cc0663e62ce2eac26a965741dad6949 ****/
+		/****** VrmlData_IndexedFaceSet::ArrayTextureCoordInd ******/
+		/****** md5 signature: 9cc0663e62ce2eac26a965741dad6949 ******/
 		%feature("compactdefaultargs") ArrayTextureCoordInd;
-		%feature("autodoc", "/** * query the array of texture coordinate indice * @param arrtexturecoordind * <tt>[out]</tt> array of texcoordindex as it is described in vrml2.0 spec * returns * number of integers in the array texcoordindex. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrTextureCoordInd: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of texture coordinate indice * 
+Parameter arrTextureCoordInd * <tt>[out]</tt> array of texCoordIndex as it is described in VRML2.0 spec * 
+Return: * Number of integers in the array texCoordIndex. */.
 ") ArrayTextureCoordInd;
 		size_t ArrayTextureCoordInd(const Standard_Integer * * & arrTextureCoordInd);
 
-		/****************** Clone ******************/
-		/**** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ****/
+		/****** VrmlData_IndexedFaceSet::Clone ******/
+		/****** md5 signature: 95e2aeff203be5b6c751a82b7c3b80f7 ******/
 		%feature("compactdefaultargs") Clone;
-		%feature("autodoc", "/** * create a copy of this node. * if the parameter is null, a new copied node is created. otherwise new node * is not created, but rather the given one is modified. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theOther: VrmlData_Node
 
-Returns
+Return
 -------
 opencascade::handle<VrmlData_Node>
+
+Description
+-----------
+/** * Create a copy of this node. * If the parameter is null, a new copied node is created. Otherwise new node * is not created, but rather the given one is modified. */.
 ") Clone;
 		virtual opencascade::handle<VrmlData_Node> Clone(const opencascade::handle<VrmlData_Node> & theOther);
 
-		/****************** Colors ******************/
-		/**** md5 signature: 5b4d455a40cc08c0769667c66599bf33 ****/
+		/****** VrmlData_IndexedFaceSet::Colors ******/
+		/****** md5 signature: 5b4d455a40cc08c0769667c66599bf33 ******/
 		%feature("compactdefaultargs") Colors;
-		%feature("autodoc", "/** * query the colors. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Color>
+
+Description
+-----------
+/** * Query the Colors. */.
 ") Colors;
 		const opencascade::handle<VrmlData_Color> & Colors();
 
-		/****************** Coordinates ******************/
-		/**** md5 signature: dff615ecf03f4916071d4af06ba569bd ****/
+		/****** VrmlData_IndexedFaceSet::Coordinates ******/
+		/****** md5 signature: dff615ecf03f4916071d4af06ba569bd ******/
 		%feature("compactdefaultargs") Coordinates;
-		%feature("autodoc", "/** * query the coordinates. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Coordinate>
+
+Description
+-----------
+/** * Query the Coordinates. */.
 ") Coordinates;
 		const opencascade::handle<VrmlData_Coordinate> & Coordinates();
 
-		/****************** GetColor ******************/
-		/**** md5 signature: a020b9dcebdd30dfa4aee7144dc3e7a6 ****/
+		/****** VrmlData_IndexedFaceSet::GetColor ******/
+		/****** md5 signature: a020b9dcebdd30dfa4aee7144dc3e7a6 ******/
 		%feature("compactdefaultargs") GetColor;
-		%feature("autodoc", "/** * query a color for one node in the given element. the color is * interpreted according to fields mycolors, myarrcolorind, * mycolorpervertex, as defined in vrml 2.0. * @param iface * rank of the polygon [0 .. n-1] * @param ivertex * rank of the vertex in the polygon [0 .. m-1]. this parameter is ignored * if (mycolorpervertex == false) * returns * color value (rgb); if the color is indefinite then returns (0., 0., 0.) */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 iFace: int
 iVertex: int
 
-Returns
+Return
 -------
 Quantity_Color
+
+Description
+-----------
+/** * Query a color for one node in the given element. The color is * interpreted according to fields myColors, myArrColorInd, * myColorPerVertex, as defined in VRML 2.0. * 
+Parameter iFace * rank of the polygon [0 .. N-1] * 
+Parameter iVertex * rank of the vertex in the polygon [0 .. M-1]. This parameter is ignored * if (myColorPerVertex == False) * 
+Return: * Color value (RGB); if the color is indefinite then returns (0., 0., 0.) */.
 ") GetColor;
 		Quantity_Color GetColor(const Standard_Integer iFace, const Standard_Integer iVertex);
 
-		/****************** IndiceNormals ******************/
-		/**** md5 signature: 04c8a7ae5b8b222d814358fa76706ba8 ****/
+		/****** VrmlData_IndexedFaceSet::IndiceNormals ******/
+		/****** md5 signature: 04c8a7ae5b8b222d814358fa76706ba8 ******/
 		%feature("compactdefaultargs") IndiceNormals;
-		%feature("autodoc", "/** * query normals indice for one face. this method should be called after * checking myarrnormalind != null, otherwise exception will be thrown. * @param iface * rank of the face [0 .. n-1] * @param outindice * <tt>[out]</tt> array of normals indice * returns * number of indice in the array - the dimension of outindice array */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 iFace: int
 outIndice: int *
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+/** * Query normals indice for one face. This method should be called after * checking myArrNormalInd != NULL, otherwise exception will be thrown. * 
+Parameter iFace * rank of the face [0 .. N-1] * 
+Parameter outIndice * <tt>[out]</tt> array of normals indice * 
+Return: * number of indice in the array - the dimension of outIndice array */.
 ") IndiceNormals;
 		Standard_Integer IndiceNormals(const Standard_Integer iFace, const Standard_Integer * & outIndice);
 
-		/****************** IsDefault ******************/
-		/**** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ****/
+		/****** VrmlData_IndexedFaceSet::IsDefault ******/
+		/****** md5 signature: 4ff647a3408e78788bd7a6b5e61c46ed ******/
 		%feature("compactdefaultargs") IsDefault;
-		%feature("autodoc", "/** * returns true if the node is default, so that it should not be written. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+/** * Returns True if the node is default, so that it should not be written. */.
 ") IsDefault;
 		virtual Standard_Boolean IsDefault();
 
-		/****************** Normals ******************/
-		/**** md5 signature: 61ca5f53b490c0bf3f6e489c3df1d2e4 ****/
+		/****** VrmlData_IndexedFaceSet::Normals ******/
+		/****** md5 signature: 61ca5f53b490c0bf3f6e489c3df1d2e4 ******/
 		%feature("compactdefaultargs") Normals;
-		%feature("autodoc", "/** * query the normals. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_Normal>
+
+Description
+-----------
+/** * Query the Normals. */.
 ") Normals;
 		const opencascade::handle<VrmlData_Normal> & Normals();
 
-		/****************** Polygon ******************/
-		/**** md5 signature: d000b486c964dc6e7dd3c8ce3800da79 ****/
+		/****** VrmlData_IndexedFaceSet::Polygon ******/
+		/****** md5 signature: d000b486c964dc6e7dd3c8ce3800da79 ******/
 		%feature("compactdefaultargs") Polygon;
-		%feature("autodoc", "/** * query one polygon. * @param iface * rank of the polygon [0 .. n-1] * @param outindice * <tt>[out]</tt> array of vertex indice * returns * number of vertice in the polygon - the dimension of outindice array */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 iFace: int
 outIndice: int *
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+/** * Query one polygon. * 
+Parameter iFace * rank of the polygon [0 .. N-1] * 
+Parameter outIndice * <tt>[out]</tt> array of vertex indice * 
+Return: * number of vertice in the polygon - the dimension of outIndice array */.
 ") Polygon;
 		Standard_Integer Polygon(const Standard_Integer iFace, const Standard_Integer * & outIndice);
 
-		/****************** Polygons ******************/
-		/**** md5 signature: e6bcceeaaf838ffe8cef407d5f7d5a45 ****/
+		/****** VrmlData_IndexedFaceSet::Polygons ******/
+		/****** md5 signature: e6bcceeaaf838ffe8cef407d5f7d5a45 ******/
 		%feature("compactdefaultargs") Polygons;
-		%feature("autodoc", "/** * query the array of polygons */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 arrPolygons: int * *
 
-Returns
+Return
 -------
 size_t
+
+Description
+-----------
+/** * Query the array of polygons */.
 ") Polygons;
 		size_t Polygons(const Standard_Integer * * & arrPolygons);
 
-		/****************** Read ******************/
-		/**** md5 signature: 43d452e1523643764ed0a3ed08e10595 ****/
+		/****** VrmlData_IndexedFaceSet::Read ******/
+		/****** md5 signature: 43d452e1523643764ed0a3ed08e10595 ******/
 		%feature("compactdefaultargs") Read;
-		%feature("autodoc", "/** * read the node from input stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theBuffer: VrmlData_InBuffer
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Read the Node from input stream. */.
 ") Read;
 		virtual VrmlData_ErrorStatus Read(VrmlData_InBuffer & theBuffer);
 
-		/****************** SetColorInd ******************/
-		/**** md5 signature: a8b546e53cea49d49c61298bbbcd6fe0 ****/
+		/****** VrmlData_IndexedFaceSet::SetColorInd ******/
+		/****** md5 signature: a8b546e53cea49d49c61298bbbcd6fe0 ******/
 		%feature("compactdefaultargs") SetColorInd;
-		%feature("autodoc", "/** * set the colors array of indice */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nIndice: Standard_Size
 theIndice: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the colors array of indice */.
 ") SetColorInd;
 		void SetColorInd(const Standard_Size nIndice, const Standard_Integer * * theIndice);
 
-		/****************** SetColorPerVertex ******************/
-		/**** md5 signature: fa366f870d7e3f62742a025e7f4090bb ****/
+		/****** VrmlData_IndexedFaceSet::SetColorPerVertex ******/
+		/****** md5 signature: fa366f870d7e3f62742a025e7f4090bb ******/
 		%feature("compactdefaultargs") SetColorPerVertex;
-		%feature("autodoc", "/** * set the boolean value 'colorpervertex' */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 isColorPerVertex: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the boolean value 'colorPerVertex' */.
 ") SetColorPerVertex;
 		void SetColorPerVertex(const Standard_Boolean isColorPerVertex);
 
-		/****************** SetColors ******************/
-		/**** md5 signature: da46e6673528d4cedf179f062bf01e72 ****/
+		/****** VrmlData_IndexedFaceSet::SetColors ******/
+		/****** md5 signature: da46e6673528d4cedf179f062bf01e72 ******/
 		%feature("compactdefaultargs") SetColors;
-		%feature("autodoc", "/** * set the color node */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theColors: VrmlData_Color
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Color node */.
 ") SetColors;
 		void SetColors(const opencascade::handle<VrmlData_Color> & theColors);
 
-		/****************** SetCoordinates ******************/
-		/**** md5 signature: bf51adc127a7b2dd3219a99e2901a3c6 ****/
+		/****** VrmlData_IndexedFaceSet::SetCoordinates ******/
+		/****** md5 signature: bf51adc127a7b2dd3219a99e2901a3c6 ******/
 		%feature("compactdefaultargs") SetCoordinates;
-		%feature("autodoc", "/** * set the nodes */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theCoord: VrmlData_Coordinate
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the nodes */.
 ") SetCoordinates;
 		void SetCoordinates(const opencascade::handle<VrmlData_Coordinate> & theCoord);
 
-		/****************** SetNormalInd ******************/
-		/**** md5 signature: dea75969424aff27642ede98896a91a4 ****/
+		/****** VrmlData_IndexedFaceSet::SetNormalInd ******/
+		/****** md5 signature: dea75969424aff27642ede98896a91a4 ******/
 		%feature("compactdefaultargs") SetNormalInd;
-		%feature("autodoc", "/** * set the normals array of indice */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nIndice: Standard_Size
 theIndice: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the normals array of indice */.
 ") SetNormalInd;
 		void SetNormalInd(const Standard_Size nIndice, const Standard_Integer * * theIndice);
 
-		/****************** SetNormalPerVertex ******************/
-		/**** md5 signature: 1662498d2415121aba88aab86fcd4e7d ****/
+		/****** VrmlData_IndexedFaceSet::SetNormalPerVertex ******/
+		/****** md5 signature: 1662498d2415121aba88aab86fcd4e7d ******/
 		%feature("compactdefaultargs") SetNormalPerVertex;
-		%feature("autodoc", "/** * set the boolean value 'normalpervertex' */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 isNormalPerVertex: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the boolean value 'normalPerVertex' */.
 ") SetNormalPerVertex;
 		void SetNormalPerVertex(const Standard_Boolean isNormalPerVertex);
 
-		/****************** SetNormals ******************/
-		/**** md5 signature: e32729d2e2c119c2bf7bcd986503d323 ****/
+		/****** VrmlData_IndexedFaceSet::SetNormals ******/
+		/****** md5 signature: e32729d2e2c119c2bf7bcd986503d323 ******/
 		%feature("compactdefaultargs") SetNormals;
-		%feature("autodoc", "/** * set the normals node */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theNormals: VrmlData_Normal
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the normals node */.
 ") SetNormals;
 		void SetNormals(const opencascade::handle<VrmlData_Normal> & theNormals);
 
-		/****************** SetPolygons ******************/
-		/**** md5 signature: 02125773a51a65ded3e1f69ef3940628 ****/
+		/****** VrmlData_IndexedFaceSet::SetPolygons ******/
+		/****** md5 signature: 02125773a51a65ded3e1f69ef3940628 ******/
 		%feature("compactdefaultargs") SetPolygons;
-		%feature("autodoc", "/** * set the polygons */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nPolygons: Standard_Size
 thePolygons: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the polygons */.
 ") SetPolygons;
 		void SetPolygons(const Standard_Size nPolygons, const Standard_Integer * * thePolygons);
 
-		/****************** SetTextureCoordInd ******************/
-		/**** md5 signature: 5f7330587b3f6dbea88698c7bb47199f ****/
+		/****** VrmlData_IndexedFaceSet::SetTextureCoordInd ******/
+		/****** md5 signature: 5f7330587b3f6dbea88698c7bb47199f ******/
 		%feature("compactdefaultargs") SetTextureCoordInd;
-		%feature("autodoc", "/** * set the texcoordiante array of indice */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 nIndice: Standard_Size
 theIndice: int * *
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the TexCoordiante array of indice */.
 ") SetTextureCoordInd;
 		void SetTextureCoordInd(const Standard_Size nIndice, const Standard_Integer * * theIndice);
 
-		/****************** SetTextureCoords ******************/
-		/**** md5 signature: 176293ee2ebe8f4fe8657ef1a99f7e1a ****/
+		/****** VrmlData_IndexedFaceSet::SetTextureCoords ******/
+		/****** md5 signature: 176293ee2ebe8f4fe8657ef1a99f7e1a ******/
 		%feature("compactdefaultargs") SetTextureCoords;
-		%feature("autodoc", "/** * set the texture coordinate node */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 tc: VrmlData_TextureCoordinate
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/** * Set the Texture Coordinate node */.
 ") SetTextureCoords;
 		void SetTextureCoords(const opencascade::handle<VrmlData_TextureCoordinate> & tc);
 
-		/****************** TShape ******************/
-		/**** md5 signature: 93fab9efcf27c195565c5eda2f729711 ****/
+		/****** VrmlData_IndexedFaceSet::TShape ******/
+		/****** md5 signature: 93fab9efcf27c195565c5eda2f729711 ******/
 		%feature("compactdefaultargs") TShape;
-		%feature("autodoc", "/** * query the shape. this method checks the flag myismodified; if true it * should rebuild the shape presentation. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<TopoDS_TShape>
+
+Description
+-----------
+/** * Query the shape. This method checks the flag myIsModified; if True it * should rebuild the shape presentation. */.
 ") TShape;
 		virtual const opencascade::handle<TopoDS_TShape> TShape();
 
-		/****************** TextureCoords ******************/
-		/**** md5 signature: 1fff99428932e6cfae23edbe9e4d214b ****/
+		/****** VrmlData_IndexedFaceSet::TextureCoords ******/
+		/****** md5 signature: 1fff99428932e6cfae23edbe9e4d214b ******/
 		%feature("compactdefaultargs") TextureCoords;
-		%feature("autodoc", "/** * query the texture coordinates. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<VrmlData_TextureCoordinate>
+
+Description
+-----------
+/** * Query the Texture Coordinates. */.
 ") TextureCoords;
 		const opencascade::handle<VrmlData_TextureCoordinate> & TextureCoords();
 
-		/****************** Write ******************/
-		/**** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ****/
+		/****** VrmlData_IndexedFaceSet::Write ******/
+		/****** md5 signature: 1c9d5b990d872d184760c29e6d2e1492 ******/
 		%feature("compactdefaultargs") Write;
-		%feature("autodoc", "/** * write the node to output stream. */.
-
+		%feature("autodoc", "
 Parameters
 ----------
 thePrefix: char *
 
-Returns
+Return
 -------
 VrmlData_ErrorStatus
+
+Description
+-----------
+/** * Write the Node to output stream. */.
 ") Write;
 		virtual VrmlData_ErrorStatus Write(const char * thePrefix);
 
@@ -3960,3 +4661,45 @@ class VrmlData_Faceted:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def VrmlData_Node_GlobalIndent(*args):
+	return VrmlData_Node.GlobalIndent(*args)
+
+@deprecated
+def VrmlData_Node_OK(*args):
+	return VrmlData_Node.OK(*args)
+
+@deprecated
+def VrmlData_Node_OK(*args):
+	return VrmlData_Node.OK(*args)
+
+@deprecated
+def VrmlData_Node_ReadBoolean(*args):
+	return VrmlData_Node.ReadBoolean(*args)
+
+@deprecated
+def VrmlData_Node_ReadInteger(*args):
+	return VrmlData_Node.ReadInteger(*args)
+
+@deprecated
+def VrmlData_Node_ReadMultiString(*args):
+	return VrmlData_Node.ReadMultiString(*args)
+
+@deprecated
+def VrmlData_Node_ReadString(*args):
+	return VrmlData_Node.ReadString(*args)
+
+@deprecated
+def VrmlData_Scene_ReadLine(*args):
+	return VrmlData_Scene.ReadLine(*args)
+
+@deprecated
+def VrmlData_Scene_ReadWord(*args):
+	return VrmlData_Scene.ReadWord(*args)
+
+}

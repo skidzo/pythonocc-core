@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define BREPCHECKDOCSTRING
 "BRepCheck module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_brepcheck.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_brepcheck.html"
 %enddef
 %module (package="OCC.Core", docstring=BREPCHECKDOCSTRING) BRepCheck
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_brepcheck.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -109,7 +112,7 @@ enum BRepCheck_Status {
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 
 class BRepCheck_Status(IntEnum):
@@ -201,8 +204,7 @@ BRepCheck_CheckFail = BRepCheck_Status.BRepCheck_CheckFail
 /* end handles declaration */
 
 /* templates */
-%template(BRepCheck_DataMapOfShapeListOfStatus) NCollection_DataMap<TopoDS_Shape,BRepCheck_ListOfStatus,TopTools_ShapeMapHasher>;
-%template(BRepCheck_DataMapOfShapeResult) NCollection_DataMap<TopoDS_Shape,opencascade::handle<BRepCheck_Result>,TopTools_OrientedShapeMapHasher>;
+%template(BRepCheck_IndexedDataMapOfShapeResult) NCollection_IndexedDataMap<TopoDS_Shape,opencascade::handle<BRepCheck_Result>>;
 %template(BRepCheck_ListIteratorOfListOfStatus) NCollection_TListIterator<BRepCheck_Status>;
 %template(BRepCheck_ListOfStatus) NCollection_List<BRepCheck_Status>;
 
@@ -215,10 +217,10 @@ BRepCheck_CheckFail = BRepCheck_Status.BRepCheck_CheckFail
 /* end templates declaration */
 
 /* typedefs */
-typedef NCollection_DataMap<TopoDS_Shape, BRepCheck_ListOfStatus, TopTools_ShapeMapHasher>::Iterator BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>, TopTools_OrientedShapeMapHasher>::Iterator BRepCheck_DataMapIteratorOfDataMapOfShapeResult;
-typedef NCollection_DataMap<TopoDS_Shape, BRepCheck_ListOfStatus, TopTools_ShapeMapHasher> BRepCheck_DataMapOfShapeListOfStatus;
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>, TopTools_OrientedShapeMapHasher> BRepCheck_DataMapOfShapeResult;
+typedef NCollection_DataMap<TopoDS_Shape, Handle ( NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher>::Iterator BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
+typedef NCollection_DataMap<TopoDS_Shape, Handle ( NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher> BRepCheck_DataMapOfShapeListOfStatus;
+typedef NCollection_Shared<BRepCheck_ListOfStatus> BRepCheck_HListOfStatus;
+typedef NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>> BRepCheck_IndexedDataMapOfShapeResult;
 typedef NCollection_List<BRepCheck_Status>::Iterator BRepCheck_ListIteratorOfListOfStatus;
 typedef NCollection_List<BRepCheck_Status> BRepCheck_ListOfStatus;
 /* end typedefs declaration */
@@ -229,57 +231,83 @@ typedef NCollection_List<BRepCheck_Status> BRepCheck_ListOfStatus;
 %rename(brepcheck) BRepCheck;
 class BRepCheck {
 	public:
-		/****************** Add ******************/
-		/**** md5 signature: bedfa5bf84f03f430e2a976318bd4d44 ****/
+		/****** BRepCheck::Add ******/
+		/****** md5 signature: bedfa5bf84f03f430e2a976318bd4d44 ******/
 		%feature("compactdefaultargs") Add;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 List: BRepCheck_ListOfStatus
 Stat: BRepCheck_Status
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Add;
 		static void Add(BRepCheck_ListOfStatus & List, const BRepCheck_Status Stat);
 
-		/****************** PrecCurve ******************/
-		/**** md5 signature: ca69acd06fec0c99014d9a2e8efe98cf ****/
+		/****** BRepCheck::PrecCurve ******/
+		/****** md5 signature: ca69acd06fec0c99014d9a2e8efe98cf ******/
 		%feature("compactdefaultargs") PrecCurve;
-		%feature("autodoc", "Returns the resolution on the 3d curve.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aAC3D: Adaptor3d_Curve
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the resolution on the 3d curve.
 ") PrecCurve;
 		static Standard_Real PrecCurve(const Adaptor3d_Curve & aAC3D);
 
-		/****************** PrecSurface ******************/
-		/**** md5 signature: 1ee0cf2b6eac4a6cd14cb86720323439 ****/
+		/****** BRepCheck::PrecSurface ******/
+		/****** md5 signature: 6f4c623dddf91472dbeeff8461bbbbf9 ******/
 		%feature("compactdefaultargs") PrecSurface;
-		%feature("autodoc", "Returns the resolution on the surface.
-
+		%feature("autodoc", "
 Parameters
 ----------
-aAHSurf: Adaptor3d_HSurface
+aAHSurf: Adaptor3d_Surface
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the resolution on the surface.
 ") PrecSurface;
-		static Standard_Real PrecSurface(const opencascade::handle<Adaptor3d_HSurface> & aAHSurf);
+		static Standard_Real PrecSurface(const opencascade::handle<Adaptor3d_Surface> & aAHSurf);
 
-		/****************** SelfIntersection ******************/
-		/**** md5 signature: bb04b20d19bd60ec83e4525199c06c3b ****/
+		/****** BRepCheck::Print ******/
+		/****** md5 signature: 0f4f5589255e0cda18fd387e5d4e5b49 ******/
+		%feature("compactdefaultargs") Print;
+		%feature("autodoc", "
+Parameters
+----------
+Stat: BRepCheck_Status
+
+Return
+-------
+OS: Standard_OStream
+
+Description
+-----------
+No available documentation.
+") Print;
+		static void Print(const BRepCheck_Status Stat, std::ostream &OutValue);
+
+		/****** BRepCheck::SelfIntersection ******/
+		/****** md5 signature: bb04b20d19bd60ec83e4525199c06c3b ******/
 		%feature("compactdefaultargs") SelfIntersection;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 W: TopoDS_Wire
@@ -287,9 +315,13 @@ F: TopoDS_Face
 E1: TopoDS_Edge
 E2: TopoDS_Edge
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") SelfIntersection;
 		static Standard_Boolean SelfIntersection(const TopoDS_Wire & W, const TopoDS_Face & F, TopoDS_Edge & E1, TopoDS_Edge & E2);
 
@@ -307,80 +339,156 @@ bool
 ***************************/
 class BRepCheck_Analyzer {
 	public:
-		/****************** BRepCheck_Analyzer ******************/
-		/**** md5 signature: 1ea01ba3f32c876f168d8f18b7120753 ****/
+		/****** BRepCheck_Analyzer::BRepCheck_Analyzer ******/
+		/****** md5 signature: c4951524e7a1ce44dddda94aa6e9d260 ******/
 		%feature("compactdefaultargs") BRepCheck_Analyzer;
-		%feature("autodoc", "Constructs a shape validation object defined by the shape s. <s> is the shape to control. <geomcontrols> if false only topological informaions are checked. the geometricals controls are for a vertex : brepcheck_invalidtolerancevalue nyi for an edge : brepcheck_invalidcurveonclosedsurface, brepcheck_invalidcurveonsurface, brepcheck_invalidsameparameterflag, brepcheck_invalidtolerancevalue nyi for a face : brepcheck_unorientableshape, brepcheck_intersectingwires, brepcheck_invalidtolerancevalue nyi for a wire : brepcheck_selfintersectingwire.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
-GeomControls: bool,optional
-	default value is Standard_True
+GeomControls: bool (optional, default to Standard_True)
+theIsParallel: bool (optional, default to Standard_False)
+theIsExact: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructs a shape validation object defined by the shape S. <S> is the shape to control. <GeomControls> If False only topological informaions are checked. The geometricals controls are For a Vertex: BRepCheck_InvalidToleranceValue NYI For an Edge: BRepCheck_InvalidCurveOnClosedSurface, BRepCheck_InvalidCurveOnSurface, BRepCheck_InvalidSameParameterFlag, BRepCheck_InvalidToleranceValue NYI For a face: BRepCheck_UnorientableShape, BRepCheck_IntersectingWires, BRepCheck_InvalidToleranceValue NYI For a wire: BRepCheck_SelfIntersectingWire.
 ") BRepCheck_Analyzer;
-		 BRepCheck_Analyzer(const TopoDS_Shape & S, const Standard_Boolean GeomControls = Standard_True);
+		 BRepCheck_Analyzer(const TopoDS_Shape & S, const Standard_Boolean GeomControls = Standard_True, const Standard_Boolean theIsParallel = Standard_False, const Standard_Boolean theIsExact = Standard_False);
 
-		/****************** Init ******************/
-		/**** md5 signature: 5196c4939ad07fcdde4186169aa9d21c ****/
+		/****** BRepCheck_Analyzer::Init ******/
+		/****** md5 signature: 5196c4939ad07fcdde4186169aa9d21c ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "<s> is the shape to control. <geomcontrols> if false only topological informaions are checked. the geometricals controls are for a vertex : brepcheck_invalidtolerance nyi for an edge : brepcheck_invalidcurveonclosedsurface, brepcheck_invalidcurveonsurface, brepcheck_invalidsameparameterflag, brepcheck_invalidtolerance nyi for a face : brepcheck_unorientableshape, brepcheck_intersectingwires, brepcheck_invalidtolerance nyi for a wire : brepcheck_selfintersectingwire.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
-GeomControls: bool,optional
-	default value is Standard_True
+GeomControls: bool (optional, default to Standard_True)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+<S> is the shape to control. <GeomControls> If False only topological informaions are checked. The geometricals controls are For a Vertex: BRepCheck_InvalidTolerance NYI For an Edge: BRepCheck_InvalidCurveOnClosedSurface, BRepCheck_InvalidCurveOnSurface, BRepCheck_InvalidSameParameterFlag, BRepCheck_InvalidTolerance NYI For a face: BRepCheck_UnorientableShape, BRepCheck_IntersectingWires, BRepCheck_InvalidTolerance NYI For a wire: BRepCheck_SelfIntersectingWire.
 ") Init;
 		void Init(const TopoDS_Shape & S, const Standard_Boolean GeomControls = Standard_True);
 
-		/****************** IsValid ******************/
-		/**** md5 signature: 067e002b3bd9e0362264cfada4f4eeac ****/
-		%feature("compactdefaultargs") IsValid;
-		%feature("autodoc", "<s> is a subshape of the original shape. returns <standard_true> if no default has been detected on <s> and any of its subshape.
+		/****** BRepCheck_Analyzer::IsExactMethod ******/
+		/****** md5 signature: 5e4b019881aa7aa6b5765966d6b467ca ******/
+		%feature("compactdefaultargs") IsExactMethod;
+		%feature("autodoc", "Return
+-------
+bool
 
+Description
+-----------
+Returns true if exact method selected.
+") IsExactMethod;
+		Standard_Boolean IsExactMethod();
+
+		/****** BRepCheck_Analyzer::IsParallel ******/
+		/****** md5 signature: fc1de18a583c6aa3b3d9897c80aa553e ******/
+		%feature("compactdefaultargs") IsParallel;
+		%feature("autodoc", "Return
+-------
+bool
+
+Description
+-----------
+Returns true if parallel flag is set.
+") IsParallel;
+		Standard_Boolean IsParallel();
+
+		/****** BRepCheck_Analyzer::IsValid ******/
+		/****** md5 signature: 067e002b3bd9e0362264cfada4f4eeac ******/
+		%feature("compactdefaultargs") IsValid;
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 bool
+
+Description
+-----------
+<S> is a subshape of the original shape. Returns <STandard_True> if no default has been detected on <S> and any of its subshape.
 ") IsValid;
 		Standard_Boolean IsValid(const TopoDS_Shape & S);
 
-		/****************** IsValid ******************/
-		/**** md5 signature: 2809e700423e4fe6ecd395953f3a2406 ****/
+		/****** BRepCheck_Analyzer::IsValid ******/
+		/****** md5 signature: 7d115ff85bb657b98ab8790006673845 ******/
 		%feature("compactdefaultargs") IsValid;
-		%feature("autodoc", "Returns true if no defect is detected on the shape s or any of its subshapes. returns true if the shape s is valid. this function checks whether a given shape is valid by checking that: - the topology is correct - parameterization of edges in particular is correct. for the topology to be correct, the following conditions must be satisfied: - edges should have at least two vertices if they are not degenerate edges. the vertices should be within the range of the bounding edges at the tolerance specified in the vertex, - edges should share at least one face. the representation of the edges should be within the tolerance criterion assigned to them. - wires defining a face should not self-intersect and should be closed, - there should be one wire which contains all other wires inside a face, - wires should be correctly oriented with respect to each of the edges, - faces should be correctly oriented, in particular with respect to adjacent faces if these faces define a solid, - shells defining a solid should be closed. there should be one enclosing shell if the shape is a solid; to check parameterization of edge, there are 2 approaches depending on the edge?s contextual situation. - if the edge is either single, or it is in the context of a wire or a compound, its parameterization is defined by the parameterization of its 3d curve and is considered as valid. - if the edge is in the context of a face, it should have sameparameter and samerange flags set to standard_true. to check these flags, you should call the function brep_tool::sameparameter and brep_tool::samerange for an edge. if at least one of these flags is set to standard_false, the edge is considered as invalid without any additional check. if the edge is contained by a face, and it has sameparameter and samerange flags set to standard_true, isvalid checks whether representation of the edge on face, in context of which the edge is considered, has the same parameterization up to the tolerance value coded on the edge. for a given parameter t on the edge having c as a 3d curve and one pcurve p on a surface s (base surface of the reference face), this checks that |c(t) - s(p(t))| is less than or equal to tolerance, where tolerance is the tolerance value coded on the edge.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+Returns true if no defect is detected on the shape S or any of its subshapes. Returns true if the shape S is valid. This function checks whether a given shape is valid by checking that: - the topology is correct - parameterization of edges in particular is correct. For the topology to be correct, the following conditions must be satisfied: - edges should have at least two vertices if they are not degenerate edges. The vertices should be within the range of the bounding edges at the tolerance specified in the vertex, - edges should share at least one face. The representation of the edges should be within the tolerance criterion assigned to them. - wires defining a face should not self-intersect and should be closed, - there should be one wire which contains all other wires inside a face, - wires should be correctly oriented with respect to each of the edges, - faces should be correctly oriented, in particular with respect to adjacent faces if these faces define a solid, - shells defining a solid should be closed. There should be one enclosing shell if the shape is a solid; To check parameterization of edge, there are 2 approaches depending on the edge?s contextual situation. - if the edge is either single, or it is in the context of a wire or a compound, its parameterization is defined by the parameterization of its 3D curve and is considered as valid. - If the edge is in the context of a face, it should have SameParameter and SameRange flags set to Standard_True. To check these flags, you should call the function BRep_Tool::SameParameter and BRep_Tool::SameRange for an edge. If at least one of these flags is set to Standard_False, the edge is considered as invalid without any additional check. If the edge is contained by a face, and it has SameParameter and SameRange flags set to Standard_True, IsValid checks whether representation of the edge on face, in context of which the edge is considered, has the same parameterization up to the tolerance value coded on the edge. For a given parameter t on the edge having C as a 3D curve and one PCurve P on a surface S (base surface of the reference face), this checks that |C(t) - S(P(t))| is less than or equal to tolerance, where tolerance is the tolerance value coded on the edge.
 ") IsValid;
 		Standard_Boolean IsValid();
 
-		/****************** Result ******************/
-		/**** md5 signature: 7fd5f89db753d52aa955dc54a91f1dca ****/
+		/****** BRepCheck_Analyzer::Result ******/
+		/****** md5 signature: 4d39ddda3bce0424b01a6b2fbba14ad2 ******/
 		%feature("compactdefaultargs") Result;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-SubS: TopoDS_Shape
+theSubS: TopoDS_Shape
 
-Returns
+Return
 -------
 opencascade::handle<BRepCheck_Result>
+
+Description
+-----------
+No available documentation.
 ") Result;
-		const opencascade::handle<BRepCheck_Result> & Result(const TopoDS_Shape & SubS);
+		const opencascade::handle<BRepCheck_Result> & Result(const TopoDS_Shape & theSubS);
+
+		/****** BRepCheck_Analyzer::SetExactMethod ******/
+		/****** md5 signature: 7e9fb7a39514337474c163d15b041f18 ******/
+		%feature("compactdefaultargs") SetExactMethod;
+		%feature("autodoc", "
+Parameters
+----------
+theIsExact: bool
+
+Return
+-------
+None
+
+Description
+-----------
+Sets method to calculate distance: Calculating in finite number of points (if theIsExact is false, faster, but possible not correct result) or exact calculating by using BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly). Exact method is used only when edge is SameParameter. Default method is calculating in finite number of points.
+") SetExactMethod;
+		void SetExactMethod(const Standard_Boolean theIsExact);
+
+		/****** BRepCheck_Analyzer::SetParallel ******/
+		/****** md5 signature: 91c6328a8c6135d4f1f1da7db8aee28f ******/
+		%feature("compactdefaultargs") SetParallel;
+		%feature("autodoc", "
+Parameters
+----------
+theIsParallel: bool
+
+Return
+-------
+None
+
+Description
+-----------
+Sets parallel flag.
+") SetParallel;
+		void SetParallel(const Standard_Boolean theIsParallel);
 
 };
 
@@ -397,175 +505,243 @@ opencascade::handle<BRepCheck_Result>
 %nodefaultctor BRepCheck_Result;
 class BRepCheck_Result : public Standard_Transient {
 	public:
-		/****************** Blind ******************/
-		/**** md5 signature: a1ab049e14b32de120dd2ea19807b88d ****/
+		/****** BRepCheck_Result::Blind ******/
+		/****** md5 signature: a1ab049e14b32de120dd2ea19807b88d ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Blind;
 		virtual void Blind();
 
-		/****************** ContextualShape ******************/
-		/**** md5 signature: a584ebc1dedd342131b091fe5e1e437d ****/
+		/****** BRepCheck_Result::ContextualShape ******/
+		/****** md5 signature: eb8bd6cde885ea4f72b149425281ff43 ******/
 		%feature("compactdefaultargs") ContextualShape;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+No available documentation.
 ") ContextualShape;
 		const TopoDS_Shape ContextualShape();
 
-		/****************** InContext ******************/
-		/**** md5 signature: 0fa7f35fe7112fd6ac32ee69a7cd8f93 ****/
+		/****** BRepCheck_Result::InContext ******/
+		/****** md5 signature: 0fa7f35fe7112fd6ac32ee69a7cd8f93 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InContext;
 		virtual void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** Init ******************/
-		/**** md5 signature: 5b69b32485b3d9f82ae4abb9c853c3c7 ****/
+		/****** BRepCheck_Result::Init ******/
+		/****** md5 signature: 5b69b32485b3d9f82ae4abb9c853c3c7 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Init;
 		void Init(const TopoDS_Shape & S);
 
-		/****************** InitContextIterator ******************/
-		/**** md5 signature: 055b8946b118029a0bda6f11c38e1af0 ****/
+		/****** BRepCheck_Result::InitContextIterator ******/
+		/****** md5 signature: 055b8946b118029a0bda6f11c38e1af0 ******/
 		%feature("compactdefaultargs") InitContextIterator;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InitContextIterator;
 		void InitContextIterator();
 
-		/****************** IsBlind ******************/
-		/**** md5 signature: ff5e40e27b44b4cdc0af878d02e09a0e ****/
+		/****** BRepCheck_Result::IsBlind ******/
+		/****** md5 signature: 7bdfbaa9abb88d00524ebffdd69f140b ******/
 		%feature("compactdefaultargs") IsBlind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsBlind;
 		Standard_Boolean IsBlind();
 
-		/****************** IsMinimum ******************/
-		/**** md5 signature: 6488fc4883a388bc6a5f73438abeaae1 ****/
+		/****** BRepCheck_Result::IsMinimum ******/
+		/****** md5 signature: a6bf8651a71b5ace0b26012ddb26bfd5 ******/
 		%feature("compactdefaultargs") IsMinimum;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsMinimum;
 		Standard_Boolean IsMinimum();
 
-		/****************** Minimum ******************/
-		/**** md5 signature: 567db75783723918a8acfdd7121b3ae4 ****/
-		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "No available documentation.
+		/****** BRepCheck_Result::IsStatusOnShape ******/
+		/****** md5 signature: 7a9b88e66fff4774274cebabd6b916eb ******/
+		%feature("compactdefaultargs") IsStatusOnShape;
+		%feature("autodoc", "
+Parameters
+----------
+theShape: TopoDS_Shape
 
-Returns
+Return
+-------
+bool
+
+Description
+-----------
+No available documentation.
+") IsStatusOnShape;
+		Standard_Boolean IsStatusOnShape(const TopoDS_Shape & theShape);
+
+		/****** BRepCheck_Result::Minimum ******/
+		/****** md5 signature: 567db75783723918a8acfdd7121b3ae4 ******/
+		%feature("compactdefaultargs") Minimum;
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Minimum;
 		virtual void Minimum();
 
-		/****************** MoreShapeInContext ******************/
-		/**** md5 signature: abe30661c8b45664c5aa94279afd2fd5 ****/
+		/****** BRepCheck_Result::MoreShapeInContext ******/
+		/****** md5 signature: aaff979dbb1ba3d73332a5aa219d6b33 ******/
 		%feature("compactdefaultargs") MoreShapeInContext;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") MoreShapeInContext;
 		Standard_Boolean MoreShapeInContext();
 
-		/****************** NextShapeInContext ******************/
-		/**** md5 signature: 279884531473bc64fc375fb134c53593 ****/
+		/****** BRepCheck_Result::NextShapeInContext ******/
+		/****** md5 signature: 279884531473bc64fc375fb134c53593 ******/
 		%feature("compactdefaultargs") NextShapeInContext;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") NextShapeInContext;
 		void NextShapeInContext();
 
-		/****************** SetFailStatus ******************/
-		/**** md5 signature: 258e6542a6a15f2fae38c3b9476b7210 ****/
+		/****** BRepCheck_Result::SetFailStatus ******/
+		/****** md5 signature: 258e6542a6a15f2fae38c3b9476b7210 ******/
 		%feature("compactdefaultargs") SetFailStatus;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") SetFailStatus;
 		void SetFailStatus(const TopoDS_Shape & S);
 
-		/****************** Status ******************/
-		/**** md5 signature: 2b35975a0de3dfdf852d1653c75a7cab ****/
-		%feature("compactdefaultargs") Status;
-		%feature("autodoc", "No available documentation.
+		/****** BRepCheck_Result::SetParallel ******/
+		/****** md5 signature: 75181e0ac6329b778751501d9f3f15d9 ******/
+		%feature("compactdefaultargs") SetParallel;
+		%feature("autodoc", "
+Parameters
+----------
+theIsParallel: bool
 
-Returns
+Return
+-------
+None
+
+Description
+-----------
+No available documentation.
+") SetParallel;
+		void SetParallel(Standard_Boolean theIsParallel);
+
+		/****** BRepCheck_Result::Status ******/
+		/****** md5 signature: 64167c852e0650aecc4792387cb6ad32 ******/
+		%feature("compactdefaultargs") Status;
+		%feature("autodoc", "Return
 -------
 BRepCheck_ListOfStatus
+
+Description
+-----------
+No available documentation.
 ") Status;
 		const BRepCheck_ListOfStatus & Status();
 
-		/****************** StatusOnShape ******************/
-		/**** md5 signature: ea055126ff7476811793b92dafd7757d ****/
+		/****** BRepCheck_Result::StatusOnShape ******/
+		/****** md5 signature: 9d703d3594f470498bdec69da88c13b2 ******/
 		%feature("compactdefaultargs") StatusOnShape;
-		%feature("autodoc", "If not already done, performs the incontext control and returns the list of status.
-
-Parameters
-----------
-S: TopoDS_Shape
-
-Returns
+		%feature("autodoc", "Return
 -------
 BRepCheck_ListOfStatus
-") StatusOnShape;
-		const BRepCheck_ListOfStatus & StatusOnShape(const TopoDS_Shape & S);
 
-		/****************** StatusOnShape ******************/
-		/**** md5 signature: b9a7334597b91c919b966f5d1e8d799f ****/
-		%feature("compactdefaultargs") StatusOnShape;
-		%feature("autodoc", "No available documentation.
-
-Returns
--------
-BRepCheck_ListOfStatus
+Description
+-----------
+No available documentation.
 ") StatusOnShape;
 		const BRepCheck_ListOfStatus & StatusOnShape();
+
+		/****** BRepCheck_Result::StatusOnShape ******/
+		/****** md5 signature: c188dfc8bfd0a5dda5145143d5c9b549 ******/
+		%feature("compactdefaultargs") StatusOnShape;
+		%feature("autodoc", "
+Parameters
+----------
+theShape: TopoDS_Shape
+
+Return
+-------
+BRepCheck_ListOfStatus
+
+Description
+-----------
+No available documentation.
+") StatusOnShape;
+		const BRepCheck_ListOfStatus & StatusOnShape(const TopoDS_Shape & theShape);
 
 };
 
@@ -583,122 +759,176 @@ BRepCheck_ListOfStatus
 ***********************/
 class BRepCheck_Edge : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Edge ******************/
-		/**** md5 signature: ca66a001fe402a1661316ddbfbe09937 ****/
+		/****** BRepCheck_Edge::BRepCheck_Edge ******/
+		/****** md5 signature: ca66a001fe402a1661316ddbfbe09937 ******/
 		%feature("compactdefaultargs") BRepCheck_Edge;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 E: TopoDS_Edge
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepCheck_Edge;
 		 BRepCheck_Edge(const TopoDS_Edge & E);
 
-		/****************** Blind ******************/
-		/**** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ****/
+		/****** BRepCheck_Edge::Blind ******/
+		/****** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Blind;
 		void Blind();
 
-		/****************** CheckPolygonOnTriangulation ******************/
-		/**** md5 signature: 4d8b4b0088c17108fc572dd80979b176 ****/
+		/****** BRepCheck_Edge::CheckPolygonOnTriangulation ******/
+		/****** md5 signature: 4d8b4b0088c17108fc572dd80979b176 ******/
 		%feature("compactdefaultargs") CheckPolygonOnTriangulation;
-		%feature("autodoc", "Checks, if polygon on triangulation of heedge is out of 3d-curve of this edge.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theEdge: TopoDS_Edge
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks, if polygon on triangulation of heEdge is out of 3D-curve of this edge.
 ") CheckPolygonOnTriangulation;
 		BRepCheck_Status CheckPolygonOnTriangulation(const TopoDS_Edge & theEdge);
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ****/
+		/****** BRepCheck_Edge::GeometricControls ******/
+		/****** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") GeometricControls;
 		Standard_Boolean GeometricControls();
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 16194f16c24aad512d5519bba6fbad11 ****/
+		/****** BRepCheck_Edge::GeometricControls ******/
+		/****** md5 signature: 16194f16c24aad512d5519bba6fbad11 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") GeometricControls;
 		void GeometricControls(const Standard_Boolean B);
 
-		/****************** InContext ******************/
-		/**** md5 signature: 068e04b29819e902bf375d055c106b65 ****/
+		/****** BRepCheck_Edge::InContext ******/
+		/****** md5 signature: 068e04b29819e902bf375d055c106b65 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InContext;
 		void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: bcca4bce745250eb4a0cbc554641b42d ****/
-		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "No available documentation.
+		/****** BRepCheck_Edge::IsExactMethod ******/
+		/****** md5 signature: 5e4b019881aa7aa6b5765966d6b467ca ******/
+		%feature("compactdefaultargs") IsExactMethod;
+		%feature("autodoc", "Return
+-------
+bool
 
-Returns
+Description
+-----------
+Returns true if exact method selected.
+") IsExactMethod;
+		Standard_Boolean IsExactMethod();
+
+		/****** BRepCheck_Edge::Minimum ******/
+		/****** md5 signature: bcca4bce745250eb4a0cbc554641b42d ******/
+		%feature("compactdefaultargs") Minimum;
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Minimum;
 		void Minimum();
 
-		/****************** SetStatus ******************/
-		/**** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ****/
-		%feature("compactdefaultargs") SetStatus;
-		%feature("autodoc", "Sets status of edge;.
+		/****** BRepCheck_Edge::SetExactMethod ******/
+		/****** md5 signature: 61e71faebec158e548494f19380d6da6 ******/
+		%feature("compactdefaultargs") SetExactMethod;
+		%feature("autodoc", "
+Parameters
+----------
+theIsExact: bool
 
+Return
+-------
+None
+
+Description
+-----------
+Sets method to calculate distance: Calculating in finite number of points (if theIsExact is false, faster, but possible not correct result) or exact calculating by using BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly). Exact method is used only when edge is SameParameter. Default method is calculating in finite number of points.
+") SetExactMethod;
+		void SetExactMethod(Standard_Boolean theIsExact);
+
+		/****** BRepCheck_Edge::SetStatus ******/
+		/****** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ******/
+		%feature("compactdefaultargs") SetStatus;
+		%feature("autodoc", "
 Parameters
 ----------
 theStatus: BRepCheck_Status
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets status of Edge;.
 ") SetStatus;
 		void SetStatus(const BRepCheck_Status theStatus);
 
-		/****************** Tolerance ******************/
-		/**** md5 signature: 014b06346af255e506514edbf19cdb2c ****/
+		/****** BRepCheck_Edge::Tolerance ******/
+		/****** md5 signature: 014b06346af255e506514edbf19cdb2c ******/
 		%feature("compactdefaultargs") Tolerance;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Tolerance;
 		Standard_Real Tolerance();
 
@@ -718,166 +948,194 @@ float
 ***********************/
 class BRepCheck_Face : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Face ******************/
-		/**** md5 signature: ffaa5efe498f128a0f1112b1a5efeb0e ****/
+		/****** BRepCheck_Face::BRepCheck_Face ******/
+		/****** md5 signature: ffaa5efe498f128a0f1112b1a5efeb0e ******/
 		%feature("compactdefaultargs") BRepCheck_Face;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepCheck_Face;
 		 BRepCheck_Face(const TopoDS_Face & F);
 
-		/****************** Blind ******************/
-		/**** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ****/
+		/****** BRepCheck_Face::Blind ******/
+		/****** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Blind;
 		void Blind();
 
-		/****************** ClassifyWires ******************/
-		/**** md5 signature: bb809bae2576b6926cd5d7fae290be65 ****/
+		/****** BRepCheck_Face::ClassifyWires ******/
+		/****** md5 signature: bb809bae2576b6926cd5d7fae290be65 ******/
 		%feature("compactdefaultargs") ClassifyWires;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+No available documentation.
 ") ClassifyWires;
 		BRepCheck_Status ClassifyWires(const Standard_Boolean Update = Standard_False);
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ****/
+		/****** BRepCheck_Face::GeometricControls ******/
+		/****** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") GeometricControls;
 		Standard_Boolean GeometricControls();
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 16194f16c24aad512d5519bba6fbad11 ****/
+		/****** BRepCheck_Face::GeometricControls ******/
+		/****** md5 signature: 16194f16c24aad512d5519bba6fbad11 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") GeometricControls;
 		void GeometricControls(const Standard_Boolean B);
 
-		/****************** InContext ******************/
-		/**** md5 signature: 068e04b29819e902bf375d055c106b65 ****/
+		/****** BRepCheck_Face::InContext ******/
+		/****** md5 signature: 068e04b29819e902bf375d055c106b65 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InContext;
 		void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** IntersectWires ******************/
-		/**** md5 signature: c3735730ccec0181832410a49f869f1f ****/
+		/****** BRepCheck_Face::IntersectWires ******/
+		/****** md5 signature: c3735730ccec0181832410a49f869f1f ******/
 		%feature("compactdefaultargs") IntersectWires;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+No available documentation.
 ") IntersectWires;
 		BRepCheck_Status IntersectWires(const Standard_Boolean Update = Standard_False);
 
-		/****************** IsUnorientable ******************/
-		/**** md5 signature: 17483e961c63ce65c4e2be8f16bc72a0 ****/
+		/****** BRepCheck_Face::IsUnorientable ******/
+		/****** md5 signature: 17483e961c63ce65c4e2be8f16bc72a0 ******/
 		%feature("compactdefaultargs") IsUnorientable;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsUnorientable;
 		Standard_Boolean IsUnorientable();
 
-		/****************** Minimum ******************/
-		/**** md5 signature: bcca4bce745250eb4a0cbc554641b42d ****/
+		/****** BRepCheck_Face::Minimum ******/
+		/****** md5 signature: bcca4bce745250eb4a0cbc554641b42d ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Minimum;
 		void Minimum();
 
-		/****************** OrientationOfWires ******************/
-		/**** md5 signature: 3d0ccc0a3319e206c424d8d492226c82 ****/
+		/****** BRepCheck_Face::OrientationOfWires ******/
+		/****** md5 signature: 3d0ccc0a3319e206c424d8d492226c82 ******/
 		%feature("compactdefaultargs") OrientationOfWires;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+No available documentation.
 ") OrientationOfWires;
 		BRepCheck_Status OrientationOfWires(const Standard_Boolean Update = Standard_False);
 
-		/****************** SetStatus ******************/
-		/**** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ****/
+		/****** BRepCheck_Face::SetStatus ******/
+		/****** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ******/
 		%feature("compactdefaultargs") SetStatus;
-		%feature("autodoc", "Sets status of face;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theStatus: BRepCheck_Status
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets status of Face;.
 ") SetStatus;
 		void SetStatus(const BRepCheck_Status theStatus);
 
-		/****************** SetUnorientable ******************/
-		/**** md5 signature: 2f269456d5f1ea5e8b2cc3a49e5ea74f ****/
+		/****** BRepCheck_Face::SetUnorientable ******/
+		/****** md5 signature: 2f269456d5f1ea5e8b2cc3a49e5ea74f ******/
 		%feature("compactdefaultargs") SetUnorientable;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") SetUnorientable;
 		void SetUnorientable();
 
@@ -897,124 +1155,145 @@ None
 ************************/
 class BRepCheck_Shell : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Shell ******************/
-		/**** md5 signature: 309826e2b109bc8c22ada37375badcaf ****/
+		/****** BRepCheck_Shell::BRepCheck_Shell ******/
+		/****** md5 signature: 309826e2b109bc8c22ada37375badcaf ******/
 		%feature("compactdefaultargs") BRepCheck_Shell;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shell
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepCheck_Shell;
 		 BRepCheck_Shell(const TopoDS_Shell & S);
 
-		/****************** Blind ******************/
-		/**** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ****/
+		/****** BRepCheck_Shell::Blind ******/
+		/****** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Blind;
 		void Blind();
 
-		/****************** Closed ******************/
-		/**** md5 signature: 13c91693b79f0b3874479828b766a2ec ****/
+		/****** BRepCheck_Shell::Closed ******/
+		/****** md5 signature: 13c91693b79f0b3874479828b766a2ec ******/
 		%feature("compactdefaultargs") Closed;
-		%feature("autodoc", "Checks if the oriented faces of the shell give a closed shell. if the wire is closed, returns brepcheck_noerror.if <update> is set to standard_true, registers the status in the list.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if the oriented faces of the shell give a closed shell. If the wire is closed, returns BRepCheck_NoError.If <Update> is set to Standard_True, registers the status in the list.
 ") Closed;
 		BRepCheck_Status Closed(const Standard_Boolean Update = Standard_False);
 
-		/****************** InContext ******************/
-		/**** md5 signature: 068e04b29819e902bf375d055c106b65 ****/
+		/****** BRepCheck_Shell::InContext ******/
+		/****** md5 signature: 068e04b29819e902bf375d055c106b65 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InContext;
 		void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** IsUnorientable ******************/
-		/**** md5 signature: 17483e961c63ce65c4e2be8f16bc72a0 ****/
+		/****** BRepCheck_Shell::IsUnorientable ******/
+		/****** md5 signature: 17483e961c63ce65c4e2be8f16bc72a0 ******/
 		%feature("compactdefaultargs") IsUnorientable;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsUnorientable;
 		Standard_Boolean IsUnorientable();
 
-		/****************** Minimum ******************/
-		/**** md5 signature: bcca4bce745250eb4a0cbc554641b42d ****/
+		/****** BRepCheck_Shell::Minimum ******/
+		/****** md5 signature: bcca4bce745250eb4a0cbc554641b42d ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Minimum;
 		void Minimum();
 
-		/****************** NbConnectedSet ******************/
-		/**** md5 signature: 486bb36e33ee94a7ee60e1326cdd8de4 ****/
+		/****** BRepCheck_Shell::NbConnectedSet ******/
+		/****** md5 signature: 486bb36e33ee94a7ee60e1326cdd8de4 ******/
 		%feature("compactdefaultargs") NbConnectedSet;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theSets: TopTools_ListOfShape
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbConnectedSet;
 		Standard_Integer NbConnectedSet(TopTools_ListOfShape & theSets);
 
-		/****************** Orientation ******************/
-		/**** md5 signature: 3ac937d67db0dcd6512a5c13770310c9 ****/
+		/****** BRepCheck_Shell::Orientation ******/
+		/****** md5 signature: 3ac937d67db0dcd6512a5c13770310c9 ******/
 		%feature("compactdefaultargs") Orientation;
-		%feature("autodoc", "Checks if the oriented faces of the shell are correctly oriented. an internal call is made to the method closed. if <update> is set to standard_true, registers the status in the list.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if the oriented faces of the shell are correctly oriented. An internal call is made to the method Closed. If <Update> is set to Standard_True, registers the status in the list.
 ") Orientation;
 		BRepCheck_Status Orientation(const Standard_Boolean Update = Standard_False);
 
-		/****************** SetUnorientable ******************/
-		/**** md5 signature: 2f269456d5f1ea5e8b2cc3a49e5ea74f ****/
+		/****** BRepCheck_Shell::SetUnorientable ******/
+		/****** md5 signature: 2f269456d5f1ea5e8b2cc3a49e5ea74f ******/
 		%feature("compactdefaultargs") SetUnorientable;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") SetUnorientable;
 		void SetUnorientable();
 
@@ -1034,55 +1313,65 @@ None
 ************************/
 class BRepCheck_Solid : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Solid ******************/
-		/**** md5 signature: 8777687e7fe8f001f2eafb6fa25c0a3a ****/
+		/****** BRepCheck_Solid::BRepCheck_Solid ******/
+		/****** md5 signature: 8777687e7fe8f001f2eafb6fa25c0a3a ******/
 		%feature("compactdefaultargs") BRepCheck_Solid;
-		%feature("autodoc", "Constructor <thes> is the solid to check.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theS: TopoDS_Solid
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Constructor <theS> is the solid to check.
 ") BRepCheck_Solid;
 		 BRepCheck_Solid(const TopoDS_Solid & theS);
 
-		/****************** Blind ******************/
-		/**** md5 signature: d3654c48391487543928e984233515d4 ****/
+		/****** BRepCheck_Solid::Blind ******/
+		/****** md5 signature: d3654c48391487543928e984233515d4 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "See the parent class for more details.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+see the parent class for more details.
 ") Blind;
 		virtual void Blind();
 
-		/****************** InContext ******************/
-		/**** md5 signature: fc3ba1a648e2a8cd0fb0e179a74b9ebb ****/
+		/****** BRepCheck_Solid::InContext ******/
+		/****** md5 signature: fc3ba1a648e2a8cd0fb0e179a74b9ebb ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "Checks the solid in context of the shape <thecontextshape>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Checks the solid in context of the shape <theContextShape>.
 ") InContext;
 		virtual void InContext(const TopoDS_Shape & theContextShape);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: 6432f12790acf2012f66746d67657613 ****/
+		/****** BRepCheck_Solid::Minimum ******/
+		/****** md5 signature: 6432f12790acf2012f66746d67657613 ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Checks the solid per se. //! the scan area is: 1. shells that overlaps each other status: brepcheck_invalidimbricationofshells //! 2. detached parts of the solid (vertices, edges) that have non-internal orientation status: brepcheck_badorientationofsubshape //! 3. for closed, non-internal shells: 3.1 shells containing entities of the solid that are outside towards the shells status: brepcheck_subshapenotinshape //! 3.2 shells that encloses other shells (for non-holes) status: brepcheck_enclosedregion.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Checks the solid per se. //! The scan area is: 1. Shells that overlaps each other Status: BRepCheck_InvalidImbricationOfShells //! 2. Detached parts of the solid (vertices, edges) that have non-internal orientation Status: BRepCheck_BadOrientationOfSubshape //! 3. For closed, non-internal shells: 3.1 Shells containing entities of the solid that are outside towards the shells Status: BRepCheck_SubshapeNotInShape //! 3.2 Shells that encloses other Shells (for non-holes) Status: BRepCheck_EnclosedRegion.
 ") Minimum;
 		virtual void Minimum();
 
@@ -1102,66 +1391,78 @@ None
 *************************/
 class BRepCheck_Vertex : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Vertex ******************/
-		/**** md5 signature: 68efde7ae373863d3e1be49e11e82d88 ****/
+		/****** BRepCheck_Vertex::BRepCheck_Vertex ******/
+		/****** md5 signature: 68efde7ae373863d3e1be49e11e82d88 ******/
 		%feature("compactdefaultargs") BRepCheck_Vertex;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 V: TopoDS_Vertex
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepCheck_Vertex;
 		 BRepCheck_Vertex(const TopoDS_Vertex & V);
 
-		/****************** Blind ******************/
-		/**** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ****/
+		/****** BRepCheck_Vertex::Blind ******/
+		/****** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Blind;
 		void Blind();
 
-		/****************** InContext ******************/
-		/**** md5 signature: 068e04b29819e902bf375d055c106b65 ****/
+		/****** BRepCheck_Vertex::InContext ******/
+		/****** md5 signature: 068e04b29819e902bf375d055c106b65 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") InContext;
 		void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: bcca4bce745250eb4a0cbc554641b42d ****/
+		/****** BRepCheck_Vertex::Minimum ******/
+		/****** md5 signature: bcca4bce745250eb4a0cbc554641b42d ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Minimum;
 		void Minimum();
 
-		/****************** Tolerance ******************/
-		/**** md5 signature: 014b06346af255e506514edbf19cdb2c ****/
+		/****** BRepCheck_Vertex::Tolerance ******/
+		/****** md5 signature: 014b06346af255e506514edbf19cdb2c ******/
 		%feature("compactdefaultargs") Tolerance;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Tolerance;
 		Standard_Real Tolerance();
 
@@ -1181,165 +1482,191 @@ float
 ***********************/
 class BRepCheck_Wire : public BRepCheck_Result {
 	public:
-		/****************** BRepCheck_Wire ******************/
-		/**** md5 signature: ab6c2dd585c88fb5fb0be4ceaf53f81e ****/
+		/****** BRepCheck_Wire::BRepCheck_Wire ******/
+		/****** md5 signature: ab6c2dd585c88fb5fb0be4ceaf53f81e ******/
 		%feature("compactdefaultargs") BRepCheck_Wire;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 W: TopoDS_Wire
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BRepCheck_Wire;
 		 BRepCheck_Wire(const TopoDS_Wire & W);
 
-		/****************** Blind ******************/
-		/**** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ****/
+		/****** BRepCheck_Wire::Blind ******/
+		/****** md5 signature: 05cb8700c802bda95aa5d71d47a1c542 ******/
 		%feature("compactdefaultargs") Blind;
-		%feature("autodoc", "Does nothing.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Does nothing.
 ") Blind;
 		void Blind();
 
-		/****************** Closed ******************/
-		/**** md5 signature: 13c91693b79f0b3874479828b766a2ec ****/
+		/****** BRepCheck_Wire::Closed ******/
+		/****** md5 signature: 13c91693b79f0b3874479828b766a2ec ******/
 		%feature("compactdefaultargs") Closed;
-		%feature("autodoc", "Checks if the oriented edges of the wire give a closed wire. if the wire is closed, returns brepcheck_noerror. warning : if the first and last edge are infinite, the wire will be considered as a closed one. if <update> is set to standard_true, registers the status in the list. may return (and registers): **brepcheck_notconnected, if wire is not topologically closed **brepcheck_redundantedge, if an edge is in wire more than 3 times or in case of 2 occurences if not with forward and reversed orientation. **brepcheck_noerror.
-
+		%feature("autodoc", "
 Parameters
 ----------
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if the oriented edges of the wire give a closed wire. If the wire is closed, returns BRepCheck_NoError. Warning: if the first and last edge are infinite, the wire will be considered as a closed one. If <Update> is set to Standard_True, registers the status in the list. May return (and registers): **BRepCheck_NotConnected, if wire is not topologically closed **BRepCheck_RedundantEdge, if an edge is in wire more than 3 times or in case of 2 occurrences if not with FORWARD and REVERSED orientation. **BRepCheck_NoError.
 ") Closed;
 		BRepCheck_Status Closed(const Standard_Boolean Update = Standard_False);
 
-		/****************** Closed2d ******************/
-		/**** md5 signature: ec5831e967eb070b5c82ca8964b55fe8 ****/
+		/****** BRepCheck_Wire::Closed2d ******/
+		/****** md5 signature: ec5831e967eb070b5c82ca8964b55fe8 ******/
 		%feature("compactdefaultargs") Closed2d;
-		%feature("autodoc", "Checks if edges of the wire give a wire closed in 2d space. returns brepcheck_noerror, or brepcheck_notclosed if <update> is set to standard_true, registers the status in the list.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if edges of the wire give a wire closed in 2d space. Returns BRepCheck_NoError, or BRepCheck_NotClosed If <Update> is set to Standard_True, registers the status in the list.
 ") Closed2d;
 		BRepCheck_Status Closed2d(const TopoDS_Face & F, const Standard_Boolean Update = Standard_False);
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ****/
+		/****** BRepCheck_Wire::GeometricControls ******/
+		/****** md5 signature: 37d96a49d68a7118896a14ac30457fb2 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "Report selfintersect() check would be (is) done.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+report SelfIntersect() check would be (is) done.
 ") GeometricControls;
 		Standard_Boolean GeometricControls();
 
-		/****************** GeometricControls ******************/
-		/**** md5 signature: 16194f16c24aad512d5519bba6fbad11 ****/
+		/****** BRepCheck_Wire::GeometricControls ******/
+		/****** md5 signature: 16194f16c24aad512d5519bba6fbad11 ******/
 		%feature("compactdefaultargs") GeometricControls;
-		%feature("autodoc", "Set selfintersect() to be checked.
-
+		%feature("autodoc", "
 Parameters
 ----------
 B: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+set SelfIntersect() to be checked.
 ") GeometricControls;
 		void GeometricControls(const Standard_Boolean B);
 
-		/****************** InContext ******************/
-		/**** md5 signature: 068e04b29819e902bf375d055c106b65 ****/
+		/****** BRepCheck_Wire::InContext ******/
+		/****** md5 signature: 068e04b29819e902bf375d055c106b65 ******/
 		%feature("compactdefaultargs") InContext;
-		%feature("autodoc", "If <contextshape> is a face, consequently checks selfintersect(), closed(), orientation() and closed2d until faulty is found.
-
+		%feature("autodoc", "
 Parameters
 ----------
 ContextShape: TopoDS_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+if <ContextShape> is a face, consequently checks SelfIntersect(), Closed(), Orientation() and Closed2d until faulty is found.
 ") InContext;
 		void InContext(const TopoDS_Shape & ContextShape);
 
-		/****************** Minimum ******************/
-		/**** md5 signature: bcca4bce745250eb4a0cbc554641b42d ****/
+		/****** BRepCheck_Wire::Minimum ******/
+		/****** md5 signature: bcca4bce745250eb4a0cbc554641b42d ******/
 		%feature("compactdefaultargs") Minimum;
-		%feature("autodoc", "Checks that the wire is not empty and 'connex'. called by constructor.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+checks that the wire is not empty and 'connex'. Called by constructor.
 ") Minimum;
 		void Minimum();
 
-		/****************** Orientation ******************/
-		/**** md5 signature: f1973ba2c13b16645155497d42e54b08 ****/
+		/****** BRepCheck_Wire::Orientation ******/
+		/****** md5 signature: f1973ba2c13b16645155497d42e54b08 ******/
 		%feature("compactdefaultargs") Orientation;
-		%feature("autodoc", "Checks if the oriented edges of the wire are correctly oriented. an internal call is made to the method closed. if no face exists, call the method with a null face (topods_face()). if <update> is set to standard_true, registers the status in the list. may return (and registers): brepcheck_invaliddegeneratedflag, brepcheck_badorientationofsubshape, brepcheck_notclosed, brepcheck_noerror.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if the oriented edges of the wire are correctly oriented. An internal call is made to the method Closed. If no face exists, call the method with a null face (TopoDS_face()). If <Update> is set to Standard_True, registers the status in the list. May return (and registers): BRepCheck_InvalidDegeneratedFlag, BRepCheck_BadOrientationOfSubshape, BRepCheck_NotClosed, BRepCheck_NoError.
 ") Orientation;
 		BRepCheck_Status Orientation(const TopoDS_Face & F, const Standard_Boolean Update = Standard_False);
 
-		/****************** SelfIntersect ******************/
-		/**** md5 signature: f62c98c78906534e424d1494ff924720 ****/
+		/****** BRepCheck_Wire::SelfIntersect ******/
+		/****** md5 signature: f62c98c78906534e424d1494ff924720 ******/
 		%feature("compactdefaultargs") SelfIntersect;
-		%feature("autodoc", "Checks if the wire intersect itself on the face <f>. <e1> and <e2> are the first intersecting edges found. <e2> may be a null edge when a self-intersecting edge is found.if <update> is set to standard_true, registers the status in the list. may return (and register): brepcheck_emptywire, brepcheck_selfintersectingwire, brepcheck_nocurveonsurface, brepcheck_noerror.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F: TopoDS_Face
 E1: TopoDS_Edge
 E2: TopoDS_Edge
-Update: bool,optional
-	default value is Standard_False
+Update: bool (optional, default to Standard_False)
 
-Returns
+Return
 -------
 BRepCheck_Status
+
+Description
+-----------
+Checks if the wire intersect itself on the face <F>. <E1> and <E2> are the first intersecting edges found. <E2> may be a null edge when a self-intersecting edge is found.If <Update> is set to Standard_True, registers the status in the list. May return (and register): BRepCheck_EmptyWire, BRepCheck_SelfIntersectingWire, BRepCheck_NoCurveOnSurface, BRepCheck_NoError.
 ") SelfIntersect;
 		BRepCheck_Status SelfIntersect(const TopoDS_Face & F, TopoDS_Edge & E1, TopoDS_Edge & E2, const Standard_Boolean Update = Standard_False);
 
-		/****************** SetStatus ******************/
-		/**** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ****/
+		/****** BRepCheck_Wire::SetStatus ******/
+		/****** md5 signature: 86ab384d3d45dec24b5a7e095ad3e061 ******/
 		%feature("compactdefaultargs") SetStatus;
-		%feature("autodoc", "Sets status of wire;.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theStatus: BRepCheck_Status
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Sets status of Wire;.
 ") SetStatus;
 		void SetStatus(const BRepCheck_Status theStatus);
 
@@ -1357,3 +1684,29 @@ None
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def brepcheck_Add(*args):
+	return brepcheck.Add(*args)
+
+@deprecated
+def brepcheck_PrecCurve(*args):
+	return brepcheck.PrecCurve(*args)
+
+@deprecated
+def brepcheck_PrecSurface(*args):
+	return brepcheck.PrecSurface(*args)
+
+@deprecated
+def brepcheck_Print(*args):
+	return brepcheck.Print(*args)
+
+@deprecated
+def brepcheck_SelfIntersection(*args):
+	return brepcheck.SelfIntersection(*args)
+
+}

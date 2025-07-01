@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<ChFiDS_FaceInterference.hxx>
 #include<ChFiDS_FilSpine.hxx>
 #include<ChFiDS_HData.hxx>
-#include<ChFiDS_HElSpine.hxx>
 #include<ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx>
 #include<ChFiDS_ListIteratorOfListOfHElSpine.hxx>
 #include<ChFiDS_ListIteratorOfListOfStripe.hxx>
@@ -49,5 +48,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<ChFiDS_StripeArray1.hxx>
 #include<ChFiDS_StripeMap.hxx>
 #include<ChFiDS_SurfData.hxx>
+#include<ChFiDS_TypeOfConcavity.hxx>
 
 #endif // CHFIDS_HXX

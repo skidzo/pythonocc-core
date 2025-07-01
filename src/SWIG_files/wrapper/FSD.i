@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define FSDDOCSTRING
 "FSD module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_fsd.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_fsd.html"
 %enddef
 %module (package="OCC.Core", docstring=FSDDOCSTRING) FSD
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_fsd.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -57,7 +60,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -70,9 +73,9 @@ typedef FILE * FSD_BStream;
 typedef std::fstream FSD_FStream;
 /* end typedefs declaration */
 
-/**************************
-* class FSD_Base64Decoder *
-**************************/
+/*******************
+* class FSD_Base64 *
+*******************/
 /***********************
 * class FSD_BinaryFile *
 ***********************/
@@ -88,11 +91,7 @@ typedef std::fstream FSD_FStream;
 /* python proxy for excluded classes */
 %pythoncode {
 @classnotwrapped
-class FSD_Base64Decoder:
-	pass
-
-@classnotwrapped
-class FSD_File:
+class FSD_Base64:
 	pass
 
 @classnotwrapped
@@ -104,6 +103,10 @@ class FSD_CmpFile:
 	pass
 
 @classnotwrapped
+class FSD_File:
+	pass
+
+@classnotwrapped
 class FSD_FileHeader:
 	pass
 
@@ -112,3 +115,6 @@ class FSD_FileHeader:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}

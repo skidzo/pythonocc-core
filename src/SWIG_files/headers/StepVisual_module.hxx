@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include<StepVisual_AnnotationCurveOccurrence.hxx>
-#include<StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include<StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 #include<StepVisual_AnnotationFillArea.hxx>
 #include<StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include<StepVisual_AnnotationOccurrence.hxx>
@@ -42,8 +42,11 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_Array1OfLayeredItem.hxx>
 #include<StepVisual_Array1OfPresentationStyleAssignment.hxx>
 #include<StepVisual_Array1OfPresentationStyleSelect.hxx>
+#include<StepVisual_Array1OfRenderingPropertiesSelect.hxx>
 #include<StepVisual_Array1OfStyleContextSelect.hxx>
 #include<StepVisual_Array1OfSurfaceStyleElementSelect.hxx>
+#include<StepVisual_Array1OfTessellatedEdgeOrVertex.hxx>
+#include<StepVisual_Array1OfTessellatedStructuredItem.hxx>
 #include<StepVisual_Array1OfTextOrCharacter.hxx>
 #include<StepVisual_BackgroundColour.hxx>
 #include<StepVisual_BoxCharacteristicSelect.hxx>
@@ -60,15 +63,19 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_CameraModelD3MultiClippingUnionSelect.hxx>
 #include<StepVisual_CameraUsage.hxx>
 #include<StepVisual_CentralOrParallel.hxx>
-#include<StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include<StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 #include<StepVisual_Colour.hxx>
 #include<StepVisual_ColourRgb.hxx>
 #include<StepVisual_ColourSpecification.hxx>
+#include<StepVisual_ComplexTriangulatedFace.hxx>
+#include<StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include<StepVisual_CompositeText.hxx>
 #include<StepVisual_CompositeTextWithExtent.hxx>
 #include<StepVisual_ContextDependentInvisibility.hxx>
 #include<StepVisual_ContextDependentOverRidingStyledItem.hxx>
 #include<StepVisual_CoordinatesList.hxx>
+#include<StepVisual_CubicBezierTessellatedEdge.hxx>
+#include<StepVisual_CubicBezierTriangulatedFace.hxx>
 #include<StepVisual_CurveStyle.hxx>
 #include<StepVisual_CurveStyleFont.hxx>
 #include<StepVisual_CurveStyleFontPattern.hxx>
@@ -80,8 +87,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_DraughtingModel.hxx>
 #include<StepVisual_DraughtingPreDefinedColour.hxx>
 #include<StepVisual_DraughtingPreDefinedCurveFont.hxx>
+#include<StepVisual_EdgeOrCurve.hxx>
 #include<StepVisual_ExternallyDefinedCurveFont.hxx>
 #include<StepVisual_ExternallyDefinedTextFont.hxx>
+#include<StepVisual_FaceOrSurface.hxx>
 #include<StepVisual_FillAreaStyle.hxx>
 #include<StepVisual_FillAreaStyleColour.hxx>
 #include<StepVisual_FillStyleSelect.hxx>
@@ -98,8 +107,11 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_HArray1OfLayeredItem.hxx>
 #include<StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include<StepVisual_HArray1OfPresentationStyleSelect.hxx>
+#include<StepVisual_HArray1OfRenderingPropertiesSelect.hxx>
 #include<StepVisual_HArray1OfStyleContextSelect.hxx>
 #include<StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
+#include<StepVisual_HArray1OfTessellatedEdgeOrVertex.hxx>
+#include<StepVisual_HArray1OfTessellatedStructuredItem.hxx>
 #include<StepVisual_HArray1OfTextOrCharacter.hxx>
 #include<StepVisual_Invisibility.hxx>
 #include<StepVisual_InvisibilityContext.hxx>
@@ -113,6 +125,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_NullStyle.hxx>
 #include<StepVisual_NullStyleMember.hxx>
 #include<StepVisual_OverRidingStyledItem.hxx>
+#include<StepVisual_PathOrCompositeCurve.hxx>
 #include<StepVisual_PlanarBox.hxx>
 #include<StepVisual_PlanarExtent.hxx>
 #include<StepVisual_PointStyle.hxx>
@@ -134,6 +147,10 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_PresentationView.hxx>
 #include<StepVisual_PresentedItem.hxx>
 #include<StepVisual_PresentedItemRepresentation.hxx>
+#include<StepVisual_RenderingPropertiesSelect.hxx>
+#include<StepVisual_RepositionedTessellatedGeometricSet.hxx>
+#include<StepVisual_RepositionedTessellatedItem.hxx>
+#include<StepVisual_ShadingSurfaceMethod.hxx>
 #include<StepVisual_StyleContextSelect.hxx>
 #include<StepVisual_StyledItem.hxx>
 #include<StepVisual_StyledItemTarget.hxx>
@@ -144,21 +161,40 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepVisual_SurfaceStyleElementSelect.hxx>
 #include<StepVisual_SurfaceStyleFillArea.hxx>
 #include<StepVisual_SurfaceStyleParameterLine.hxx>
+#include<StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include<StepVisual_SurfaceStyleRendering.hxx>
+#include<StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 #include<StepVisual_SurfaceStyleSegmentationCurve.hxx>
 #include<StepVisual_SurfaceStyleSilhouette.hxx>
+#include<StepVisual_SurfaceStyleTransparent.hxx>
 #include<StepVisual_SurfaceStyleUsage.hxx>
 #include<StepVisual_Template.hxx>
 #include<StepVisual_TemplateInstance.hxx>
 #include<StepVisual_TessellatedAnnotationOccurrence.hxx>
+#include<StepVisual_TessellatedConnectingEdge.hxx>
 #include<StepVisual_TessellatedCurveSet.hxx>
+#include<StepVisual_TessellatedEdge.hxx>
+#include<StepVisual_TessellatedEdgeOrVertex.hxx>
+#include<StepVisual_TessellatedFace.hxx>
 #include<StepVisual_TessellatedGeometricSet.hxx>
 #include<StepVisual_TessellatedItem.hxx>
+#include<StepVisual_TessellatedPointSet.hxx>
+#include<StepVisual_TessellatedShapeRepresentation.hxx>
+#include<StepVisual_TessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include<StepVisual_TessellatedShell.hxx>
+#include<StepVisual_TessellatedSolid.hxx>
+#include<StepVisual_TessellatedStructuredItem.hxx>
+#include<StepVisual_TessellatedSurfaceSet.hxx>
+#include<StepVisual_TessellatedVertex.hxx>
+#include<StepVisual_TessellatedWire.hxx>
 #include<StepVisual_TextLiteral.hxx>
 #include<StepVisual_TextOrCharacter.hxx>
 #include<StepVisual_TextPath.hxx>
 #include<StepVisual_TextStyle.hxx>
 #include<StepVisual_TextStyleForDefinedFont.hxx>
 #include<StepVisual_TextStyleWithBoxCharacteristics.hxx>
+#include<StepVisual_TriangulatedFace.hxx>
+#include<StepVisual_TriangulatedSurfaceSet.hxx>
 #include<StepVisual_ViewVolume.hxx>
 
 #endif // STEPVISUAL_HXX

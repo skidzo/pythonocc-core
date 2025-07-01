@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -24,15 +24,12 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<IntTools_Array1OfRoots.hxx>
 #include<IntTools_BaseRangeSample.hxx>
 #include<IntTools_BeanFaceIntersector.hxx>
-#include<IntTools_CArray1OfInteger.hxx>
 #include<IntTools_CArray1OfReal.hxx>
 #include<IntTools_CommonPrt.hxx>
 #include<IntTools_Context.hxx>
 #include<IntTools_Curve.hxx>
 #include<IntTools_CurveRangeLocalizeData.hxx>
 #include<IntTools_CurveRangeSample.hxx>
-#include<IntTools_CurveRangeSampleMapHasher.hxx>
-#include<IntTools_DataMapIteratorOfDataMapOfCurveSampleBox.hxx>
 #include<IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox.hxx>
 #include<IntTools_DataMapOfCurveSampleBox.hxx>
 #include<IntTools_DataMapOfSurfaceSampleBox.hxx>
@@ -63,7 +60,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<IntTools_ShrunkRange.hxx>
 #include<IntTools_SurfaceRangeLocalizeData.hxx>
 #include<IntTools_SurfaceRangeSample.hxx>
-#include<IntTools_SurfaceRangeSampleMapHasher.hxx>
 #include<IntTools_Tools.hxx>
 #include<IntTools_TopolTool.hxx>
 #include<IntTools_WLineTool.hxx>

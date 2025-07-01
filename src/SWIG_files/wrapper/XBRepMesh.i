@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define XBREPMESHDOCSTRING
 "XBRepMesh module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_xbrepmesh.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_xbrepmesh.html"
 %enddef
 %module (package="OCC.Core", docstring=XBREPMESHDOCSTRING) XBRepMesh
 
@@ -31,12 +31,14 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_xbrepmesh.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
-#include<BRepMesh_Delaun.hxx>
 #include<XBRepMesh_module.hxx>
 
 //Dependencies
@@ -75,7 +77,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -95,11 +97,10 @@ from OCC.Core.Exception import *
 %rename(xbrepmesh) XBRepMesh;
 class XBRepMesh {
 	public:
-		/****************** Discret ******************/
-		/**** md5 signature: 2d40e0c47db8d58631623439c9d30c12 ****/
+		/****** XBRepMesh::Discret ******/
+		/****** md5 signature: 2d40e0c47db8d58631623439c9d30c12 ******/
 		%feature("compactdefaultargs") Discret;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theShape: TopoDS_Shape
@@ -107,9 +108,13 @@ theDeflection: float
 theAngle: float
 theAlgo: BRepMesh_DiscretRoot *
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") Discret;
 		static Standard_Integer Discret(const TopoDS_Shape & theShape, const Standard_Real theDeflection, const Standard_Real theAngle, BRepMesh_DiscretRoot * & theAlgo);
 
@@ -125,3 +130,13 @@ int
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
+/* deprecated methods */
+%pythoncode {
+@deprecated
+def xbrepmesh_Discret(*args):
+	return xbrepmesh.Discret(*args)
+
+}

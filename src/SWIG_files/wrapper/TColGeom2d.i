@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define TCOLGEOM2DDOCSTRING
 "TColGeom2d module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_tcolgeom2d.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_tcolgeom2d.html"
 %enddef
 %module (package="OCC.Core", docstring=TCOLGEOM2DDOCSTRING) TColGeom2d
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_tcolgeom2d.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -60,125 +63,29 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
 
 /* handles */
-%wrap_handle(TColGeom2d_HArray1OfCurve)
-%wrap_handle(TColGeom2d_HArray1OfBezierCurve)
 %wrap_handle(TColGeom2d_HArray1OfBSplineCurve)
+%wrap_handle(TColGeom2d_HArray1OfBezierCurve)
+%wrap_handle(TColGeom2d_HArray1OfCurve)
 %wrap_handle(TColGeom2d_HSequenceOfBoundedCurve)
 %wrap_handle(TColGeom2d_HSequenceOfCurve)
 /* end handles declaration */
 
 /* templates */
 %template(TColGeom2d_Array1OfBSplineCurve) NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>>;
+Array1ExtendIter(opencascade::handle<Geom2d_BSplineCurve>)
 
-%extend NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(TColGeom2d_Array1OfBezierCurve) NCollection_Array1<opencascade::handle<Geom2d_BezierCurve>>;
+Array1ExtendIter(opencascade::handle<Geom2d_BezierCurve>)
 
-%extend NCollection_Array1<opencascade::handle<Geom2d_BezierCurve>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(TColGeom2d_Array1OfCurve) NCollection_Array1<opencascade::handle<Geom2d_Curve>>;
+Array1ExtendIter(opencascade::handle<Geom2d_Curve>)
 
-%extend NCollection_Array1<opencascade::handle<Geom2d_Curve>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(TColGeom2d_SequenceOfBoundedCurve) NCollection_Sequence<opencascade::handle<Geom2d_BoundedCurve>>;
 
 %extend NCollection_Sequence<opencascade::handle<Geom2d_BoundedCurve>> {
@@ -216,15 +123,15 @@ typedef NCollection_Sequence<opencascade::handle<Geom2d_Geometry>> TColGeom2d_Se
 
 /* harray1 classes */
 
-class TColGeom2d_HArray1OfCurve : public TColGeom2d_Array1OfCurve, public Standard_Transient {
+class TColGeom2d_HArray1OfBSplineCurve : public TColGeom2d_Array1OfBSplineCurve, public Standard_Transient {
   public:
-    TColGeom2d_HArray1OfCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
-    TColGeom2d_HArray1OfCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom2d_Array1OfCurve::value_type& theValue);
-    TColGeom2d_HArray1OfCurve(const TColGeom2d_Array1OfCurve& theOther);
-    const TColGeom2d_Array1OfCurve& Array1();
-    TColGeom2d_Array1OfCurve& ChangeArray1();
+    TColGeom2d_HArray1OfBSplineCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
+    TColGeom2d_HArray1OfBSplineCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom2d_Array1OfBSplineCurve::value_type& theValue);
+    TColGeom2d_HArray1OfBSplineCurve(const TColGeom2d_Array1OfBSplineCurve& theOther);
+    const TColGeom2d_Array1OfBSplineCurve& Array1();
+    TColGeom2d_Array1OfBSplineCurve& ChangeArray1();
 };
-%make_alias(TColGeom2d_HArray1OfCurve)
+%make_alias(TColGeom2d_HArray1OfBSplineCurve)
 
 
 class TColGeom2d_HArray1OfBezierCurve : public TColGeom2d_Array1OfBezierCurve, public Standard_Transient {
@@ -238,15 +145,15 @@ class TColGeom2d_HArray1OfBezierCurve : public TColGeom2d_Array1OfBezierCurve, p
 %make_alias(TColGeom2d_HArray1OfBezierCurve)
 
 
-class TColGeom2d_HArray1OfBSplineCurve : public TColGeom2d_Array1OfBSplineCurve, public Standard_Transient {
+class TColGeom2d_HArray1OfCurve : public TColGeom2d_Array1OfCurve, public Standard_Transient {
   public:
-    TColGeom2d_HArray1OfBSplineCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
-    TColGeom2d_HArray1OfBSplineCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom2d_Array1OfBSplineCurve::value_type& theValue);
-    TColGeom2d_HArray1OfBSplineCurve(const TColGeom2d_Array1OfBSplineCurve& theOther);
-    const TColGeom2d_Array1OfBSplineCurve& Array1();
-    TColGeom2d_Array1OfBSplineCurve& ChangeArray1();
+    TColGeom2d_HArray1OfCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
+    TColGeom2d_HArray1OfCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom2d_Array1OfCurve::value_type& theValue);
+    TColGeom2d_HArray1OfCurve(const TColGeom2d_Array1OfCurve& theOther);
+    const TColGeom2d_Array1OfCurve& Array1();
+    TColGeom2d_Array1OfCurve& ChangeArray1();
 };
-%make_alias(TColGeom2d_HArray1OfBSplineCurve)
+%make_alias(TColGeom2d_HArray1OfCurve)
 
 /* harray2 classes */
 /* hsequence classes */
@@ -274,3 +181,6 @@ class TColGeom2d_HSequenceOfCurve : public TColGeom2d_SequenceOfCurve, public St
 %make_alias(TColGeom2d_HSequenceOfCurve)
 
 
+/* class aliases */
+%pythoncode {
+}

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<STEPConstruct_DataMapOfPointTransient.hxx>
 #include<STEPConstruct_ExternRefs.hxx>
 #include<STEPConstruct_Part.hxx>
-#include<STEPConstruct_PointHasher.hxx>
 #include<STEPConstruct_Styles.hxx>
 #include<STEPConstruct_Tool.hxx>
 #include<STEPConstruct_UnitContext.hxx>

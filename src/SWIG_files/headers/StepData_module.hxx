@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -21,12 +21,14 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 #include<StepData.hxx>
 #include<StepData_Array1OfField.hxx>
+#include<StepData_ConfParameters.hxx>
 #include<StepData_DefaultGeneral.hxx>
 #include<StepData_Described.hxx>
 #include<StepData_ECDescr.hxx>
 #include<StepData_EDescr.hxx>
 #include<StepData_ESDescr.hxx>
 #include<StepData_EnumTool.hxx>
+#include<StepData_Factors.hxx>
 #include<StepData_Field.hxx>
 #include<StepData_FieldList.hxx>
 #include<StepData_FieldList1.hxx>

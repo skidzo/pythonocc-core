@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define STORAGEDOCSTRING
 "Storage module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_storage.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_storage.html"
 %enddef
 %module (package="OCC.Core", docstring=STORAGEDOCSTRING) Storage
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_storage.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -56,12 +59,6 @@ from OCC.Core.Exception import *
 };
 
 /* public enums */
-enum Storage_SolveMode {
-	Storage_AddSolve = 0,
-	Storage_WriteSolve = 1,
-	Storage_ReadSolve = 2,
-};
-
 enum Storage_Error {
 	Storage_VSOk = 0,
 	Storage_VSOpenError = 1,
@@ -86,18 +83,16 @@ enum Storage_OpenMode {
 	Storage_VSReadWrite = 3,
 };
 
+enum Storage_SolveMode {
+	Storage_AddSolve = 0,
+	Storage_WriteSolve = 1,
+	Storage_ReadSolve = 2,
+};
+
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
-
-class Storage_SolveMode(IntEnum):
-	Storage_AddSolve = 0
-	Storage_WriteSolve = 1
-	Storage_ReadSolve = 2
-Storage_AddSolve = Storage_SolveMode.Storage_AddSolve
-Storage_WriteSolve = Storage_SolveMode.Storage_WriteSolve
-Storage_ReadSolve = Storage_SolveMode.Storage_ReadSolve
 
 class Storage_Error(IntEnum):
 	Storage_VSOk = 0
@@ -138,83 +133,27 @@ Storage_VSNone = Storage_OpenMode.Storage_VSNone
 Storage_VSRead = Storage_OpenMode.Storage_VSRead
 Storage_VSWrite = Storage_OpenMode.Storage_VSWrite
 Storage_VSReadWrite = Storage_OpenMode.Storage_VSReadWrite
+
+class Storage_SolveMode(IntEnum):
+	Storage_AddSolve = 0
+	Storage_WriteSolve = 1
+	Storage_ReadSolve = 2
+Storage_AddSolve = Storage_SolveMode.Storage_AddSolve
+Storage_WriteSolve = Storage_SolveMode.Storage_WriteSolve
+Storage_ReadSolve = Storage_SolveMode.Storage_ReadSolve
 };
 /* end python proxy for enums */
 
 /* templates */
 %template(Storage_ArrayOfCallBack) NCollection_Array1<opencascade::handle<Storage_CallBack>>;
+Array1ExtendIter(opencascade::handle<Storage_CallBack>)
 
-%extend NCollection_Array1<opencascade::handle<Storage_CallBack>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
 %template(Storage_ArrayOfSchema) NCollection_Array1<opencascade::handle<Storage_Schema>>;
+Array1ExtendIter(opencascade::handle<Storage_Schema>)
 
-%extend NCollection_Array1<opencascade::handle<Storage_Schema>> {
-    %pythoncode {
-    def __getitem__(self, index):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            return self.Value(index + self.Lower())
-
-    def __setitem__(self, index, value):
-        if index + self.Lower() > self.Upper():
-            raise IndexError("index out of range")
-        else:
-            self.SetValue(index + self.Lower(), value)
-
-    def __len__(self):
-        return self.Length()
-
-    def __iter__(self):
-        self.low = self.Lower()
-        self.up = self.Upper()
-        self.current = self.Lower() - 1
-        return self
-
-    def next(self):
-        if self.current >= self.Upper():
-            raise StopIteration
-        else:
-            self.current += 1
-        return self.Value(self.current)
-
-    __next__ = next
-    }
-};
-%template(Storage_MapOfCallBack) NCollection_DataMap<TCollection_AsciiString,opencascade::handle<Storage_TypedCallBack>,TCollection_AsciiString>;
-%template(Storage_MapOfPers) NCollection_DataMap<TCollection_AsciiString,opencascade::handle<Storage_Root>,TCollection_AsciiString>;
-%template(Storage_PType) NCollection_IndexedDataMap<TCollection_AsciiString,Standard_Integer,TCollection_AsciiString>;
+%template(Storage_MapOfCallBack) NCollection_DataMap<TCollection_AsciiString,opencascade::handle<Storage_TypedCallBack>>;
+%template(Storage_MapOfPers) NCollection_DataMap<TCollection_AsciiString,opencascade::handle<Storage_Root>>;
+%template(Storage_PType) NCollection_IndexedDataMap<TCollection_AsciiString,Standard_Integer>;
 %template(Storage_SeqOfRoot) NCollection_Sequence<opencascade::handle<Storage_Root>>;
 
 %extend NCollection_Sequence<opencascade::handle<Storage_Root>> {
@@ -228,11 +167,11 @@ Storage_VSReadWrite = Storage_OpenMode.Storage_VSReadWrite
 /* typedefs */
 typedef NCollection_Array1<opencascade::handle<Storage_CallBack>> Storage_ArrayOfCallBack;
 typedef NCollection_Array1<opencascade::handle<Storage_Schema>> Storage_ArrayOfSchema;
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>, TCollection_AsciiString>::Iterator Storage_DataMapIteratorOfMapOfCallBack;
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>, TCollection_AsciiString>::Iterator Storage_DataMapIteratorOfMapOfPers;
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>, TCollection_AsciiString> Storage_MapOfCallBack;
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>, TCollection_AsciiString> Storage_MapOfPers;
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer, TCollection_AsciiString> Storage_PType;
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>>::Iterator Storage_DataMapIteratorOfMapOfCallBack;
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>>::Iterator Storage_DataMapIteratorOfMapOfPers;
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>> Storage_MapOfCallBack;
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>> Storage_MapOfPers;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer> Storage_PType;
 typedef long Storage_Position;
 typedef NCollection_Sequence<opencascade::handle<Storage_Root>> Storage_SeqOfRoot;
 /* end typedefs declaration */
@@ -285,6 +224,14 @@ typedef NCollection_Sequence<opencascade::handle<Storage_Root>> Storage_SeqOfRoo
 /* python proxy for excluded classes */
 %pythoncode {
 @classnotwrapped
+class Storage:
+	pass
+
+@classnotwrapped
+class Storage_BaseDriver:
+	pass
+
+@classnotwrapped
 class Storage_Bucket:
 	pass
 
@@ -297,43 +244,7 @@ class Storage_BucketIterator:
 	pass
 
 @classnotwrapped
-class Storage_RootData:
-	pass
-
-@classnotwrapped
-class Storage_TypeData:
-	pass
-
-@classnotwrapped
-class Storage_Root:
-	pass
-
-@classnotwrapped
-class Storage_Schema:
-	pass
-
-@classnotwrapped
-class Storage_DefaultCallBack:
-	pass
-
-@classnotwrapped
-class Storage_TypedCallBack:
-	pass
-
-@classnotwrapped
 class Storage_CallBack:
-	pass
-
-@classnotwrapped
-class Storage_HeaderData:
-	pass
-
-@classnotwrapped
-class Storage_BaseDriver:
-	pass
-
-@classnotwrapped
-class Storage_InternalData:
 	pass
 
 @classnotwrapped
@@ -341,12 +252,51 @@ class Storage_Data:
 	pass
 
 @classnotwrapped
-class Storage:
+class Storage_DefaultCallBack:
+	pass
+
+@classnotwrapped
+class Storage_HeaderData:
+	pass
+
+@classnotwrapped
+class Storage_InternalData:
+	pass
+
+@classnotwrapped
+class Storage_Root:
+	pass
+
+@classnotwrapped
+class Storage_RootData:
+	pass
+
+@classnotwrapped
+class Storage_Schema:
+	pass
+
+@classnotwrapped
+class Storage_TypeData:
+	pass
+
+@classnotwrapped
+class Storage_TypedCallBack:
 	pass
 
 }
 /* end python proxy for excluded classes */
 /* harray1 classes */
+
+class Storage_HArrayOfCallBack : public Storage_ArrayOfCallBack, public Standard_Transient {
+  public:
+    Storage_HArrayOfCallBack(const Standard_Integer theLower, const Standard_Integer theUpper);
+    Storage_HArrayOfCallBack(const Standard_Integer theLower, const Standard_Integer theUpper, const Storage_ArrayOfCallBack::value_type& theValue);
+    Storage_HArrayOfCallBack(const Storage_ArrayOfCallBack& theOther);
+    const Storage_ArrayOfCallBack& Array1();
+    Storage_ArrayOfCallBack& ChangeArray1();
+};
+%make_alias(Storage_HArrayOfCallBack)
+
 
 class Storage_HArrayOfSchema : public Storage_ArrayOfSchema, public Standard_Transient {
   public:
@@ -369,17 +319,6 @@ class Storage_HPArray : public Storage_PArray, public Standard_Transient {
 };
 %make_alias(Storage_HPArray)
 
-
-class Storage_HArrayOfCallBack : public Storage_ArrayOfCallBack, public Standard_Transient {
-  public:
-    Storage_HArrayOfCallBack(const Standard_Integer theLower, const Standard_Integer theUpper);
-    Storage_HArrayOfCallBack(const Standard_Integer theLower, const Standard_Integer theUpper, const Storage_ArrayOfCallBack::value_type& theValue);
-    Storage_HArrayOfCallBack(const Storage_ArrayOfCallBack& theOther);
-    const Storage_ArrayOfCallBack& Array1();
-    Storage_ArrayOfCallBack& ChangeArray1();
-};
-%make_alias(Storage_HArrayOfCallBack)
-
 /* harray2 classes */
 /* hsequence classes */
 class Storage_HSeqOfRoot : public Storage_SeqOfRoot, public Standard_Transient {
@@ -394,3 +333,6 @@ class Storage_HSeqOfRoot : public Storage_SeqOfRoot, public Standard_Transient {
 %make_alias(Storage_HSeqOfRoot)
 
 
+/* class aliases */
+%pythoncode {
+}

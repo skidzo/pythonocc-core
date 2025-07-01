@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -60,7 +60,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<Interface_LineBuffer.hxx>
 #include<Interface_MSG.hxx>
 #include<Interface_Macros.hxx>
-#include<Interface_MapAsciiStringHasher.hxx>
 #include<Interface_NodeOfGeneralLib.hxx>
 #include<Interface_NodeOfReaderLib.hxx>
 #include<Interface_ParamList.hxx>
@@ -82,6 +81,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<Interface_Translates.hxx>
 #include<Interface_TypedValue.hxx>
 #include<Interface_UndefinedContent.hxx>
+#include<Interface_ValueInterpret.hxx>
 #include<Interface_ValueSatisfies.hxx>
 #include<Interface_VectorOfFileParameter.hxx>
 #include<Interface_Version.hxx>

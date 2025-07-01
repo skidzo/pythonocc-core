@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -93,6 +93,8 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 #include<StepBasic_ExternalSource.hxx>
 #include<StepBasic_ExternallyDefinedItem.hxx>
 #include<StepBasic_GeneralProperty.hxx>
+#include<StepBasic_GeneralPropertyAssociation.hxx>
+#include<StepBasic_GeneralPropertyRelationship.hxx>
 #include<StepBasic_Group.hxx>
 #include<StepBasic_GroupAssignment.hxx>
 #include<StepBasic_GroupRelationship.hxx>

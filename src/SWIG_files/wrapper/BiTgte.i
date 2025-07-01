@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define BITGTEDOCSTRING
 "BiTgte module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_bitgte.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_bitgte.html"
 %enddef
 %module (package="OCC.Core", docstring=BITGTEDOCSTRING) BiTgte
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_bitgte.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -85,7 +88,7 @@ enum BiTgte_ContactType {
 
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 
 class BiTgte_ContactType(IntEnum):
@@ -105,8 +108,8 @@ BiTgte_VertexVertex = BiTgte_ContactType.BiTgte_VertexVertex
 /* end python proxy for enums */
 
 /* handles */
-%wrap_handle(BiTgte_HCurveOnEdge)
-%wrap_handle(BiTgte_HCurveOnVertex)
+%wrap_handle(BiTgte_CurveOnEdge)
+%wrap_handle(BiTgte_CurveOnVertex)
 /* end handles declaration */
 
 /* templates */
@@ -120,22 +123,23 @@ BiTgte_VertexVertex = BiTgte_ContactType.BiTgte_VertexVertex
 *********************/
 class BiTgte_Blend {
 	public:
-		/****************** BiTgte_Blend ******************/
-		/**** md5 signature: 17bbf5741df841e75fdafac78b2e1d31 ****/
+		/****** BiTgte_Blend::BiTgte_Blend ******/
+		/****** md5 signature: 17bbf5741df841e75fdafac78b2e1d31 ******/
 		%feature("compactdefaultargs") BiTgte_Blend;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BiTgte_Blend;
 		 BiTgte_Blend();
 
-		/****************** BiTgte_Blend ******************/
-		/**** md5 signature: fcb4eb450d07dc46f49934b8ae41b66a ****/
+		/****** BiTgte_Blend::BiTgte_Blend ******/
+		/****** md5 signature: fcb4eb450d07dc46f49934b8ae41b66a ******/
 		%feature("compactdefaultargs") BiTgte_Blend;
-		%feature("autodoc", "<s>: shape to be rounded <radius>: radius of the fillet <tol>: tol3d used in approximations <nubs>: if true, generate only nubs surfaces, if false, generate analytical surfaces if possible.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
@@ -143,145 +147,173 @@ Radius: float
 Tol: float
 NUBS: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+<S>: Shape to be rounded <Radius>: radius of the fillet <Tol>: Tol3d used in approximations <NUBS>: if true, generate only NUBS surfaces, if false, generate analytical surfaces if possible.
 ") BiTgte_Blend;
 		 BiTgte_Blend(const TopoDS_Shape & S, const Standard_Real Radius, const Standard_Real Tol, const Standard_Boolean NUBS);
 
-		/****************** CenterLines ******************/
-		/**** md5 signature: 7cdcbf17f88410937fa3a02ee6e6ff64 ****/
+		/****** BiTgte_Blend::CenterLines ******/
+		/****** md5 signature: 7cdcbf17f88410937fa3a02ee6e6ff64 ******/
 		%feature("compactdefaultargs") CenterLines;
-		%feature("autodoc", "Set in <lc> all the center lines.
-
+		%feature("autodoc", "
 Parameters
 ----------
 LC: TopTools_ListOfShape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+set in <LC> all the center lines.
 ") CenterLines;
 		void CenterLines(TopTools_ListOfShape & LC);
 
-		/****************** Clear ******************/
-		/**** md5 signature: ae54be580b423a6eadbe062e0bdb44c2 ****/
+		/****** BiTgte_Blend::Clear ******/
+		/****** md5 signature: ae54be580b423a6eadbe062e0bdb44c2 ******/
 		%feature("compactdefaultargs") Clear;
-		%feature("autodoc", "Clear all the fields.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Clear all the Fields.
 ") Clear;
 		void Clear();
 
-		/****************** ComputeCenters ******************/
-		/**** md5 signature: fe2fd315b9e436238841f2e4295f6482 ****/
+		/****** BiTgte_Blend::ComputeCenters ******/
+		/****** md5 signature: fe2fd315b9e436238841f2e4295f6482 ******/
 		%feature("compactdefaultargs") ComputeCenters;
-		%feature("autodoc", "Computes the center lines.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+Computes the center lines.
 ") ComputeCenters;
 		void ComputeCenters();
 
-		/****************** ContactType ******************/
-		/**** md5 signature: 06cf96a6f5ad52a17a27271b2a4780a8 ****/
+		/****** BiTgte_Blend::ContactType ******/
+		/****** md5 signature: 06cf96a6f5ad52a17a27271b2a4780a8 ******/
 		%feature("compactdefaultargs") ContactType;
-		%feature("autodoc", "Returns the type of contact.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 BiTgte_ContactType
+
+Description
+-----------
+returns the type of contact.
 ") ContactType;
 		BiTgte_ContactType ContactType(const Standard_Integer Index);
 
-		/****************** CurveOnShape1 ******************/
-		/**** md5 signature: ee20be21e256f2cf96d84ff8ef3129bb ****/
+		/****** BiTgte_Blend::CurveOnShape1 ******/
+		/****** md5 signature: ee20be21e256f2cf96d84ff8ef3129bb ******/
 		%feature("compactdefaultargs") CurveOnShape1;
-		%feature("autodoc", "Gives the 3d curve of surfacefillet(index) on supportshape1(index).
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Curve>
+
+Description
+-----------
+gives the 3d curve of SurfaceFillet(Index) on SupportShape1(Index).
 ") CurveOnShape1;
 		opencascade::handle<Geom_Curve> CurveOnShape1(const Standard_Integer Index);
 
-		/****************** CurveOnShape2 ******************/
-		/**** md5 signature: 7fc945de3a648a006805b4811834fb9f ****/
+		/****** BiTgte_Blend::CurveOnShape2 ******/
+		/****** md5 signature: 7fc945de3a648a006805b4811834fb9f ******/
 		%feature("compactdefaultargs") CurveOnShape2;
-		%feature("autodoc", "Gives the 3d curve of surfacefillet(index) on supportshape2(index).
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Curve>
+
+Description
+-----------
+gives the 3d curve of SurfaceFillet(Index) on SupportShape2(Index).
 ") CurveOnShape2;
 		opencascade::handle<Geom_Curve> CurveOnShape2(const Standard_Integer Index);
 
-		/****************** Face ******************/
-		/**** md5 signature: 2cbffafda38288d6b1f44549ec0da32a ****/
+		/****** BiTgte_Blend::Face ******/
+		/****** md5 signature: 2cbffafda38288d6b1f44549ec0da32a ******/
 		%feature("compactdefaultargs") Face;
-		%feature("autodoc", "Returns the surface of range index.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 TopoDS_Face
+
+Description
+-----------
+returns the surface of range Index.
 ") Face;
 		const TopoDS_Face Face(const Standard_Integer Index);
 
-		/****************** Face ******************/
-		/**** md5 signature: 4b7aded970014f9eaa6d00fc413a3191 ****/
+		/****** BiTgte_Blend::Face ******/
+		/****** md5 signature: 4b7aded970014f9eaa6d00fc413a3191 ******/
 		%feature("compactdefaultargs") Face;
-		%feature("autodoc", "Returns the face generated by the centerline. <centerline> may be - an edge : generate a pipe. - a vertex : generate a sphere. warning: returns a null shape if <centerline> generates no surface.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CenterLine: TopoDS_Shape
 
-Returns
+Return
 -------
 TopoDS_Face
+
+Description
+-----------
+returns the face generated by the centerline. <CenterLine> may be - an edge: generate a pipe. - a vertex: generate a sphere. Warning: returns a Null Shape if <CenterLine> generates no surface.
 ") Face;
 		const TopoDS_Face Face(const TopoDS_Shape & CenterLine);
 
-		/****************** IndicesOfBranche ******************/
-		/**** md5 signature: 5496dd9611670412e2f05c0778f3cd94 ****/
+		/****** BiTgte_Blend::IndicesOfBranche ******/
+		/****** md5 signature: 5496dd9611670412e2f05c0778f3cd94 ******/
 		%feature("compactdefaultargs") IndicesOfBranche;
-		%feature("autodoc", "Set in <from>,<to> the indices of the faces of the branche <index>. //! i.e: branche<index> = face(from) + face(from+1) + ..+ face(to).
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 From: int
 To: int
+
+Description
+-----------
+Set in <From>,<To> the indices of the faces of the branche <Index>. //! i.e: Branche<Index> = Face(From) + Face(From+1) + ..+ Face(To).
 ") IndicesOfBranche;
 		void IndicesOfBranche(const Standard_Integer Index, Standard_Integer &OutValue, Standard_Integer &OutValue);
 
-		/****************** Init ******************/
-		/**** md5 signature: 9117abf7335ad3e22ca004f959ef022d ****/
+		/****** BiTgte_Blend::Init ******/
+		/****** md5 signature: 9117abf7335ad3e22ca004f959ef022d ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: TopoDS_Shape
@@ -289,235 +321,282 @@ Radius: float
 Tol: float
 NUBS: bool
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Init;
 		void Init(const TopoDS_Shape & S, const Standard_Real Radius, const Standard_Real Tol, const Standard_Boolean NUBS);
 
-		/****************** IsDone ******************/
-		/**** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ****/
+		/****** BiTgte_Blend::IsDone ******/
+		/****** md5 signature: ec0624071ec7da54b3d9dacc7bcb05f9 ******/
 		%feature("compactdefaultargs") IsDone;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsDone;
 		Standard_Boolean IsDone();
 
-		/****************** NbBranches ******************/
-		/**** md5 signature: b64569026b92c0773cf3ea7449a53b4a ****/
+		/****** BiTgte_Blend::NbBranches ******/
+		/****** md5 signature: b64569026b92c0773cf3ea7449a53b4a ******/
 		%feature("compactdefaultargs") NbBranches;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbBranches;
 		Standard_Integer NbBranches();
 
-		/****************** NbSurfaces ******************/
-		/**** md5 signature: fbc438e1ec12b28d849e6d0aeb23caaa ****/
+		/****** BiTgte_Blend::NbSurfaces ******/
+		/****** md5 signature: fbc438e1ec12b28d849e6d0aeb23caaa ******/
 		%feature("compactdefaultargs") NbSurfaces;
-		%feature("autodoc", "Returns the number of generated surfaces.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+returns the Number of generated surfaces.
 ") NbSurfaces;
 		Standard_Integer NbSurfaces();
 
-		/****************** PCurve1OnFillet ******************/
-		/**** md5 signature: 66719317f03c4bb8a01bf69af92d0bec ****/
+		/****** BiTgte_Blend::PCurve1OnFillet ******/
+		/****** md5 signature: 66719317f03c4bb8a01bf69af92d0bec ******/
 		%feature("compactdefaultargs") PCurve1OnFillet;
-		%feature("autodoc", "Gives the pcurve associated to curveonshape1(index) on the fillet.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Curve>
+
+Description
+-----------
+gives the PCurve associated to CurveOnShape1(Index) on the Fillet.
 ") PCurve1OnFillet;
 		opencascade::handle<Geom2d_Curve> PCurve1OnFillet(const Standard_Integer Index);
 
-		/****************** PCurve2OnFillet ******************/
-		/**** md5 signature: 8483d0ebe8d27721b9bdf3e5ef460abf ****/
+		/****** BiTgte_Blend::PCurve2OnFillet ******/
+		/****** md5 signature: 8483d0ebe8d27721b9bdf3e5ef460abf ******/
 		%feature("compactdefaultargs") PCurve2OnFillet;
-		%feature("autodoc", "Gives the pcurve associated to curveonshape2(index) on the fillet.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Curve>
+
+Description
+-----------
+gives the PCurve associated to CurveOnShape2(Index) on the fillet.
 ") PCurve2OnFillet;
 		opencascade::handle<Geom2d_Curve> PCurve2OnFillet(const Standard_Integer Index);
 
-		/****************** PCurveOnFace1 ******************/
-		/**** md5 signature: 34e81d4b57cd9e48b73731bb12790a88 ****/
+		/****** BiTgte_Blend::PCurveOnFace1 ******/
+		/****** md5 signature: 34e81d4b57cd9e48b73731bb12790a88 ******/
 		%feature("compactdefaultargs") PCurveOnFace1;
-		%feature("autodoc", "Gives the pcurve associated to curvonshape1(index) on the support face warning: returns a null handle if supportshape1 is not a face.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Curve>
+
+Description
+-----------
+gives the PCurve associated to CurvOnShape1(Index) on the support face Warning: returns a Null Handle if SupportShape1 is not a Face.
 ") PCurveOnFace1;
 		opencascade::handle<Geom2d_Curve> PCurveOnFace1(const Standard_Integer Index);
 
-		/****************** PCurveOnFace2 ******************/
-		/**** md5 signature: ab07bb99678af55707111b62c6fece34 ****/
+		/****** BiTgte_Blend::PCurveOnFace2 ******/
+		/****** md5 signature: ab07bb99678af55707111b62c6fece34 ******/
 		%feature("compactdefaultargs") PCurveOnFace2;
-		%feature("autodoc", "Gives the pcurve associated to curveonshape2(index) on the support face warning: returns a null handle if supportshape2 is not a face.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom2d_Curve>
+
+Description
+-----------
+gives the PCurve associated to CurveOnShape2(Index) on the support face Warning: returns a Null Handle if SupportShape2 is not a Face.
 ") PCurveOnFace2;
 		opencascade::handle<Geom2d_Curve> PCurveOnFace2(const Standard_Integer Index);
 
-		/****************** Perform ******************/
-		/**** md5 signature: 26f90eb30d35e3511898b9066f769985 ****/
+		/****** BiTgte_Blend::Perform ******/
+		/****** md5 signature: 26f90eb30d35e3511898b9066f769985 ******/
 		%feature("compactdefaultargs") Perform;
-		%feature("autodoc", "Compute the generated surfaces. if <buildshape> is true, compute the resulting shape. if false, only the blending surfaces are computed.
-
+		%feature("autodoc", "
 Parameters
 ----------
-BuildShape: bool,optional
-	default value is Standard_True
+BuildShape: bool (optional, default to Standard_True)
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Compute the generated surfaces. If <BuildShape> is true, compute the resulting Shape. If false, only the blending surfaces are computed.
 ") Perform;
 		void Perform(const Standard_Boolean BuildShape = Standard_True);
 
-		/****************** SetEdge ******************/
-		/**** md5 signature: 2cae578848d84ae3c3668cd048d5885d ****/
+		/****** BiTgte_Blend::SetEdge ******/
+		/****** md5 signature: 2cae578848d84ae3c3668cd048d5885d ******/
 		%feature("compactdefaultargs") SetEdge;
-		%feature("autodoc", "Set an edge of <myshape> to be rounded.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Edge: TopoDS_Edge
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set an edge of <myShape> to be rounded.
 ") SetEdge;
 		void SetEdge(const TopoDS_Edge & Edge);
 
-		/****************** SetFaces ******************/
-		/**** md5 signature: 46dc023c2aed2e35da6777aafef31609 ****/
+		/****** BiTgte_Blend::SetFaces ******/
+		/****** md5 signature: 46dc023c2aed2e35da6777aafef31609 ******/
 		%feature("compactdefaultargs") SetFaces;
-		%feature("autodoc", "Set two faces of <myshape> on which the sphere must roll.
-
+		%feature("autodoc", "
 Parameters
 ----------
 F1: TopoDS_Face
 F2: TopoDS_Face
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set two faces of <myShape> on which the Sphere must roll.
 ") SetFaces;
 		void SetFaces(const TopoDS_Face & F1, const TopoDS_Face & F2);
 
-		/****************** SetStoppingFace ******************/
-		/**** md5 signature: 31e99b5f54ada3288ae28080c35765a0 ****/
+		/****** BiTgte_Blend::SetStoppingFace ******/
+		/****** md5 signature: 31e99b5f54ada3288ae28080c35765a0 ******/
 		%feature("compactdefaultargs") SetStoppingFace;
-		%feature("autodoc", "Set a face on which the fillet must stop.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Face: TopoDS_Face
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set a face on which the fillet must stop.
 ") SetStoppingFace;
 		void SetStoppingFace(const TopoDS_Face & Face);
 
-		/****************** Shape ******************/
-		/**** md5 signature: e2e979bbf0e2f5cedfc0e482bf183e08 ****/
+		/****** BiTgte_Blend::Shape ******/
+		/****** md5 signature: e2e979bbf0e2f5cedfc0e482bf183e08 ******/
 		%feature("compactdefaultargs") Shape;
-		%feature("autodoc", "Returns the result.
-
-Returns
+		%feature("autodoc", "Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+returns the result.
 ") Shape;
 		const TopoDS_Shape Shape();
 
-		/****************** SupportShape1 ******************/
-		/**** md5 signature: 10214c27a45d2d8e8b096d1ae2f312ed ****/
+		/****** BiTgte_Blend::SupportShape1 ******/
+		/****** md5 signature: 10214c27a45d2d8e8b096d1ae2f312ed ******/
 		%feature("compactdefaultargs") SupportShape1;
-		%feature("autodoc", "Gives the first support shape relative to surfacefillet(index);.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+gives the first support shape relative to SurfaceFillet(Index);.
 ") SupportShape1;
 		const TopoDS_Shape SupportShape1(const Standard_Integer Index);
 
-		/****************** SupportShape2 ******************/
-		/**** md5 signature: 7261f3e4970f2c1b0cdd582f6d687f13 ****/
+		/****** BiTgte_Blend::SupportShape2 ******/
+		/****** md5 signature: 7261f3e4970f2c1b0cdd582f6d687f13 ******/
 		%feature("compactdefaultargs") SupportShape2;
-		%feature("autodoc", "Gives the second support shape relative to surfacefillet(index);.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 TopoDS_Shape
+
+Description
+-----------
+gives the second support shape relative to SurfaceFillet(Index);.
 ") SupportShape2;
 		const TopoDS_Shape SupportShape2(const Standard_Integer Index);
 
-		/****************** Surface ******************/
-		/**** md5 signature: ca0d44253c2baa75e6ac4da4acb1de35 ****/
+		/****** BiTgte_Blend::Surface ******/
+		/****** md5 signature: ca0d44253c2baa75e6ac4da4acb1de35 ******/
 		%feature("compactdefaultargs") Surface;
-		%feature("autodoc", "Returns the surface of range index.
-
+		%feature("autodoc", "
 Parameters
 ----------
 Index: int
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Surface>
+
+Description
+-----------
+returns the surface of range Index.
 ") Surface;
 		opencascade::handle<Geom_Surface> Surface(const Standard_Integer Index);
 
-		/****************** Surface ******************/
-		/**** md5 signature: 200bf7afd4a4bc656a2370bc00f08ebe ****/
+		/****** BiTgte_Blend::Surface ******/
+		/****** md5 signature: 200bf7afd4a4bc656a2370bc00f08ebe ******/
 		%feature("compactdefaultargs") Surface;
-		%feature("autodoc", "Returns the surface generated by the centerline. <centerline> may be - an edge : generate a pipe. - a vertex : generate a sphere. warning: returns a null handle if <centerline> generates no surface.
-
+		%feature("autodoc", "
 Parameters
 ----------
 CenterLine: TopoDS_Shape
 
-Returns
+Return
 -------
 opencascade::handle<Geom_Surface>
+
+Description
+-----------
+returns the surface generated by the centerline. <CenterLine> may be - an edge: generate a pipe. - a vertex: generate a sphere. Warning: returns a Null Handle if <CenterLine> generates no surface.
 ") Surface;
 		opencascade::handle<Geom_Surface> Surface(const TopoDS_Shape & CenterLine);
 
@@ -535,115 +614,133 @@ opencascade::handle<Geom_Surface>
 ***************************/
 class BiTgte_CurveOnEdge : public Adaptor3d_Curve {
 	public:
-		/****************** BiTgte_CurveOnEdge ******************/
-		/**** md5 signature: 0bc12bd3ec644ed3018a39a0799bc067 ****/
+		/****** BiTgte_CurveOnEdge::BiTgte_CurveOnEdge ******/
+		/****** md5 signature: 0bc12bd3ec644ed3018a39a0799bc067 ******/
 		%feature("compactdefaultargs") BiTgte_CurveOnEdge;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BiTgte_CurveOnEdge;
 		 BiTgte_CurveOnEdge();
 
-		/****************** BiTgte_CurveOnEdge ******************/
-		/**** md5 signature: 36ffc866377ea1d78af716092ee3e006 ****/
+		/****** BiTgte_CurveOnEdge::BiTgte_CurveOnEdge ******/
+		/****** md5 signature: 36ffc866377ea1d78af716092ee3e006 ******/
 		%feature("compactdefaultargs") BiTgte_CurveOnEdge;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EonF: TopoDS_Edge
 Edge: TopoDS_Edge
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BiTgte_CurveOnEdge;
 		 BiTgte_CurveOnEdge(const TopoDS_Edge & EonF, const TopoDS_Edge & Edge);
 
-		/****************** BSpline ******************/
-		/**** md5 signature: 3ccc0d851302bffb5de6344e3eb3e58d ****/
+		/****** BiTgte_CurveOnEdge::BSpline ******/
+		/****** md5 signature: 3ccc0d851302bffb5de6344e3eb3e58d ******/
 		%feature("compactdefaultargs") BSpline;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<Geom_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") BSpline;
 		opencascade::handle<Geom_BSplineCurve> BSpline();
 
-		/****************** Bezier ******************/
-		/**** md5 signature: 092280fc6ee0e7104fbbe3460d73e83c ****/
+		/****** BiTgte_CurveOnEdge::Bezier ******/
+		/****** md5 signature: 092280fc6ee0e7104fbbe3460d73e83c ******/
 		%feature("compactdefaultargs") Bezier;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<Geom_BezierCurve>
+
+Description
+-----------
+No available documentation.
 ") Bezier;
 		opencascade::handle<Geom_BezierCurve> Bezier();
 
-		/****************** Circle ******************/
-		/**** md5 signature: 5f382e7a6af009845ea6e16d54814298 ****/
+		/****** BiTgte_CurveOnEdge::Circle ******/
+		/****** md5 signature: 5f382e7a6af009845ea6e16d54814298 ******/
 		%feature("compactdefaultargs") Circle;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Circ
+
+Description
+-----------
+No available documentation.
 ") Circle;
 		gp_Circ Circle();
 
-		/****************** Continuity ******************/
-		/**** md5 signature: 9381b370dfdd50af7f1b79ce202f0c6f ****/
+		/****** BiTgte_CurveOnEdge::Continuity ******/
+		/****** md5 signature: 9381b370dfdd50af7f1b79ce202f0c6f ******/
 		%feature("compactdefaultargs") Continuity;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 GeomAbs_Shape
+
+Description
+-----------
+No available documentation.
 ") Continuity;
 		GeomAbs_Shape Continuity();
 
-		/****************** D0 ******************/
-		/**** md5 signature: 5f7d08d8d17afc516aac9ef64bf9711f ****/
+		/****** BiTgte_CurveOnEdge::D0 ******/
+		/****** md5 signature: 5f7d08d8d17afc516aac9ef64bf9711f ******/
 		%feature("compactdefaultargs") D0;
-		%feature("autodoc", "Computes the point of parameter u on the curve.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 P: gp_Pnt
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes the point of parameter U on the curve.
 ") D0;
 		void D0(const Standard_Real U, gp_Pnt & P);
 
-		/****************** D1 ******************/
-		/**** md5 signature: 1dc830ec49a945a61cde5e5c027b78d7 ****/
+		/****** BiTgte_CurveOnEdge::D1 ******/
+		/****** md5 signature: 1dc830ec49a945a61cde5e5c027b78d7 ******/
 		%feature("compactdefaultargs") D1;
-		%feature("autodoc", "Computes the point of parameter u on the curve with its first derivative. raised if the continuity of the current interval is not c1.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 P: gp_Pnt
 V: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
 ") D1;
 		void D1(const Standard_Real U, gp_Pnt & P, gp_Vec & V);
 
-		/****************** D2 ******************/
-		/**** md5 signature: a694b4ba68c0fd83fbac79f945cb5d8c ****/
+		/****** BiTgte_CurveOnEdge::D2 ******/
+		/****** md5 signature: a694b4ba68c0fd83fbac79f945cb5d8c ******/
 		%feature("compactdefaultargs") D2;
-		%feature("autodoc", "Returns the point p of parameter u, the first and second derivatives v1 and v2. raised if the continuity of the current interval is not c2.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
@@ -651,17 +748,20 @@ P: gp_Pnt
 V1: gp_Vec
 V2: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
 ") D2;
 		void D2(const Standard_Real U, gp_Pnt & P, gp_Vec & V1, gp_Vec & V2);
 
-		/****************** D3 ******************/
-		/**** md5 signature: cf1c3b5fe7af9d5c183c1b16b21c43f1 ****/
+		/****** BiTgte_CurveOnEdge::D3 ******/
+		/****** md5 signature: cf1c3b5fe7af9d5c183c1b16b21c43f1 ******/
 		%feature("compactdefaultargs") D3;
-		%feature("autodoc", "Returns the point p of parameter u, the first, the second and the third derivative. raised if the continuity of the current interval is not c3.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
@@ -670,278 +770,346 @@ V1: gp_Vec
 V2: gp_Vec
 V3: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
 ") D3;
 		void D3(const Standard_Real U, gp_Pnt & P, gp_Vec & V1, gp_Vec & V2, gp_Vec & V3);
 
-		/****************** DN ******************/
-		/**** md5 signature: 0d4a3e2fc2b4b03d2a49e0796a487efb ****/
+		/****** BiTgte_CurveOnEdge::DN ******/
+		/****** md5 signature: 0d4a3e2fc2b4b03d2a49e0796a487efb ******/
 		%feature("compactdefaultargs") DN;
-		%feature("autodoc", "The returned vector gives the value of the derivative for the order of derivation n. raised if the continuity of the current interval is not cn. raised if n < 1.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 N: int
 
-Returns
+Return
 -------
 gp_Vec
+
+Description
+-----------
+The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
 ") DN;
 		gp_Vec DN(const Standard_Real U, const Standard_Integer N);
 
-		/****************** Degree ******************/
-		/**** md5 signature: 5ce473e72cc7bb935a667f4c839dab09 ****/
+		/****** BiTgte_CurveOnEdge::Degree ******/
+		/****** md5 signature: 5ce473e72cc7bb935a667f4c839dab09 ******/
 		%feature("compactdefaultargs") Degree;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") Degree;
 		Standard_Integer Degree();
 
-		/****************** Ellipse ******************/
-		/**** md5 signature: e9a77f14e9bbca29370202de404ea9c1 ****/
+		/****** BiTgte_CurveOnEdge::Ellipse ******/
+		/****** md5 signature: e9a77f14e9bbca29370202de404ea9c1 ******/
 		%feature("compactdefaultargs") Ellipse;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Elips
+
+Description
+-----------
+No available documentation.
 ") Ellipse;
 		gp_Elips Ellipse();
 
-		/****************** FirstParameter ******************/
-		/**** md5 signature: eb9ebe94572bd67588fe8811eac261fb ****/
+		/****** BiTgte_CurveOnEdge::FirstParameter ******/
+		/****** md5 signature: eb9ebe94572bd67588fe8811eac261fb ******/
 		%feature("compactdefaultargs") FirstParameter;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") FirstParameter;
 		Standard_Real FirstParameter();
 
-		/****************** GetType ******************/
-		/**** md5 signature: 0ad61dcbb5497908c1b536e766f0fcb9 ****/
+		/****** BiTgte_CurveOnEdge::GetType ******/
+		/****** md5 signature: 0ad61dcbb5497908c1b536e766f0fcb9 ******/
 		%feature("compactdefaultargs") GetType;
-		%feature("autodoc", "Returns the type of the curve in the current interval : line, circle, ellipse, hyperbola, parabola, beziercurve, bsplinecurve, othercurve.
-
-Returns
+		%feature("autodoc", "Return
 -------
 GeomAbs_CurveType
+
+Description
+-----------
+Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
 ") GetType;
 		GeomAbs_CurveType GetType();
 
-		/****************** Hyperbola ******************/
-		/**** md5 signature: a96ca49b2ad017b35bb09d0b86cb690d ****/
+		/****** BiTgte_CurveOnEdge::Hyperbola ******/
+		/****** md5 signature: a96ca49b2ad017b35bb09d0b86cb690d ******/
 		%feature("compactdefaultargs") Hyperbola;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Hypr
+
+Description
+-----------
+No available documentation.
 ") Hyperbola;
 		gp_Hypr Hyperbola();
 
-		/****************** Init ******************/
-		/**** md5 signature: b74b189b5b7119a6bc7b6c812d488137 ****/
+		/****** BiTgte_CurveOnEdge::Init ******/
+		/****** md5 signature: b74b189b5b7119a6bc7b6c812d488137 ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EonF: TopoDS_Edge
 Edge: TopoDS_Edge
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Init;
 		void Init(const TopoDS_Edge & EonF, const TopoDS_Edge & Edge);
 
-		/****************** Intervals ******************/
-		/**** md5 signature: fc573cb56cf1a9c05ee189fd913ff6f5 ****/
+		/****** BiTgte_CurveOnEdge::Intervals ******/
+		/****** md5 signature: fc573cb56cf1a9c05ee189fd913ff6f5 ******/
 		%feature("compactdefaultargs") Intervals;
-		%feature("autodoc", "Stores in <t> the parameters bounding the intervals of continuity <s>. //! the array must provide enough room to accomodate for the parameters. i.e. t.length() > nbintervals().
-
+		%feature("autodoc", "
 Parameters
 ----------
 T: TColStd_Array1OfReal
 S: GeomAbs_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Stores in <T> the parameters bounding the intervals of continuity <S>. //! The array must provide enough room to accommodate for the parameters. i.e. T.Length() > NbIntervals().
 ") Intervals;
 		void Intervals(TColStd_Array1OfReal & T, const GeomAbs_Shape S);
 
-		/****************** IsClosed ******************/
-		/**** md5 signature: 00978070ec4cb5f00d1d002a8d5d3763 ****/
+		/****** BiTgte_CurveOnEdge::IsClosed ******/
+		/****** md5 signature: 00978070ec4cb5f00d1d002a8d5d3763 ******/
 		%feature("compactdefaultargs") IsClosed;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsClosed;
 		Standard_Boolean IsClosed();
 
-		/****************** IsPeriodic ******************/
-		/**** md5 signature: 15e3ccfd3ad4ae42959489f7f64aa8ca ****/
+		/****** BiTgte_CurveOnEdge::IsPeriodic ******/
+		/****** md5 signature: 15e3ccfd3ad4ae42959489f7f64aa8ca ******/
 		%feature("compactdefaultargs") IsPeriodic;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsPeriodic;
 		Standard_Boolean IsPeriodic();
 
-		/****************** IsRational ******************/
-		/**** md5 signature: 82ca56fad113156125f40128b25c0d8e ****/
+		/****** BiTgte_CurveOnEdge::IsRational ******/
+		/****** md5 signature: 82ca56fad113156125f40128b25c0d8e ******/
 		%feature("compactdefaultargs") IsRational;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsRational;
 		Standard_Boolean IsRational();
 
-		/****************** LastParameter ******************/
-		/**** md5 signature: cb4925a2d4a451ceec8f6ad486530f9c ****/
+		/****** BiTgte_CurveOnEdge::LastParameter ******/
+		/****** md5 signature: cb4925a2d4a451ceec8f6ad486530f9c ******/
 		%feature("compactdefaultargs") LastParameter;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") LastParameter;
 		Standard_Real LastParameter();
 
-		/****************** Line ******************/
-		/**** md5 signature: cf28f5541e4e744dd8038e2a9ac75a8f ****/
+		/****** BiTgte_CurveOnEdge::Line ******/
+		/****** md5 signature: cf28f5541e4e744dd8038e2a9ac75a8f ******/
 		%feature("compactdefaultargs") Line;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Lin
+
+Description
+-----------
+No available documentation.
 ") Line;
 		gp_Lin Line();
 
-		/****************** NbIntervals ******************/
-		/**** md5 signature: 8ce4f61bff96d1ce0784028b47edd8dc ****/
+		/****** BiTgte_CurveOnEdge::NbIntervals ******/
+		/****** md5 signature: 8ce4f61bff96d1ce0784028b47edd8dc ******/
 		%feature("compactdefaultargs") NbIntervals;
-		%feature("autodoc", "Returns the number of intervals for continuity <s>. may be one if continuity(me) >= <s>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: GeomAbs_Shape
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Returns the number of intervals for continuity <S>. May be one if Continuity(me) >= <S>.
 ") NbIntervals;
 		Standard_Integer NbIntervals(const GeomAbs_Shape S);
 
-		/****************** NbKnots ******************/
-		/**** md5 signature: 841663cbf96bec3b939f307c52df6c7c ****/
+		/****** BiTgte_CurveOnEdge::NbKnots ******/
+		/****** md5 signature: 841663cbf96bec3b939f307c52df6c7c ******/
 		%feature("compactdefaultargs") NbKnots;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbKnots;
 		Standard_Integer NbKnots();
 
-		/****************** NbPoles ******************/
-		/**** md5 signature: 52e5fadf897540545847ef59cc0ba942 ****/
+		/****** BiTgte_CurveOnEdge::NbPoles ******/
+		/****** md5 signature: 52e5fadf897540545847ef59cc0ba942 ******/
 		%feature("compactdefaultargs") NbPoles;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbPoles;
 		Standard_Integer NbPoles();
 
-		/****************** Parabola ******************/
-		/**** md5 signature: 68860abab63fd184ea5c7eb97f0762c1 ****/
+		/****** BiTgte_CurveOnEdge::Parabola ******/
+		/****** md5 signature: 68860abab63fd184ea5c7eb97f0762c1 ******/
 		%feature("compactdefaultargs") Parabola;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Parab
+
+Description
+-----------
+No available documentation.
 ") Parabola;
 		gp_Parab Parabola();
 
-		/****************** Period ******************/
-		/**** md5 signature: 88909a321398632744c0d6841580c626 ****/
+		/****** BiTgte_CurveOnEdge::Period ******/
+		/****** md5 signature: 88909a321398632744c0d6841580c626 ******/
 		%feature("compactdefaultargs") Period;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Period;
 		Standard_Real Period();
 
-		/****************** Resolution ******************/
-		/**** md5 signature: cc4a4d9111fadd20ad48e62bc4df1579 ****/
+		/****** BiTgte_CurveOnEdge::Resolution ******/
+		/****** md5 signature: cc4a4d9111fadd20ad48e62bc4df1579 ******/
 		%feature("compactdefaultargs") Resolution;
-		%feature("autodoc", "Returns the parametric resolution corresponding to the real space resolution <r3d>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 R3d: float
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the parametric resolution corresponding to the real space resolution <R3d>.
 ") Resolution;
 		Standard_Real Resolution(const Standard_Real R3d);
 
-		/****************** Trim ******************/
-		/**** md5 signature: 113944489c8ce9efcb5cb2d44fff51d7 ****/
-		%feature("compactdefaultargs") Trim;
-		%feature("autodoc", "Returns a curve equivalent of <self> between parameters <first> and <last>. <tol> is used to test for 3d points confusion. if <first> >= <last>.
+		/****** BiTgte_CurveOnEdge::ShallowCopy ******/
+		/****** md5 signature: 1b6b0927543eab9d05e2c875c0c3efb6 ******/
+		%feature("compactdefaultargs") ShallowCopy;
+		%feature("autodoc", "Return
+-------
+opencascade::handle<Adaptor3d_Curve>
 
+Description
+-----------
+Shallow copy of adaptor.
+") ShallowCopy;
+		virtual opencascade::handle<Adaptor3d_Curve> ShallowCopy();
+
+		/****** BiTgte_CurveOnEdge::Trim ******/
+		/****** md5 signature: 40a46ffe7379c6d919968b501b8343a5 ******/
+		%feature("compactdefaultargs") Trim;
+		%feature("autodoc", "
 Parameters
 ----------
 First: float
 Last: float
 Tol: float
 
-Returns
+Return
 -------
-opencascade::handle<Adaptor3d_HCurve>
+opencascade::handle<Adaptor3d_Curve>
+
+Description
+-----------
+Returns a curve equivalent of <self> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. If <First> >= <Last>.
 ") Trim;
-		opencascade::handle<Adaptor3d_HCurve> Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+		opencascade::handle<Adaptor3d_Curve> Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
 
-		/****************** Value ******************/
-		/**** md5 signature: d7f310c73762cbaa285ace0a141bc7bf ****/
+		/****** BiTgte_CurveOnEdge::Value ******/
+		/****** md5 signature: d7f310c73762cbaa285ace0a141bc7bf ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the point of parameter u on the curve.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 
-Returns
+Return
 -------
 gp_Pnt
+
+Description
+-----------
+Computes the point of parameter U on the curve.
 ") Value;
 		gp_Pnt Value(const Standard_Real U);
 
 };
 
+
+%make_alias(BiTgte_CurveOnEdge)
 
 %extend BiTgte_CurveOnEdge {
 	%pythoncode {
@@ -954,115 +1122,133 @@ gp_Pnt
 *****************************/
 class BiTgte_CurveOnVertex : public Adaptor3d_Curve {
 	public:
-		/****************** BiTgte_CurveOnVertex ******************/
-		/**** md5 signature: c38ff4f1f884bd661cd6b95b8827f160 ****/
+		/****** BiTgte_CurveOnVertex::BiTgte_CurveOnVertex ******/
+		/****** md5 signature: c38ff4f1f884bd661cd6b95b8827f160 ******/
 		%feature("compactdefaultargs") BiTgte_CurveOnVertex;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BiTgte_CurveOnVertex;
 		 BiTgte_CurveOnVertex();
 
-		/****************** BiTgte_CurveOnVertex ******************/
-		/**** md5 signature: 7c391382afc64ffc731f436162fd5b2d ****/
+		/****** BiTgte_CurveOnVertex::BiTgte_CurveOnVertex ******/
+		/****** md5 signature: 7c391382afc64ffc731f436162fd5b2d ******/
 		%feature("compactdefaultargs") BiTgte_CurveOnVertex;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EonF: TopoDS_Edge
 V: TopoDS_Vertex
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") BiTgte_CurveOnVertex;
 		 BiTgte_CurveOnVertex(const TopoDS_Edge & EonF, const TopoDS_Vertex & V);
 
-		/****************** BSpline ******************/
-		/**** md5 signature: 3ccc0d851302bffb5de6344e3eb3e58d ****/
+		/****** BiTgte_CurveOnVertex::BSpline ******/
+		/****** md5 signature: 3ccc0d851302bffb5de6344e3eb3e58d ******/
 		%feature("compactdefaultargs") BSpline;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<Geom_BSplineCurve>
+
+Description
+-----------
+No available documentation.
 ") BSpline;
 		opencascade::handle<Geom_BSplineCurve> BSpline();
 
-		/****************** Bezier ******************/
-		/**** md5 signature: 092280fc6ee0e7104fbbe3460d73e83c ****/
+		/****** BiTgte_CurveOnVertex::Bezier ******/
+		/****** md5 signature: 092280fc6ee0e7104fbbe3460d73e83c ******/
 		%feature("compactdefaultargs") Bezier;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<Geom_BezierCurve>
+
+Description
+-----------
+No available documentation.
 ") Bezier;
 		opencascade::handle<Geom_BezierCurve> Bezier();
 
-		/****************** Circle ******************/
-		/**** md5 signature: 5f382e7a6af009845ea6e16d54814298 ****/
+		/****** BiTgte_CurveOnVertex::Circle ******/
+		/****** md5 signature: 5f382e7a6af009845ea6e16d54814298 ******/
 		%feature("compactdefaultargs") Circle;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Circ
+
+Description
+-----------
+No available documentation.
 ") Circle;
 		gp_Circ Circle();
 
-		/****************** Continuity ******************/
-		/**** md5 signature: 9381b370dfdd50af7f1b79ce202f0c6f ****/
+		/****** BiTgte_CurveOnVertex::Continuity ******/
+		/****** md5 signature: 9381b370dfdd50af7f1b79ce202f0c6f ******/
 		%feature("compactdefaultargs") Continuity;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 GeomAbs_Shape
+
+Description
+-----------
+No available documentation.
 ") Continuity;
 		GeomAbs_Shape Continuity();
 
-		/****************** D0 ******************/
-		/**** md5 signature: 5f7d08d8d17afc516aac9ef64bf9711f ****/
+		/****** BiTgte_CurveOnVertex::D0 ******/
+		/****** md5 signature: 5f7d08d8d17afc516aac9ef64bf9711f ******/
 		%feature("compactdefaultargs") D0;
-		%feature("autodoc", "Computes the point of parameter u on the curve.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 P: gp_Pnt
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes the point of parameter U on the curve.
 ") D0;
 		void D0(const Standard_Real U, gp_Pnt & P);
 
-		/****************** D1 ******************/
-		/**** md5 signature: 1dc830ec49a945a61cde5e5c027b78d7 ****/
+		/****** BiTgte_CurveOnVertex::D1 ******/
+		/****** md5 signature: 1dc830ec49a945a61cde5e5c027b78d7 ******/
 		%feature("compactdefaultargs") D1;
-		%feature("autodoc", "Computes the point of parameter u on the curve with its first derivative. raised if the continuity of the current interval is not c1.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 P: gp_Pnt
 V: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Computes the point of parameter U on the curve with its first derivative. Raised if the continuity of the current interval is not C1.
 ") D1;
 		void D1(const Standard_Real U, gp_Pnt & P, gp_Vec & V);
 
-		/****************** D2 ******************/
-		/**** md5 signature: a694b4ba68c0fd83fbac79f945cb5d8c ****/
+		/****** BiTgte_CurveOnVertex::D2 ******/
+		/****** md5 signature: a694b4ba68c0fd83fbac79f945cb5d8c ******/
 		%feature("compactdefaultargs") D2;
-		%feature("autodoc", "Returns the point p of parameter u, the first and second derivatives v1 and v2. raised if the continuity of the current interval is not c2.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
@@ -1070,17 +1256,20 @@ P: gp_Pnt
 V1: gp_Vec
 V2: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the point P of parameter U, the first and second derivatives V1 and V2. Raised if the continuity of the current interval is not C2.
 ") D2;
 		void D2(const Standard_Real U, gp_Pnt & P, gp_Vec & V1, gp_Vec & V2);
 
-		/****************** D3 ******************/
-		/**** md5 signature: cf1c3b5fe7af9d5c183c1b16b21c43f1 ****/
+		/****** BiTgte_CurveOnVertex::D3 ******/
+		/****** md5 signature: cf1c3b5fe7af9d5c183c1b16b21c43f1 ******/
 		%feature("compactdefaultargs") D3;
-		%feature("autodoc", "Returns the point p of parameter u, the first, the second and the third derivative. raised if the continuity of the current interval is not c3.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
@@ -1089,460 +1278,335 @@ V1: gp_Vec
 V2: gp_Vec
 V3: gp_Vec
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Returns the point P of parameter U, the first, the second and the third derivative. Raised if the continuity of the current interval is not C3.
 ") D3;
 		void D3(const Standard_Real U, gp_Pnt & P, gp_Vec & V1, gp_Vec & V2, gp_Vec & V3);
 
-		/****************** DN ******************/
-		/**** md5 signature: 0d4a3e2fc2b4b03d2a49e0796a487efb ****/
+		/****** BiTgte_CurveOnVertex::DN ******/
+		/****** md5 signature: 0d4a3e2fc2b4b03d2a49e0796a487efb ******/
 		%feature("compactdefaultargs") DN;
-		%feature("autodoc", "The returned vector gives the value of the derivative for the order of derivation n. raised if the continuity of the current interval is not cn. raised if n < 1.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 N: int
 
-Returns
+Return
 -------
 gp_Vec
+
+Description
+-----------
+The returned vector gives the value of the derivative for the order of derivation N. Raised if the continuity of the current interval is not CN. Raised if N < 1.
 ") DN;
 		gp_Vec DN(const Standard_Real U, const Standard_Integer N);
 
-		/****************** Degree ******************/
-		/**** md5 signature: 5ce473e72cc7bb935a667f4c839dab09 ****/
+		/****** BiTgte_CurveOnVertex::Degree ******/
+		/****** md5 signature: 5ce473e72cc7bb935a667f4c839dab09 ******/
 		%feature("compactdefaultargs") Degree;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") Degree;
 		Standard_Integer Degree();
 
-		/****************** Ellipse ******************/
-		/**** md5 signature: e9a77f14e9bbca29370202de404ea9c1 ****/
+		/****** BiTgte_CurveOnVertex::Ellipse ******/
+		/****** md5 signature: e9a77f14e9bbca29370202de404ea9c1 ******/
 		%feature("compactdefaultargs") Ellipse;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Elips
+
+Description
+-----------
+No available documentation.
 ") Ellipse;
 		gp_Elips Ellipse();
 
-		/****************** FirstParameter ******************/
-		/**** md5 signature: eb9ebe94572bd67588fe8811eac261fb ****/
+		/****** BiTgte_CurveOnVertex::FirstParameter ******/
+		/****** md5 signature: eb9ebe94572bd67588fe8811eac261fb ******/
 		%feature("compactdefaultargs") FirstParameter;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") FirstParameter;
 		Standard_Real FirstParameter();
 
-		/****************** GetType ******************/
-		/**** md5 signature: 0ad61dcbb5497908c1b536e766f0fcb9 ****/
+		/****** BiTgte_CurveOnVertex::GetType ******/
+		/****** md5 signature: 0ad61dcbb5497908c1b536e766f0fcb9 ******/
 		%feature("compactdefaultargs") GetType;
-		%feature("autodoc", "Returns the type of the curve in the current interval : line, circle, ellipse, hyperbola, parabola, beziercurve, bsplinecurve, othercurve.
-
-Returns
+		%feature("autodoc", "Return
 -------
 GeomAbs_CurveType
+
+Description
+-----------
+Returns the type of the curve in the current interval: Line, Circle, Ellipse, Hyperbola, Parabola, BezierCurve, BSplineCurve, OtherCurve.
 ") GetType;
 		GeomAbs_CurveType GetType();
 
-		/****************** Hyperbola ******************/
-		/**** md5 signature: a96ca49b2ad017b35bb09d0b86cb690d ****/
+		/****** BiTgte_CurveOnVertex::Hyperbola ******/
+		/****** md5 signature: a96ca49b2ad017b35bb09d0b86cb690d ******/
 		%feature("compactdefaultargs") Hyperbola;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Hypr
+
+Description
+-----------
+No available documentation.
 ") Hyperbola;
 		gp_Hypr Hyperbola();
 
-		/****************** Init ******************/
-		/**** md5 signature: 2ff95074e6eeaa569d953bead28f9ffd ****/
+		/****** BiTgte_CurveOnVertex::Init ******/
+		/****** md5 signature: 2ff95074e6eeaa569d953bead28f9ffd ******/
 		%feature("compactdefaultargs") Init;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 EonF: TopoDS_Edge
 V: TopoDS_Vertex
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+No available documentation.
 ") Init;
 		void Init(const TopoDS_Edge & EonF, const TopoDS_Vertex & V);
 
-		/****************** Intervals ******************/
-		/**** md5 signature: fc573cb56cf1a9c05ee189fd913ff6f5 ****/
+		/****** BiTgte_CurveOnVertex::Intervals ******/
+		/****** md5 signature: fc573cb56cf1a9c05ee189fd913ff6f5 ******/
 		%feature("compactdefaultargs") Intervals;
-		%feature("autodoc", "Stores in <t> the parameters bounding the intervals of continuity <s>. //! the array must provide enough room to accomodate for the parameters. i.e. t.length() > nbintervals().
-
+		%feature("autodoc", "
 Parameters
 ----------
 T: TColStd_Array1OfReal
 S: GeomAbs_Shape
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Stores in <T> the parameters bounding the intervals of continuity <S>. //! The array must provide enough room to accommodate for the parameters. i.e. T.Length() > NbIntervals().
 ") Intervals;
 		void Intervals(TColStd_Array1OfReal & T, const GeomAbs_Shape S);
 
-		/****************** IsClosed ******************/
-		/**** md5 signature: 00978070ec4cb5f00d1d002a8d5d3763 ****/
+		/****** BiTgte_CurveOnVertex::IsClosed ******/
+		/****** md5 signature: 00978070ec4cb5f00d1d002a8d5d3763 ******/
 		%feature("compactdefaultargs") IsClosed;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsClosed;
 		Standard_Boolean IsClosed();
 
-		/****************** IsPeriodic ******************/
-		/**** md5 signature: 15e3ccfd3ad4ae42959489f7f64aa8ca ****/
+		/****** BiTgte_CurveOnVertex::IsPeriodic ******/
+		/****** md5 signature: 15e3ccfd3ad4ae42959489f7f64aa8ca ******/
 		%feature("compactdefaultargs") IsPeriodic;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsPeriodic;
 		Standard_Boolean IsPeriodic();
 
-		/****************** IsRational ******************/
-		/**** md5 signature: 82ca56fad113156125f40128b25c0d8e ****/
+		/****** BiTgte_CurveOnVertex::IsRational ******/
+		/****** md5 signature: 82ca56fad113156125f40128b25c0d8e ******/
 		%feature("compactdefaultargs") IsRational;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 bool
+
+Description
+-----------
+No available documentation.
 ") IsRational;
 		Standard_Boolean IsRational();
 
-		/****************** LastParameter ******************/
-		/**** md5 signature: cb4925a2d4a451ceec8f6ad486530f9c ****/
+		/****** BiTgte_CurveOnVertex::LastParameter ******/
+		/****** md5 signature: cb4925a2d4a451ceec8f6ad486530f9c ******/
 		%feature("compactdefaultargs") LastParameter;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") LastParameter;
 		Standard_Real LastParameter();
 
-		/****************** Line ******************/
-		/**** md5 signature: cf28f5541e4e744dd8038e2a9ac75a8f ****/
+		/****** BiTgte_CurveOnVertex::Line ******/
+		/****** md5 signature: cf28f5541e4e744dd8038e2a9ac75a8f ******/
 		%feature("compactdefaultargs") Line;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Lin
+
+Description
+-----------
+No available documentation.
 ") Line;
 		gp_Lin Line();
 
-		/****************** NbIntervals ******************/
-		/**** md5 signature: 8ce4f61bff96d1ce0784028b47edd8dc ****/
+		/****** BiTgte_CurveOnVertex::NbIntervals ******/
+		/****** md5 signature: 8ce4f61bff96d1ce0784028b47edd8dc ******/
 		%feature("compactdefaultargs") NbIntervals;
-		%feature("autodoc", "Returns the number of intervals for continuity <s>. may be one if continuity(me) >= <s>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 S: GeomAbs_Shape
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+Returns the number of intervals for continuity <S>. May be one if Continuity(me) >= <S>.
 ") NbIntervals;
 		Standard_Integer NbIntervals(const GeomAbs_Shape S);
 
-		/****************** NbKnots ******************/
-		/**** md5 signature: 841663cbf96bec3b939f307c52df6c7c ****/
+		/****** BiTgte_CurveOnVertex::NbKnots ******/
+		/****** md5 signature: 841663cbf96bec3b939f307c52df6c7c ******/
 		%feature("compactdefaultargs") NbKnots;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbKnots;
 		Standard_Integer NbKnots();
 
-		/****************** NbPoles ******************/
-		/**** md5 signature: 52e5fadf897540545847ef59cc0ba942 ****/
+		/****** BiTgte_CurveOnVertex::NbPoles ******/
+		/****** md5 signature: 52e5fadf897540545847ef59cc0ba942 ******/
 		%feature("compactdefaultargs") NbPoles;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") NbPoles;
 		Standard_Integer NbPoles();
 
-		/****************** Parabola ******************/
-		/**** md5 signature: 68860abab63fd184ea5c7eb97f0762c1 ****/
+		/****** BiTgte_CurveOnVertex::Parabola ******/
+		/****** md5 signature: 68860abab63fd184ea5c7eb97f0762c1 ******/
 		%feature("compactdefaultargs") Parabola;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 gp_Parab
+
+Description
+-----------
+No available documentation.
 ") Parabola;
 		gp_Parab Parabola();
 
-		/****************** Period ******************/
-		/**** md5 signature: 88909a321398632744c0d6841580c626 ****/
+		/****** BiTgte_CurveOnVertex::Period ******/
+		/****** md5 signature: 88909a321398632744c0d6841580c626 ******/
 		%feature("compactdefaultargs") Period;
-		%feature("autodoc", "No available documentation.
-
-Returns
+		%feature("autodoc", "Return
 -------
 float
+
+Description
+-----------
+No available documentation.
 ") Period;
 		Standard_Real Period();
 
-		/****************** Resolution ******************/
-		/**** md5 signature: cc4a4d9111fadd20ad48e62bc4df1579 ****/
+		/****** BiTgte_CurveOnVertex::Resolution ******/
+		/****** md5 signature: cc4a4d9111fadd20ad48e62bc4df1579 ******/
 		%feature("compactdefaultargs") Resolution;
-		%feature("autodoc", "Returns the parametric resolution corresponding to the real space resolution <r3d>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 R3d: float
 
-Returns
+Return
 -------
 float
+
+Description
+-----------
+Returns the parametric resolution corresponding to the real space resolution <R3d>.
 ") Resolution;
 		Standard_Real Resolution(const Standard_Real R3d);
 
-		/****************** Trim ******************/
-		/**** md5 signature: 113944489c8ce9efcb5cb2d44fff51d7 ****/
+		/****** BiTgte_CurveOnVertex::Trim ******/
+		/****** md5 signature: 40a46ffe7379c6d919968b501b8343a5 ******/
 		%feature("compactdefaultargs") Trim;
-		%feature("autodoc", "Returns a curve equivalent of <self> between parameters <first> and <last>. <tol> is used to test for 3d points confusion. if <first> >= <last>.
-
+		%feature("autodoc", "
 Parameters
 ----------
 First: float
 Last: float
 Tol: float
 
-Returns
+Return
 -------
-opencascade::handle<Adaptor3d_HCurve>
+opencascade::handle<Adaptor3d_Curve>
+
+Description
+-----------
+Returns a curve equivalent of <self> between parameters <First> and <Last>. <Tol> is used to test for 3d points confusion. If <First> >= <Last>.
 ") Trim;
-		opencascade::handle<Adaptor3d_HCurve> Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+		opencascade::handle<Adaptor3d_Curve> Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
 
-		/****************** Value ******************/
-		/**** md5 signature: d7f310c73762cbaa285ace0a141bc7bf ****/
+		/****** BiTgte_CurveOnVertex::Value ******/
+		/****** md5 signature: d7f310c73762cbaa285ace0a141bc7bf ******/
 		%feature("compactdefaultargs") Value;
-		%feature("autodoc", "Computes the point of parameter u on the curve.
-
+		%feature("autodoc", "
 Parameters
 ----------
 U: float
 
-Returns
+Return
 -------
 gp_Pnt
+
+Description
+-----------
+Computes the point of parameter U on the curve.
 ") Value;
 		gp_Pnt Value(const Standard_Real U);
 
 };
 
 
+%make_alias(BiTgte_CurveOnVertex)
+
 %extend BiTgte_CurveOnVertex {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-
-/****************************
-* class BiTgte_HCurveOnEdge *
-****************************/
-class BiTgte_HCurveOnEdge : public Adaptor3d_HCurve {
-	public:
-		/****************** BiTgte_HCurveOnEdge ******************/
-		/**** md5 signature: 2ad2aa1b96813bad76de96545a132d40 ****/
-		%feature("compactdefaultargs") BiTgte_HCurveOnEdge;
-		%feature("autodoc", "Creates an empty genhcurve.
-
-Returns
--------
-None
-") BiTgte_HCurveOnEdge;
-		 BiTgte_HCurveOnEdge();
-
-		/****************** BiTgte_HCurveOnEdge ******************/
-		/**** md5 signature: a665c1e8600cec2853f810d5d006e4f2 ****/
-		%feature("compactdefaultargs") BiTgte_HCurveOnEdge;
-		%feature("autodoc", "Creates a genhcurve from a curve.
-
-Parameters
-----------
-C: BiTgte_CurveOnEdge
-
-Returns
--------
-None
-") BiTgte_HCurveOnEdge;
-		 BiTgte_HCurveOnEdge(const BiTgte_CurveOnEdge & C);
-
-		/****************** ChangeCurve ******************/
-		/**** md5 signature: bb25bf47662f7e00c15ecf6d3e802f3e ****/
-		%feature("compactdefaultargs") ChangeCurve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve.
-
-Returns
--------
-BiTgte_CurveOnEdge
-") ChangeCurve;
-		BiTgte_CurveOnEdge & ChangeCurve();
-
-		/****************** Curve ******************/
-		/**** md5 signature: a89f0959dbb9c3c030843720c3636148 ****/
-		%feature("compactdefaultargs") Curve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve. this is redefined from hcurve, cannot be inline.
-
-Returns
--------
-Adaptor3d_Curve
-") Curve;
-		const Adaptor3d_Curve & Curve();
-
-		/****************** GetCurve ******************/
-		/**** md5 signature: 73b397b3522011e6948956523664e20c ****/
-		%feature("compactdefaultargs") GetCurve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve. this is redefined from hcurve, cannot be inline.
-
-Returns
--------
-Adaptor3d_Curve
-") GetCurve;
-		Adaptor3d_Curve & GetCurve();
-
-		/****************** Set ******************/
-		/**** md5 signature: 049171d6b8e70260c1a5f802baca72c2 ****/
-		%feature("compactdefaultargs") Set;
-		%feature("autodoc", "Sets the field of the genhcurve.
-
-Parameters
-----------
-C: BiTgte_CurveOnEdge
-
-Returns
--------
-None
-") Set;
-		void Set(const BiTgte_CurveOnEdge & C);
-
-};
-
-
-%make_alias(BiTgte_HCurveOnEdge)
-
-%extend BiTgte_HCurveOnEdge {
-	%pythoncode {
-	__repr__ = _dumps_object
-	}
-};
-
-/******************************
-* class BiTgte_HCurveOnVertex *
-******************************/
-class BiTgte_HCurveOnVertex : public Adaptor3d_HCurve {
-	public:
-		/****************** BiTgte_HCurveOnVertex ******************/
-		/**** md5 signature: 5320504925b1287b64eb071acb58f650 ****/
-		%feature("compactdefaultargs") BiTgte_HCurveOnVertex;
-		%feature("autodoc", "Creates an empty genhcurve.
-
-Returns
--------
-None
-") BiTgte_HCurveOnVertex;
-		 BiTgte_HCurveOnVertex();
-
-		/****************** BiTgte_HCurveOnVertex ******************/
-		/**** md5 signature: 3f28cb2117e2840f16163c026c166a9f ****/
-		%feature("compactdefaultargs") BiTgte_HCurveOnVertex;
-		%feature("autodoc", "Creates a genhcurve from a curve.
-
-Parameters
-----------
-C: BiTgte_CurveOnVertex
-
-Returns
--------
-None
-") BiTgte_HCurveOnVertex;
-		 BiTgte_HCurveOnVertex(const BiTgte_CurveOnVertex & C);
-
-		/****************** ChangeCurve ******************/
-		/**** md5 signature: 9e664d84e29b5c4dd2f89872b57e39fe ****/
-		%feature("compactdefaultargs") ChangeCurve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve.
-
-Returns
--------
-BiTgte_CurveOnVertex
-") ChangeCurve;
-		BiTgte_CurveOnVertex & ChangeCurve();
-
-		/****************** Curve ******************/
-		/**** md5 signature: a89f0959dbb9c3c030843720c3636148 ****/
-		%feature("compactdefaultargs") Curve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve. this is redefined from hcurve, cannot be inline.
-
-Returns
--------
-Adaptor3d_Curve
-") Curve;
-		const Adaptor3d_Curve & Curve();
-
-		/****************** GetCurve ******************/
-		/**** md5 signature: 73b397b3522011e6948956523664e20c ****/
-		%feature("compactdefaultargs") GetCurve;
-		%feature("autodoc", "Returns the curve used to create the genhcurve. this is redefined from hcurve, cannot be inline.
-
-Returns
--------
-Adaptor3d_Curve
-") GetCurve;
-		Adaptor3d_Curve & GetCurve();
-
-		/****************** Set ******************/
-		/**** md5 signature: 7e8c4ace2fa0b6b2e5f93ff796af50b7 ****/
-		%feature("compactdefaultargs") Set;
-		%feature("autodoc", "Sets the field of the genhcurve.
-
-Parameters
-----------
-C: BiTgte_CurveOnVertex
-
-Returns
--------
-None
-") Set;
-		void Set(const BiTgte_CurveOnVertex & C);
-
-};
-
-
-%make_alias(BiTgte_HCurveOnVertex)
-
-%extend BiTgte_HCurveOnVertex {
 	%pythoncode {
 	__repr__ = _dumps_object
 	}
@@ -1551,3 +1615,6 @@ None
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}

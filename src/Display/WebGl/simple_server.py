@@ -15,7 +15,7 @@
 ##You should have received a copy of the GNU Lesser General Public License
 ##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
-""" A very simple webserver. """
+"""A very simple webserver."""
 
 import os
 import socket
@@ -24,15 +24,15 @@ import errno
 
 
 def get_available_port(port):
-    """ sometimes, the python webserver is closed but the
+    """sometimes, the python webserver is closed but the
     port is not made available for a further call. So let's find
     any available port to prevent such issue. This function:
     * takes a port number (an integer), above 1024
     * check if it is available
     * if not, take another one
-    * returns the port numer
+    * returns the port number
     """
-    if not port > 1024:
+    if port <= 1024:
         raise AssertionError("port number should be > 1024")
     # check this port is available
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,8 +51,26 @@ def get_available_port(port):
     return port
 
 
-def start_server(addr="127.0.0.1", port=8080, x3d_path='.', open_webbrowser=False):
-    """ starts the server if the PYTHONOCC_SHUNT_WEB_SERVER
+def get_interface_ip(family: socket.AddressFamily) -> str:
+    """Get the IP address of an external interface. Used when binding to
+    0.0.0.0 or ::1 to show a more useful URL. Inspire of `werkzeug`.
+
+    :meta private:
+    """
+    # arbitrary private address
+    host = "2001:db8::1" if family == socket.AF_INET6 else "192.0.2.1"
+
+    with socket.socket(family, socket.SOCK_DGRAM) as s:
+        try:
+            s.connect((host, 58162))
+        except OSError:
+            return "::1" if family == socket.AF_INET6 else "127.0.0.1"
+
+        return s.getsockname()[0]  # type: ignore
+
+
+def start_server(addr="127.0.0.1", port=8080, x3d_path=".", open_webbrowser=False):
+    """starts the server if the PYTHONOCC_SHUNT_WEB_SERVER
     env var is not set
     * port: the port number to use (if available) ;
     * path: where thehtml files are located
@@ -63,38 +81,48 @@ def start_server(addr="127.0.0.1", port=8080, x3d_path='.', open_webbrowser=Fals
     # prefer using Flask, if installed
     try:
         from flask import Flask, send_from_directory
+
         HAVE_FLASK = True
     except ImportError:
         HAVE_FLASK = False
     if not HAVE_FLASK:  # use simple http server
         from http.server import SimpleHTTPRequestHandler, HTTPServer
+
         os.chdir(x3d_path)
         port = get_available_port(port)
         httpd = HTTPServer((addr, port), SimpleHTTPRequestHandler)
-        print("\n## Serving %s \n## using SimpleHTTPServer" % x3d_path)
-        print("## Open your webbrowser at the URL: http://localhost:%i" % port)
-        print("## CTRL-C to shutdown the server")
+        print(f"\n## Serving {x3d_path} using SimpleHTTPServer")
+        display_hostname = "localhost"
+        if (
+            addr == "0.0.0.0"
+        ):  # Did not consider ipv6 `::` because httpd does not support it
+            display_hostname = get_interface_ip(socket.AF_INET)
+            print(f"## Running on all addresses ({addr})")
+        print(
+            "## Open your webbrowser at the URL: http://%s:%i"
+            % (display_hostname, port)
+        )
         # open webbrowser
         if open_webbrowser:
-            webbrowser.open('http://localhost:%i' % port, new=2)
+            webbrowser.open("http://%s:%i" % (display_hostname, port), new=2)
         # starts the web_server
         httpd.serve_forever()
     else:  # use flask
         # set the project root directory as the static folder, you can set others.
         app = Flask(__name__)
 
-        @app.route('/')
+        @app.route("/")
         def root():
-            fp = open(os.path.join(x3d_path, 'index.html'))
-            html_content = fp.read()
-            fp.close()
+            with open(os.path.join(x3d_path, "index.html")) as fp:
+                html_content = fp.read()
             return html_content
-        @app.route('/<path:path>')
+
+        @app.route("/<path:path>")
         def send_x3d_content(path):
             return send_from_directory(x3d_path, path)
-        print("\n## Serving %s \n## using Flask" % x3d_path)
-        print("## Open your webbrowser at the URL: http://localhost:%i" % port)
-        print("## CTRL-C to shutdown the server")
+
+        print(f"\n## Serving {x3d_path} using Flask")
+
         port = get_available_port(port)
         app.run(host=addr, port=port)
 
@@ -102,4 +130,4 @@ def start_server(addr="127.0.0.1", port=8080, x3d_path='.', open_webbrowser=Fals
 if __name__ == "__main__":
     get_available_port(port=8080)
     get_available_port(port=5022)
-    start_server(port=8080)
+    start_server(addr="0.0.0.0", port=8080)

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define INTSTARTDOCSTRING
 "IntStart module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intstart.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_intstart.html"
 %enddef
 %module (package="OCC.Core", docstring=INTSTARTDOCSTRING) IntStart
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_intstart.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -61,7 +64,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -82,19 +85,22 @@ from OCC.Core.Exception import *
 %nodefaultctor IntStart_SITopolTool;
 class IntStart_SITopolTool : public Standard_Transient {
 	public:
-		/****************** Classify ******************/
-		/**** md5 signature: 57cb8b2ba77b23acfa05dd678fe20285 ****/
+		/****** IntStart_SITopolTool::Classify ******/
+		/****** md5 signature: 57cb8b2ba77b23acfa05dd678fe20285 ******/
 		%feature("compactdefaultargs") Classify;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 P: gp_Pnt2d
 Tol: float
 
-Returns
+Return
 -------
 TopAbs_State
+
+Description
+-----------
+No available documentation.
 ") Classify;
 		virtual TopAbs_State Classify(const gp_Pnt2d & P, const Standard_Real Tol);
 
@@ -112,3 +118,6 @@ TopAbs_State
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2024 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -20,9 +20,12 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include<Geom2dConvert.hxx>
+#include<Geom2dConvert_ApproxArcsSegments.hxx>
 #include<Geom2dConvert_ApproxCurve.hxx>
 #include<Geom2dConvert_BSplineCurveKnotSplitting.hxx>
 #include<Geom2dConvert_BSplineCurveToBezierCurve.hxx>
 #include<Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include<Geom2dConvert_PPoint.hxx>
+#include<Geom2dConvert_SequenceOfPPoint.hxx>
 
 #endif // GEOM2DCONVERT_HXX

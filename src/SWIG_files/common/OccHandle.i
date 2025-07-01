@@ -20,12 +20,12 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * This file defined the macro wrap_handle() and make_alias()
+ * This file defines the macro wrap_handle() and make_alias()
  *
- * It should be called on a OpenCASCADE Type that inherits from Standard_Transient
- * i.e. a class the also has a Handle_ class.
+ * It should be called on an OpenCASCADE Type that inherits from Standard_Transient
+ * i.e. a class that also has a Handle_ class.
  *
- * make_alias is to allow backwards compatibilty and defines a Handle_ alias to
+ * make_alias is to allow backwards compatibility and defines a Handle_ alias to
  * the non-handle version of the class.
  *
  * wrap_handle must be called before defining the class.
@@ -44,7 +44,6 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 %pythoncode {
-    from six import with_metaclass
     import warnings
     from OCC.Wrapper.wrapper_utils import Proxy, deprecated
 }
@@ -56,53 +55,119 @@ template <typename T> class handle{};
 
 #define DEFINE_STANDARD_HANDLE(C1,C2)
 
+// global counter for dbug (enabled using DEBUG_MEMORY flag)
+#ifdef DEBUG_MEMORY
+%inline %{
+    static int handle_creation_count = 0;
+    static int handle_deletion_count = 0;
+
+    void reset_handle_counters() {
+        handle_creation_count = 0;
+        handle_deletion_count = 0;
+    }
+
+    void print_handle_stats() {
+        printf("Handles created: %d, deleted: %d, delta: %d\n",
+               handle_creation_count, handle_deletion_count,
+               handle_creation_count - handle_deletion_count);
+    }
+%}
+#endif
+
 %define WRAP_OCC_TRANSIENT(CONST, TYPE)
 
-
 %typemap(out) opencascade::handle<TYPE> {
-  TYPE * presult = !$1.IsNull() ? $1.get() : 0;
-  if (presult) presult->IncrementRefCounter();
+  TYPE * presult = nullptr;
+  if (!$1.IsNull()) {
+    presult = $1.get();
+    if (presult) {
+      presult->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+      handle_creation_count++;
+#endif
+    }
+  }
   %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
 }
 
 %typemap(out) Handle_ ## TYPE {
-  TYPE * presult = !$1.IsNull() ? $1.get() : 0;
-  if (presult) presult->IncrementRefCounter();
+  TYPE * presult = nullptr;
+  if (!$1.IsNull()) {
+    presult = $1.get();
+    if (presult) {
+      presult->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+      handle_creation_count++;
+#endif
+    }
+  }
   %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
 }
+
+// avoid useless copy for const objects
 %typemap(out) CONST TYPE {
   TYPE * presult = new TYPE(static_cast< CONST TYPE& >($1));
-  presult->IncrementRefCounter();
+  if (presult) {
+      presult->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+      handle_creation_count++;
+#endif
+    }
+    %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
+}
+
+
+%typemap(out) CONST opencascade::handle<TYPE>& {
+  TYPE * presult = nullptr;
+  if ($1 && !$1->IsNull()) {
+    presult = $1->get();
+    if (presult) {
+      presult->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+      handle_creation_count++;
+#endif
+    }
+  }
   %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
 }
 
-%typemap(out) CONST opencascade::handle<TYPE>&{
-  TYPE * presult = !$1->IsNull() ? $1->get() : 0;
-  if (presult) presult->IncrementRefCounter();
-  %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
-}
-
-
-%typemap(out) CONST Handle_ ## TYPE&{
-  TYPE * presult = !$1->IsNull() ? $1->get() : 0;
-  if (presult) presult->IncrementRefCounter();
+%typemap(out) CONST Handle_ ## TYPE& {
+  TYPE * presult = nullptr;
+  if ($1 && !$1->IsNull()) {
+    presult = $1->get();
+    if (presult) {
+      presult->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+      handle_creation_count++;
+#endif
+    }
+  }
   %set_output(SWIG_NewPointerObj(%as_voidptr(presult), $descriptor(TYPE *), SWIG_POINTER_OWN));
 }
 
 %typemap(out) CONST TYPE&, CONST TYPE* {
-  if ($1) $1->IncrementRefCounter();
+  if ($1) {
+    // check that object is not on the stack
+    $1->IncrementRefCounter();
+#ifdef DEBUG_MEMORY
+    handle_creation_count++;
+#endif
+  }
   %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(TYPE *), SWIG_POINTER_OWN));
 }
 
-%typemap(in) opencascade::handle< TYPE > (void *argp, int res = 0) {
+%typemap(in) opencascade::handle<TYPE> (void *argp, int res = 0) {
   int newmem = 0;
   res = SWIG_ConvertPtrAndOwn($input, &argp, $descriptor(TYPE *), %convertptr_flags, &newmem);
   if (!SWIG_IsOK(res)) {
     %argument_fail(res, "$type", $symname, $argnum);
   }
-  if (argp) $1 = opencascade::handle< TYPE >(%reinterpret_cast(argp, TYPE*));
+  if (argp) {
+    $1 = opencascade::handle< TYPE >(%reinterpret_cast(argp, TYPE*));
+  } else {
+    $1 = opencascade::handle< TYPE >();  // explicit null Handle
+  }
 }
-
 
 // shared_ptr by reference
 %typemap(in) opencascade::handle<TYPE> &(void *argp, int res = 0, $*1_ltype tempshared) {
@@ -111,8 +176,12 @@ template <typename T> class handle{};
   if (!SWIG_IsOK(res)) {
     %argument_fail(res, "$type", $symname, $argnum);
   }
-
-  if (argp) tempshared = opencascade::handle< TYPE >(%reinterpret_cast(argp, TYPE*));
+  if (argp) {
+    TYPE* typed_ptr = %reinterpret_cast(argp, TYPE*);
+    if (typed_ptr) {
+      tempshared = opencascade::handle< TYPE >(typed_ptr);
+    }
+  }
   $1 = &tempshared;
 }
 
@@ -124,7 +193,12 @@ template <typename T> class handle{};
     %argument_fail(res, "$type", $symname, $argnum);
   }
 
-  if (argp) tempshared = opencascade::handle< TYPE >(%reinterpret_cast(argp, TYPE*));
+  if (argp) {
+    TYPE* typed_ptr = %reinterpret_cast(argp, TYPE*);
+    if (typed_ptr) {
+      tempshared = opencascade::handle< TYPE >(typed_ptr);
+    }
+  }
   $1 = &tempshared;
 }
 
@@ -137,7 +211,8 @@ template <typename T> class handle{};
                       CONST opencascade::handle<TYPE> &,
                       CONST opencascade::handle<TYPE> *,
                       CONST opencascade::handle<TYPE> *& {
-  int res = SWIG_ConvertPtr($input, 0, $descriptor(TYPE *), 0);
+  void *ptr = 0;
+  int res = SWIG_ConvertPtr($input, &ptr, $descriptor(TYPE *), 0);
   $1 = SWIG_CheckState(res);
 }
 
@@ -154,7 +229,7 @@ class TYPE;
 class Handle_ ## TYPE : public opencascade::handle< TYPE >{
 public:
   template <typename T2>
-  inline Handle_## TYPE(const T2* theOther) : Handle(TYPE)(theOther) {} \
+  inline Handle_## TYPE(const T2* theOther) : opencascade::handle< TYPE >(theOther) {}
 };
 #else
 typedef opencascade::handle< TYPE > Handle_ ## TYPE;
@@ -169,23 +244,54 @@ typedef opencascade::handle< TYPE > Handle_ ## TYPE;
 WRAP_OCC_TRANSIENT(SWIGEMPTYHACK, TYPE)
 WRAP_OCC_TRANSIENT(const, TYPE)
 
-%feature("unref") TYPE "if($this && $this->DecrementRefCounter()==0) delete $this;"
+%feature("unref") TYPE %{
+  if($this) {
+#ifdef DEBUG_MEMORY
+    handle_deletion_count++;
+#endif
+    if($this->DecrementRefCounter() == 0) {
+      delete $this;
+    }
+  }
+%}
 
 %inline %{
     opencascade::handle<TYPE> Handle_ ## TYPE ## _Create() {
         return opencascade::handle<TYPE>();
     }
 
-    opencascade::handle<TYPE>  Handle_ ## TYPE ## _DownCast(const opencascade::handle<Standard_Transient>& t) {
-        return opencascade::handle<TYPE>::DownCast(t);
+    opencascade::handle<TYPE> Handle_ ## TYPE ## _DownCast(const opencascade::handle<Standard_Transient>& t) {
+        if (t.IsNull()) {
+            return opencascade::handle<TYPE>();
+        }
+
+        opencascade::handle<TYPE> downcasted_handle = opencascade::handle<TYPE>::DownCast(t);
+        if (downcasted_handle.IsNull()) {
+            // Plus d'information dans l'erreur
+            PyErr_Format(PyExc_TypeError,
+                        "Failed to downcast %s to %s",
+                        t->DynamicType()->Name(),
+                        #TYPE);
+            return opencascade::handle<TYPE>();
+        }
+        return downcasted_handle;
     }
 
     bool Handle_ ## TYPE ## _IsNull(const opencascade::handle<TYPE> & t) {
         return t.IsNull();
     }
+
+    void Handle_ ## TYPE ## _ForceRelease(opencascade::handle<TYPE> & t) {
+        t.Nullify();
+    }
+
+    int Handle_ ## TYPE ## _GetRefCount(const opencascade::handle<TYPE> & t) {
+        if (t.IsNull()) return 0;
+        return t->GetRefCount();
+    }
 %}
 
-// This two functions are just for backwards compatibilty
+// These two functions are just for backwards compatibility
 %extend TYPE {
   %pythoncode {
 
@@ -197,8 +303,6 @@ WRAP_OCC_TRANSIENT(const, TYPE)
 
 %enddef
 
-
 %define %make_alias(TYPE)
-
+using Handle_ ## TYPE = opencascade::handle<TYPE>;
 %enddef
-

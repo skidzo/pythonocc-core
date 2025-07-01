@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2020 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2025 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define LDOMDOCSTRING
 "LDOM module, see official documentation at
-https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_ldom.html"
+https://dev.opencascade.org/doc/occt-7.9.0/refman/html/package_ldom.html"
 %enddef
 %module (package="OCC.Core", docstring=LDOMDOCSTRING) LDOM
 
@@ -31,8 +31,11 @@ https://www.opencascade.com/doc/occt-7.4.0/refman/html/package_ldom.html"
 %include ../common/CommonIncludes.i
 %include ../common/ExceptionCatcher.i
 %include ../common/FunctionTransformers.i
+%include ../common/EnumTemplates.i
 %include ../common/Operators.i
 %include ../common/OccHandle.i
+%include ../common/IOStream.i
+%include ../common/ArrayMacros.i
 
 
 %{
@@ -57,7 +60,7 @@ from OCC.Core.Exception import *
 /* public enums */
 /* end public enums declaration */
 
-/* python proy classes for enums */
+/* python proxy classes for enums */
 %pythoncode {
 };
 /* end python proxy for enums */
@@ -134,11 +137,23 @@ from OCC.Core.Exception import *
 /* python proxy for excluded classes */
 %pythoncode {
 @classnotwrapped
-class LDOM_LDOMImplementation:
+class LDOM_Attr:
 	pass
 
 @classnotwrapped
-class LDOM_CharacterData:
+class LDOM_BasicAttribute:
+	pass
+
+@classnotwrapped
+class LDOM_BasicElement:
+	pass
+
+@classnotwrapped
+class LDOM_BasicNode:
+	pass
+
+@classnotwrapped
+class LDOM_BasicText:
 	pass
 
 @classnotwrapped
@@ -146,7 +161,23 @@ class LDOM_CDATASection:
 	pass
 
 @classnotwrapped
-class LDOM_Node:
+class LDOM_CharReference:
+	pass
+
+@classnotwrapped
+class LDOM_CharacterData:
+	pass
+
+@classnotwrapped
+class LDOM_Comment:
+	pass
+
+@classnotwrapped
+class LDOM_Document:
+	pass
+
+@classnotwrapped
+class LDOM_DocumentType:
 	pass
 
 @classnotwrapped
@@ -154,7 +185,15 @@ class LDOM_Element:
 	pass
 
 @classnotwrapped
-class LDOM_Text:
+class LDOM_LDOMImplementation:
+	pass
+
+@classnotwrapped
+class LDOM_MemManager:
+	pass
+
+@classnotwrapped
+class LDOM_Node:
 	pass
 
 @classnotwrapped
@@ -170,39 +209,7 @@ class LDOM_OSStream:
 	pass
 
 @classnotwrapped
-class LDOM_CharReference:
-	pass
-
-@classnotwrapped
-class LDOM_XmlWriter:
-	pass
-
-@classnotwrapped
-class LDOM_BasicElement:
-	pass
-
-@classnotwrapped
-class LDOM_Comment:
-	pass
-
-@classnotwrapped
-class LDOM_BasicAttribute:
-	pass
-
-@classnotwrapped
-class LDOM_BasicText:
-	pass
-
-@classnotwrapped
-class LDOM_Document:
-	pass
-
-@classnotwrapped
-class LDOM_Attr:
-	pass
-
-@classnotwrapped
-class LDOM_DocumentType:
+class LDOM_Text:
 	pass
 
 @classnotwrapped
@@ -210,11 +217,7 @@ class LDOM_XmlReader:
 	pass
 
 @classnotwrapped
-class LDOM_BasicNode:
-	pass
-
-@classnotwrapped
-class LDOM_MemManager:
+class LDOM_XmlWriter:
 	pass
 
 }
@@ -222,3 +225,6 @@ class LDOM_MemManager:
 /* harray1 classes */
 /* harray2 classes */
 /* hsequence classes */
+/* class aliases */
+%pythoncode {
+}
